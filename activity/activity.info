@@ -2,7 +2,7 @@
 name = Get IA Books
 service_name = org.laptop.sugar.GetIABooksActivity
 icon = get-ia-books
-exec = sugar-activity GetIABooks.GetIABooks
+exec = sugar-activity GetIABooksActivity.GetIABooksActivity
 show_launcher = yes
 activity_version = 1
 license = GPLv2+
