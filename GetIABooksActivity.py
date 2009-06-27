@@ -80,6 +80,23 @@ class BooksToolbar(gtk.Toolbar):
         self.insert(self._download, -1)
         self._download.show()
 
+        label_attributes = pango.AttrList()
+        label_attributes.insert(pango.AttrSize(14000, 0, -1))
+        label_attributes.insert(pango.AttrForeground(65535, 65535, 65535, 0, -1))
+
+        downloaded_item = gtk.ToolItem()
+
+        self._downloaded_label = gtk.Label()
+
+        self._downloaded_label.set_attributes(label_attributes)
+
+        self._downloaded_label.set_text('')
+        downloaded_item.add(self._downloaded_label)
+        self._downloaded_label.show()
+
+        self.insert(downloaded_item, -1)
+        downloaded_item.show()
+
     def set_activity(self, activity):
         self.activity = activity
 
@@ -91,6 +108,9 @@ class BooksToolbar(gtk.Toolbar):
  
     def _enable_button(self,  state):
         self._download.props.sensitive = state
+
+    def set_downloaded_bytes(self, bytes,  total):
+        self._downloaded_label.props.label = '     ' + str(bytes) + ' ' + _('of') +' ' + str(total) + ' ' + _('received')
 
 class ReadHTTPRequestHandler(network.ChunkedGlibHTTPRequestHandler):
     """HTTP Request Handler for transferring document while collaborating.
@@ -144,6 +164,9 @@ class GetIABooksActivity(activity.Activity):
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_left_margin(50)
+        self.textview.set_wrap_mode(True)
+        textbuffer = self.textview.get_buffer()
+        textbuffer.set_text(_('Enter words from the Author or Title to begin search') + '.')
         self.scrolled.add(self.textview)
         self.textview.show()
         self.scrolled.show()
@@ -193,8 +216,6 @@ class GetIABooksActivity(activity.Activity):
         vbox.show()
         self.list_scroller.show()
 
-        # Status of temp file used for write_file:
-        self._tempfile = None
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar._search_entry.grab_focus()
 
@@ -205,10 +226,12 @@ class GetIABooksActivity(activity.Activity):
         if sel:
             model, iter = sel
             label_text = model.get_value(iter,COLUMN_TITLE) + '\n\n'
-            volume = model.get_value(iter,COLUMN_VOLUME) 
-            if volume != '':
-                label_text +=  _('Volume') + ': ' +  volume + '\n\n'
+            self.selected_title = model.get_value(iter,COLUMN_TITLE_TRUNC)
+            self.selected_volume = model.get_value(iter,COLUMN_VOLUME) 
+            if self.selected_volume != '':
+                label_text +=  _('Volume') + ': ' +  self.selected_volume + '\n\n'
             label_text +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
+            self.selected_author =  model.get_value(iter,COLUMN_CREATOR_TRUNC)
             description = model.get_value(iter,COLUMN_DESCRIPTION)
             if description != '':
                 label_text +=  description  + '\n\n'
@@ -217,9 +240,10 @@ class GetIABooksActivity(activity.Activity):
                 label_text +=  _('Subject') + ': ' +  subject + '\n\n'
             label_text +=  _('Publisher') + ': ' + model.get_value(iter,COLUMN_PUBLISHER) + '\n\n'
             label_text +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
-            label_text +=  _('Download URL') + ': http://www.archive.org/download/' 
+            self.download_url =   'http://www.archive.org/download/' 
             identifier = model.get_value(iter,COLUMN_IDENTIFIER)
-            label_text +=  identifier + '/' + identifier + '.djvu'
+            self.download_url +=  identifier + '/' + identifier + '.djvu'
+            label_text +=  _('Download URL') + ': ' + self.download_url
             textbuffer = self.textview.get_buffer()
             textbuffer.set_text(label_text)
             self._books_toolbar._enable_button(True)
@@ -246,12 +270,7 @@ class GetIABooksActivity(activity.Activity):
     
     def get_book(self):
         self._books_toolbar._enable_button(False)
-        if self.selected_path.startswith('PGA'):
-            gobject.idle_add(self.download_book,  self.selected_path.replace('PGA', 'http://gutenberg.net.au'),  self._get_book_result_cb)
-        elif self.selected_path.startswith('/etext'):
-            gobject.idle_add(self.download_book,  "http://www.gutenberg.org/dirs" + self.selected_path + "108.zip",  self._get_old_book_result_cb)
-        else:
-            gobject.idle_add(self.download_book,  "http://www.gutenberg.org/dirs" + self.selected_path + "-8.zip",  self._get_iso_book_result_cb)
+        gobject.idle_add(self.download_book,  self.download_url)
         
     def download_csv(self,  url):
         print "get csv from",  url
@@ -304,6 +323,74 @@ class GetIABooksActivity(activity.Activity):
                         COLUMN_TITLE_TRUNC,  self.truncate(row[COLUMN_TITLE],  75),  \
                         COLUMN_CREATOR_TRUNC,  self.truncate(row[COLUMN_CREATOR],  40))
         os.remove(tempfile)
+
+    def download_book(self,  url):
+        print "get book from",  url
+        path = os.path.join(self.get_activity_root(), 'instance',
+                            'tmp%i' % time.time())
+        getter = ReadURLDownloader(url)
+        getter.connect("finished", self._get_book_result_cb)
+        getter.connect("progress", self._get_book_progress_cb)
+        getter.connect("error", self._get_book_error_cb)
+        _logger.debug("Starting download to %s...", path)
+        try:
+            getter.start(path)
+        except:
+            self._alert(_('Error'), _('Connection timed out for ') + self.selected_title)
+           
+        self._download_content_length = getter.get_content_length()
+        self._download_content_type = getter.get_content_type()
+
+    def _get_book_result_cb(self, getter, tempfile, suggested_name):
+        print 'Content type:',  self._download_content_type
+        if self._download_content_type.startswith('text/html'):
+            # got an error page instead
+            self._get_book_error_cb(getter, 'HTTP Error')
+            return
+        self.process_downloaded_book(tempfile,  suggested_name)
+
+    def _get_book_progress_cb(self, getter, bytes_downloaded):
+        if self._download_content_length > 0:
+            _logger.debug("Downloaded %u of %u bytes...",
+                          bytes_downloaded, self._download_content_length)
+        else:
+            _logger.debug("Downloaded %u bytes...",
+                          bytes_downloaded)
+        total = self._download_content_length
+        self._books_toolbar.set_downloaded_bytes(bytes_downloaded,  total)
+        while gtk.events_pending():
+            gtk.main_iteration()
+
+    def _get_book_error_cb(self, getter, err):
+        _logger.debug("Error getting document: %s", err)
+        self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog may be incorrect.'))
+        self._download_content_length = 0
+        self._download_content_type = None
+
+    def process_downloaded_book(self,  tempfile,  suggested_name):
+        _logger.debug("Got document %s (%s)", tempfile, suggested_name)
+        self.create_journal_entry(tempfile)
+
+    def create_journal_entry(self,  tempfile):
+        journal_entry = datastore.create()
+        journal_title = self.selected_title
+        if self.selected_volume != '':
+            journal_title +=  ' ' + _('Volume') + ' ' +  self.selected_volume
+        if self.selected_author != '':
+            journal_title = journal_title  + ', by ' + self.selected_author
+        journal_entry.metadata['title'] = journal_title
+        journal_entry.metadata['title_set_by_user'] = '1'
+        journal_entry.metadata['keep'] = '0'
+        journal_entry.metadata['mime_type'] = 'image/vnd.djvu'
+        journal_entry.metadata['buddies'] = ''
+        journal_entry.metadata['preview'] = ''
+        journal_entry.metadata['icon-color'] = profile.get_color().to_string()
+        textbuffer = self.textview.get_buffer()
+        journal_entry.metadata['description'] = textbuffer.get_text(textbuffer.get_start_iter(),  textbuffer.get_end_iter())
+        journal_entry.file_path = tempfile
+        datastore.write(journal_entry)
+        os.remove(tempfile)
+        self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
 
     def truncate(self,  str,  length):
         if len(str) > length:
