@@ -221,7 +221,7 @@ class GetIABooksActivity(activity.Activity):
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
         search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(' + search_text.lower() + ') AND format:(DJVU)')
+            urllib.quote('(title:(' + search_text.lower() + ') OR creator:(' + search_text.lower() +')) AND format:(DJVU)')
         search_url += '&' + FL + '=creator&' + FL + '=description&' + FL + '=format&' + FL + '=identifier&' + FL + '=language'
         search_url += '&' + FL + '=publicdate&' + FL + '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
         search_url += '&' + SORT + '=title&' + SORT + '&' + SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
@@ -284,6 +284,7 @@ class GetIABooksActivity(activity.Activity):
                         6,  row[6],  7,  row[7],  8,  row[8],  9,  row[9],  \
                         COLUMN_TITLE_TRUNC,  self.truncate(row[COLUMN_TITLE],  75),  \
                         COLUMN_CREATOR_TRUNC,  self.truncate(row[COLUMN_CREATOR],  40))
+        os.remove(tempfile)
 
     def truncate(self,  str,  length):
         if len(str) > length:
