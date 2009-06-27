@@ -44,13 +44,12 @@ COLUMN_DESCRIPTION=1
 COLUMN_FORMAT = 2
 COLUMN_IDENTIFIER = 3
 COLUMN_LANGUAGE = 4
-COLUMN_PUBLICDATE= 5
-COLUMN_PUBLISHER = 6
-COLUMN_SUBJECT = 7
-COLUMN_TITLE = 8
-COLUMN_VOLUME = 9
-COLUMN_TITLE_TRUNC = 10
-COLUMN_CREATOR_TRUNC = 11
+COLUMN_PUBLISHER = 5
+COLUMN_SUBJECT = 6
+COLUMN_TITLE = 7
+COLUMN_VOLUME = 8
+COLUMN_TITLE_TRUNC = 9
+COLUMN_CREATOR_TRUNC = 10
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -154,7 +153,7 @@ class GetIABooksActivity(activity.Activity):
 
         self.ls = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
                                 gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
-                                gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING)
+                                gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING)
         tv = gtk.TreeView(self.ls)
         tv.set_rules_hint(True)
         tv.set_search_column(COLUMN_TITLE)
@@ -197,6 +196,7 @@ class GetIABooksActivity(activity.Activity):
         # Status of temp file used for write_file:
         self._tempfile = None
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
+        self._books_toolbar._search_entry.grab_focus()
 
     def selection_cb(self, selection):
         tv = selection.get_tree_view()
@@ -204,13 +204,30 @@ class GetIABooksActivity(activity.Activity):
         sel = selection.get_selected()
         if sel:
             model, iter = sel
-            self.selected_title = model.get_value(iter,COLUMN_TITLE)
-            self.selected_author = model.get_value(iter,COLUMN_CREATOR)
-            self.selected_identifier = model.get_value(iter,COLUMN_IDENTIFIER)
+            label_text = model.get_value(iter,COLUMN_TITLE) + '\n\n'
+            volume = model.get_value(iter,COLUMN_VOLUME) 
+            if volume != '':
+                label_text +=  _('Volume') + ': ' +  volume + '\n\n'
+            label_text +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
+            description = model.get_value(iter,COLUMN_DESCRIPTION)
+            if description != '':
+                label_text +=  description  + '\n\n'
+            subject = model.get_value(iter,COLUMN_SUBJECT) 
+            if subject != '':
+                label_text +=  _('Subject') + ': ' +  subject + '\n\n'
+            label_text +=  _('Publisher') + ': ' + model.get_value(iter,COLUMN_PUBLISHER) + '\n\n'
+            label_text +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
+            label_text +=  _('Download URL') + ': http://www.archive.org/download/' 
+            identifier = model.get_value(iter,COLUMN_IDENTIFIER)
+            label_text +=  identifier + '/' + identifier + '.djvu'
+            textbuffer = self.textview.get_buffer()
+            textbuffer.set_text(label_text)
             self._books_toolbar._enable_button(True)
 
     def find_books(self, search_text):
         self._books_toolbar._enable_button(False)
+        textbuffer = self.textview.get_buffer()
+        textbuffer.set_text(_('Performing lookup, please wait') + '...')
         self.book_selected = False
         self.ls.clear()
         search_tuple = search_text.lower().split()
@@ -223,7 +240,7 @@ class GetIABooksActivity(activity.Activity):
         search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
             urllib.quote('(title:(' + search_text.lower() + ') OR creator:(' + search_text.lower() +')) AND format:(DJVU)')
         search_url += '&' + FL + '=creator&' + FL + '=description&' + FL + '=format&' + FL + '=identifier&' + FL + '=language'
-        search_url += '&' + FL + '=publicdate&' + FL + '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
+        search_url += '&' + FL +  '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
         search_url += '&' + SORT + '=title&' + SORT + '&' + SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
         gobject.idle_add(self.download_csv,  search_url)
     
@@ -276,12 +293,14 @@ class GetIABooksActivity(activity.Activity):
         self.process_downloaded_csv(tempfile,  suggested_name)
 
     def process_downloaded_csv(self,  tempfile,  suggested_name):
+        textbuffer = self.textview.get_buffer()
+        textbuffer.set_text(_('Finished'))
         reader = csv.reader(open(tempfile,  'rb'))
         reader.next() # skip the first header row.
         for row in reader:
             iter = self.ls.append()
             self.ls.set(iter, 0, row[0],  1,  row[1],  2,  row[2],  3,  row[3],  4,  row[4],  5,  row[5],  \
-                        6,  row[6],  7,  row[7],  8,  row[8],  9,  row[9],  \
+                        6,  row[6],  7,  row[7],  8,  row[8],   \
                         COLUMN_TITLE_TRUNC,  self.truncate(row[COLUMN_TITLE],  75),  \
                         COLUMN_CREATOR_TRUNC,  self.truncate(row[COLUMN_CREATOR],  40))
         os.remove(tempfile)
