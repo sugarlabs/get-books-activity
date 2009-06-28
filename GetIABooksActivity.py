@@ -60,15 +60,14 @@ class BooksToolbar(gtk.Toolbar):
         gtk.Toolbar.__init__(self)
         book_search_item = gtk.ToolItem()
 
-        self._search_entry = gtk.Entry()
-        self._search_entry.connect('activate', self._search_entry_activate_cb)
+        self.search_entry = gtk.Entry()
+        self.search_entry.connect('activate', self.search_entry_activate_cb)
 
         width = int(gtk.gdk.screen_width() / 2)
-        self._search_entry.set_size_request(width, -1)
+        self.search_entry.set_size_request(width, -1)
 
-        book_search_item.add(self._search_entry)
-        self._search_entry.show()
-        self._search_entry.grab_focus()
+        book_search_item.add(self.search_entry)
+        self.search_entry.show()
 
         self.insert(book_search_item, -1)
         book_search_item.show()
@@ -86,13 +85,14 @@ class BooksToolbar(gtk.Toolbar):
 
         downloaded_item = gtk.ToolItem()
 
-        self._downloaded_label = gtk.Label()
+        self.downloaded_label = gtk.Label()
 
-        self._downloaded_label.set_attributes(label_attributes)
+        self.downloaded_label.set_attributes(label_attributes)
 
-        self._downloaded_label.set_text('')
-        downloaded_item.add(self._downloaded_label)
-        self._downloaded_label.show()
+        self.downloaded_label.set_text('')
+        downloaded_item.add(self.downloaded_label)
+        self.downloaded_label.show()
+        self.search_entry.grab_focus()
 
         self.insert(downloaded_item, -1)
         downloaded_item.show()
@@ -100,7 +100,7 @@ class BooksToolbar(gtk.Toolbar):
     def set_activity(self, activity):
         self.activity = activity
 
-    def _search_entry_activate_cb(self, entry):
+    def search_entry_activate_cb(self, entry):
         self.activity.find_books(entry.props.text)
 
     def _get_book_cb(self, button):
@@ -110,7 +110,10 @@ class BooksToolbar(gtk.Toolbar):
         self._download.props.sensitive = state
 
     def set_downloaded_bytes(self, bytes,  total):
-        self._downloaded_label.props.label = '     ' + str(bytes) + ' ' + _('of') +' ' + str(total) + ' ' + _('received')
+        self.downloaded_label.props.label = '     ' + str(bytes) + ' ' + _('of') +' ' + str(total) + ' ' + _('received')
+
+    def clear_downloaded_bytes(self):
+        self.downloaded_label.props.label = ''
 
 class ReadHTTPRequestHandler(network.ChunkedGlibHTTPRequestHandler):
     """HTTP Request Handler for transferring document while collaborating.
@@ -163,8 +166,10 @@ class GetIABooksActivity(activity.Activity):
         self.textview = gtk.TextView()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
+        self.textview.set_wrap_mode(gtk.WRAP_WORD)
+        self.textview.set_justification(gtk.JUSTIFY_LEFT)
         self.textview.set_left_margin(50)
-        self.textview.set_wrap_mode(True)
+        self.textview.set_right_margin(50)
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Enter words from the Author or Title to begin search') + '.')
         self.scrolled.add(self.textview)
@@ -217,9 +222,10 @@ class GetIABooksActivity(activity.Activity):
         self.list_scroller.show()
 
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
-        self._books_toolbar._search_entry.grab_focus()
+        self._books_toolbar.search_entry.grab_focus()
 
     def selection_cb(self, selection):
+        self._books_toolbar.clear_downloaded_bytes()
         tv = selection.get_tree_view()
         model = tv.get_model()
         sel = selection.get_selected()
@@ -250,6 +256,7 @@ class GetIABooksActivity(activity.Activity):
 
     def find_books(self, search_text):
         self._books_toolbar._enable_button(False)
+        self._books_toolbar.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait') + '...')
         self.book_selected = False
@@ -257,7 +264,7 @@ class GetIABooksActivity(activity.Activity):
         search_tuple = search_text.lower().split()
         if len(search_tuple) == 0:
             self._alert(_('Error'), _('You must enter at least one search word.'))
-            self._books_toolbar._search_entry.grab_focus()
+            self._books_toolbar.search_entry.grab_focus()
             return
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
