@@ -3,3 +3,11 @@ NEWS
 setup.py
 activity/get-ia-books.svg
 activity/activity.info
+Get IA Books.e4p
+.ropeproject/config.py
+.ropeproject/objectdb
+.ropeproject/history
+.eric4project/project-apis.db
+.eric4project/Get IA Books.e4q
+.eric4project/Get IA Books.e4t
+po/GetIABooks.pot

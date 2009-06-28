@@ -1,0 +1,3 @@
+#: activity/activity.info:2
+msgid "Get IA Books"
+msgstr ""
