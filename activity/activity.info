@@ -4,5 +4,5 @@ service_name = org.laptop.sugar.GetIABooksActivity
 icon = get-ia-books
 exec = sugar-activity GetIABooksActivity.GetIABooksActivity
 show_launcher = yes
-activity_version = 1
+activity_version = 2
 license = GPLv2+

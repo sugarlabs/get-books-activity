@@ -48,8 +48,6 @@ COLUMN_PUBLISHER = 5
 COLUMN_SUBJECT = 6
 COLUMN_TITLE = 7
 COLUMN_VOLUME = 8
-COLUMN_TITLE_TRUNC = 9
-COLUMN_CREATOR_TRUNC = 10
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -150,8 +148,8 @@ class GetIABooksActivity(activity.Activity):
  
         toolbox = activity.ActivityToolbox(self)
         activity_toolbar = toolbox.get_activity_toolbar()
-        activity_toolbar.remove(activity_toolbar.keep)
-        activity_toolbar.keep = None
+        activity_toolbar.keep.props.visible = False
+        activity_toolbar.share.props.visible = False
         self.set_toolbox(toolbox)
         
         self._books_toolbar = BooksToolbar()
@@ -181,7 +179,7 @@ class GetIABooksActivity(activity.Activity):
 
         self.ls = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
                                 gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
-                                gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING)
+                                gobject.TYPE_STRING)
         tv = gtk.TreeView(self.ls)
         tv.set_rules_hint(True)
         tv.set_search_column(COLUMN_TITLE)
@@ -190,7 +188,10 @@ class GetIABooksActivity(activity.Activity):
         selection.connect("changed", self.selection_cb)
 
         renderer = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_('Title'), renderer, text=COLUMN_TITLE_TRUNC)
+        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
+        renderer.set_property('wrap-width', 500)
+        renderer.set_property('width', 500)
+        col = gtk.TreeViewColumn(_('Title'), renderer, text=COLUMN_TITLE)
         col.set_sort_column_id(COLUMN_TITLE)
         tv.append_column(col)
     
@@ -200,7 +201,10 @@ class GetIABooksActivity(activity.Activity):
         tv.append_column(col)
     
         renderer = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_('Author'), renderer, text=COLUMN_CREATOR_TRUNC)
+        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
+        renderer.set_property('wrap-width', 200)
+        renderer.set_property('width', 200)
+        col = gtk.TreeViewColumn(_('Author'), renderer, text=COLUMN_CREATOR)
         col.set_sort_column_id(COLUMN_CREATOR)
         tv.append_column(col)
 
@@ -232,12 +236,12 @@ class GetIABooksActivity(activity.Activity):
         if sel:
             model, iter = sel
             label_text = model.get_value(iter,COLUMN_TITLE) + '\n\n'
-            self.selected_title = model.get_value(iter,COLUMN_TITLE_TRUNC)
+            self.selected_title = self.truncate(model.get_value(iter,COLUMN_TITLE),  75)
             self.selected_volume = model.get_value(iter,COLUMN_VOLUME) 
             if self.selected_volume != '':
                 label_text +=  _('Volume') + ': ' +  self.selected_volume + '\n\n'
             label_text +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
-            self.selected_author =  model.get_value(iter,COLUMN_CREATOR_TRUNC)
+            self.selected_author =  self.truncate(model.get_value(iter,COLUMN_CREATOR),  40)
             description = model.get_value(iter,COLUMN_DESCRIPTION)
             if description != '':
                 label_text +=  description  + '\n\n'
@@ -326,9 +330,7 @@ class GetIABooksActivity(activity.Activity):
         for row in reader:
             iter = self.ls.append()
             self.ls.set(iter, 0, row[0],  1,  row[1],  2,  row[2],  3,  row[3],  4,  row[4],  5,  row[5],  \
-                        6,  row[6],  7,  row[7],  8,  row[8],   \
-                        COLUMN_TITLE_TRUNC,  self.truncate(row[COLUMN_TITLE],  75),  \
-                        COLUMN_CREATOR_TRUNC,  self.truncate(row[COLUMN_CREATOR],  40))
+                        6,  row[6],  7,  row[7],  8,  row[8])
         os.remove(tempfile)
 
     def download_book(self,  url):
