@@ -77,23 +77,16 @@ class BooksToolbar(gtk.Toolbar):
         self.insert(self._download, -1)
         self._download.show()
 
-        label_attributes = pango.AttrList()
-        label_attributes.insert(pango.AttrSize(14000, 0, -1))
-        label_attributes.insert(pango.AttrForeground(65535, 65535, 65535, 0, -1))
+        self.format_combo = ComboBox()
+        # self.format_combo.connect('changed', self.format_changed_cb)
+        self.format_combo.append_item('djvu', 'Deja Vu')
+        self.format_combo.append_item('pdf', 'PDF')
+        self.format_combo.set_active(0)
+        combotool = ToolComboBox(self.format_combo)
+        self.insert(combotool, -1)
+        combotool.show()
 
-        downloaded_item = gtk.ToolItem()
-
-        self.downloaded_label = gtk.Label()
-
-        self.downloaded_label.set_attributes(label_attributes)
-
-        self.downloaded_label.set_text('')
-        downloaded_item.add(self.downloaded_label)
-        self.downloaded_label.show()
         self.search_entry.grab_focus()
-
-        self.insert(downloaded_item, -1)
-        downloaded_item.show()
 
     def set_activity(self, activity):
         self.activity = activity
@@ -106,12 +99,6 @@ class BooksToolbar(gtk.Toolbar):
  
     def _enable_button(self,  state):
         self._download.props.sensitive = state
-
-    def set_downloaded_bytes(self, bytes,  total):
-        self.downloaded_label.props.label = '     ' + str(bytes) + ' ' + _('of') +' ' + str(total) + ' ' + _('received')
-
-    def clear_downloaded_bytes(self):
-        self.downloaded_label.props.label = ''
 
 class ReadHTTPRequestHandler(network.ChunkedGlibHTTPRequestHandler):
     """HTTP Request Handler for transferring document while collaborating.
@@ -217,19 +204,24 @@ class GetIABooksActivity(activity.Activity):
         self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.list_scroller.add(tv)
         
+        self.progressbar = gtk.ProgressBar()
+        self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
+        
         vbox = gtk.VBox()
-        vbox.add(self.scrolled)
-        vbox.add(self.list_scroller)
+        vbox.pack_start(self.scrolled)
+        vbox.pack_start(self.progressbar,  False,  False)
+        vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
         tv.show()
         vbox.show()
         self.list_scroller.show()
+        self.progressbar.show()
 
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
 
     def selection_cb(self, selection):
-        self._books_toolbar.clear_downloaded_bytes()
+        self.clear_downloaded_bytes()
         tv = selection.get_tree_view()
         model = tv.get_model()
         sel = selection.get_selected()
@@ -260,7 +252,7 @@ class GetIABooksActivity(activity.Activity):
 
     def find_books(self, search_text):
         self._books_toolbar._enable_button(False)
-        self._books_toolbar.clear_downloaded_bytes()
+        self.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait') + '...')
         self.book_selected = False
@@ -366,9 +358,16 @@ class GetIABooksActivity(activity.Activity):
             _logger.debug("Downloaded %u bytes...",
                           bytes_downloaded)
         total = self._download_content_length
-        self._books_toolbar.set_downloaded_bytes(bytes_downloaded,  total)
+        self.set_downloaded_bytes(bytes_downloaded,  total)
         while gtk.events_pending():
             gtk.main_iteration()
+
+    def set_downloaded_bytes(self, bytes,  total):
+        fraction = float(bytes) / float(total)
+        self.progressbar.set_fraction(fraction)
+        
+    def clear_downloaded_bytes(self):
+        self.progressbar.set_fraction(0.0)
 
     def _get_book_error_cb(self, getter, err):
         _logger.debug("Error getting document: %s", err)
