@@ -78,7 +78,6 @@ class BooksToolbar(gtk.Toolbar):
         self._download.show()
 
         self.format_combo = ComboBox()
-        # self.format_combo.connect('changed', self.format_changed_cb)
         self.format_combo.append_item('djvu', 'Deja Vu')
         self.format_combo.append_item('pdf', 'PDF')
         self.format_combo.set_active(0)
@@ -206,16 +205,17 @@ class GetIABooksActivity(activity.Activity):
         
         self.progressbar = gtk.ProgressBar()
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
+        self.progressbar.set_fraction(0.0)
         
         vbox = gtk.VBox()
+        vbox.pack_start(self.progressbar,  False,  False,  10)
         vbox.pack_start(self.scrolled)
-        vbox.pack_start(self.progressbar,  False,  False)
         vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
         tv.show()
         vbox.show()
         self.list_scroller.show()
-        self.progressbar.show()
+        self.progressbar.hide()
 
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
@@ -244,7 +244,8 @@ class GetIABooksActivity(activity.Activity):
             label_text +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
             self.download_url =   'http://www.archive.org/download/' 
             identifier = model.get_value(iter,COLUMN_IDENTIFIER)
-            self.download_url +=  identifier + '/' + identifier + '.djvu'
+            format = self._books_toolbar.format_combo.props.value
+            self.download_url +=  identifier + '/' + identifier + '.' + format
             label_text +=  _('Download URL') + ': ' + self.download_url
             textbuffer = self.textview.get_buffer()
             textbuffer.set_text(label_text)
@@ -264,15 +265,17 @@ class GetIABooksActivity(activity.Activity):
             return
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
-        search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
+        self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
             urllib.quote('(title:(' + search_text.lower() + ') OR creator:(' + search_text.lower() +')) AND format:(DJVU)')
-        search_url += '&' + FL + '=creator&' + FL + '=description&' + FL + '=format&' + FL + '=identifier&' + FL + '=language'
-        search_url += '&' + FL +  '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
-        search_url += '&' + SORT + '=title&' + SORT + '&' + SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
-        gobject.idle_add(self.download_csv,  search_url)
+        self.search_url += '&' + FL + '=creator&' + FL + '=description&' + FL + '=format&' + FL + '=identifier&'  \
+            + FL + '=language'
+        self.search_url += '&' + FL +  '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
+        self.search_url += '&' + SORT + '=title&' + SORT + '&' + SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
+        gobject.idle_add(self.download_csv,  self.search_url)
     
     def get_book(self):
         self._books_toolbar._enable_button(False)
+        self.progressbar.show()
         gobject.idle_add(self.download_book,  self.download_url)
         
     def download_csv(self,  url):
@@ -320,6 +323,9 @@ class GetIABooksActivity(activity.Activity):
         reader = csv.reader(open(tempfile,  'rb'))
         reader.next() # skip the first header row.
         for row in reader:
+            if len(row) < 9:
+                _alert("Server Error",  self.search_url)
+                return
             iter = self.ls.append()
             self.ls.set(iter, 0, row[0],  1,  row[1],  2,  row[2],  3,  row[3],  4,  row[4],  5,  row[5],  \
                         6,  row[6],  7,  row[7],  8,  row[8])
@@ -398,6 +404,7 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.file_path = tempfile
         datastore.write(journal_entry)
         os.remove(tempfile)
+        self.progressbar.hide()
         self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
 
     def truncate(self,  str,  length):
