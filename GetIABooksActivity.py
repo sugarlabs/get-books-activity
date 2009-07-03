@@ -78,9 +78,12 @@ class BooksToolbar(gtk.Toolbar):
         self._download.show()
 
         self.format_combo = ComboBox()
-        self.format_combo.append_item('djvu', 'Deja Vu')
-        self.format_combo.append_item('pdf', 'PDF')
+        self.format_combo.connect('changed', self.format_changed_cb)
+        self.format_combo.append_item('.djvu', 'Deja Vu')
+        self.format_combo.append_item('_bw.pdf', 'B/W PDF')
+        self.format_combo.append_item('.pdf', 'Color PDF')
         self.format_combo.set_active(0)
+        self.format_combo.props.sensitive = False
         combotool = ToolComboBox(self.format_combo)
         self.insert(combotool, -1)
         combotool.show()
@@ -90,6 +93,10 @@ class BooksToolbar(gtk.Toolbar):
     def set_activity(self, activity):
         self.activity = activity
 
+    def format_changed_cb(self, combo):
+        if self.activity != None:
+            self.activity.show_book_data()
+
     def search_entry_activate_cb(self, entry):
         self.activity.find_books(entry.props.text)
 
@@ -98,6 +105,7 @@ class BooksToolbar(gtk.Toolbar):
  
     def _enable_button(self,  state):
         self._download.props.sensitive = state
+        self.format_combo.props.sensitive = state
 
 class ReadHTTPRequestHandler(network.ChunkedGlibHTTPRequestHandler):
     """HTTP Request Handler for transferring document while collaborating.
@@ -166,10 +174,10 @@ class GetIABooksActivity(activity.Activity):
         self.ls = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
                                 gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
                                 gobject.TYPE_STRING)
-        tv = gtk.TreeView(self.ls)
-        tv.set_rules_hint(True)
-        tv.set_search_column(COLUMN_TITLE)
-        selection = tv.get_selection()
+        self.treeview = gtk.TreeView(self.ls)
+        self.treeview.set_rules_hint(True)
+        self.treeview.set_search_column(COLUMN_TITLE)
+        selection = self.treeview.get_selection()
         selection.set_mode(gtk.SELECTION_SINGLE)
         selection.connect("changed", self.selection_cb)
 
@@ -179,12 +187,12 @@ class GetIABooksActivity(activity.Activity):
         renderer.set_property('width', 500)
         col = gtk.TreeViewColumn(_('Title'), renderer, text=COLUMN_TITLE)
         col.set_sort_column_id(COLUMN_TITLE)
-        tv.append_column(col)
+        self.treeview.append_column(col)
     
         renderer = gtk.CellRendererText()
         col = gtk.TreeViewColumn(_('Volume'), renderer, text=COLUMN_VOLUME)
         col.set_sort_column_id(COLUMN_VOLUME)
-        tv.append_column(col)
+        self.treeview.append_column(col)
     
         renderer = gtk.CellRendererText()
         renderer.set_property('wrap-mode', gtk.WRAP_WORD)
@@ -192,16 +200,16 @@ class GetIABooksActivity(activity.Activity):
         renderer.set_property('width', 200)
         col = gtk.TreeViewColumn(_('Author'), renderer, text=COLUMN_CREATOR)
         col.set_sort_column_id(COLUMN_CREATOR)
-        tv.append_column(col)
+        self.treeview.append_column(col)
 
         renderer = gtk.CellRendererText()
         col = gtk.TreeViewColumn(_('Language'), renderer, text=COLUMN_LANGUAGE)
         col.set_sort_column_id(COLUMN_LANGUAGE)
-        tv.append_column(col)
+        self.treeview.append_column(col)
     
         self.list_scroller = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.list_scroller.add(tv)
+        self.list_scroller.add(self.treeview)
         
         self.progressbar = gtk.ProgressBar()
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
@@ -212,7 +220,7 @@ class GetIABooksActivity(activity.Activity):
         vbox.pack_start(self.scrolled)
         vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
-        tv.show()
+        self.treeview.show()
         vbox.show()
         self.list_scroller.show()
         self.progressbar.hide()
@@ -227,29 +235,31 @@ class GetIABooksActivity(activity.Activity):
         sel = selection.get_selected()
         if sel:
             model, iter = sel
-            label_text = model.get_value(iter,COLUMN_TITLE) + '\n\n'
+            self.book_data = model.get_value(iter,COLUMN_TITLE) + '\n\n'
             self.selected_title = self.truncate(model.get_value(iter,COLUMN_TITLE),  75)
             self.selected_volume = model.get_value(iter,COLUMN_VOLUME) 
             if self.selected_volume != '':
-                label_text +=  _('Volume') + ': ' +  self.selected_volume + '\n\n'
-            label_text +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
+                self.book_data +=  _('Volume') + ': ' +  self.selected_volume + '\n\n'
+            self.book_data +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
             self.selected_author =  self.truncate(model.get_value(iter,COLUMN_CREATOR),  40)
             description = model.get_value(iter,COLUMN_DESCRIPTION)
             if description != '':
-                label_text +=  description  + '\n\n'
+                self.book_data +=  description  + '\n\n'
             subject = model.get_value(iter,COLUMN_SUBJECT) 
             if subject != '':
-                label_text +=  _('Subject') + ': ' +  subject + '\n\n'
-            label_text +=  _('Publisher') + ': ' + model.get_value(iter,COLUMN_PUBLISHER) + '\n\n'
-            label_text +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
+                self.book_data +=  _('Subject') + ': ' +  subject + '\n\n'
+            self.book_data +=  _('Publisher') + ': ' + model.get_value(iter,COLUMN_PUBLISHER) + '\n\n'
+            self.book_data +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
             self.download_url =   'http://www.archive.org/download/' 
             identifier = model.get_value(iter,COLUMN_IDENTIFIER)
-            format = self._books_toolbar.format_combo.props.value
-            self.download_url +=  identifier + '/' + identifier + '.' + format
-            label_text +=  _('Download URL') + ': ' + self.download_url
-            textbuffer = self.textview.get_buffer()
-            textbuffer.set_text(label_text)
-            self._books_toolbar._enable_button(True)
+            self.download_url +=  identifier + '/' + identifier
+            self.show_book_data()
+
+    def show_book_data(self):
+        format = self._books_toolbar.format_combo.props.value
+        textbuffer = self.textview.get_buffer()
+        textbuffer.set_text(self.book_data + _('Download URL') + ': ' + self.download_url + format)
+        self._books_toolbar._enable_button(True)
 
     def find_books(self, search_text):
         self._books_toolbar._enable_button(False)
@@ -276,7 +286,8 @@ class GetIABooksActivity(activity.Activity):
     def get_book(self):
         self._books_toolbar._enable_button(False)
         self.progressbar.show()
-        gobject.idle_add(self.download_book,  self.download_url)
+        format = self._books_toolbar.format_combo.props.value
+        gobject.idle_add(self.download_book,  self.download_url + format)
         
     def download_csv(self,  url):
         print "get csv from",  url
@@ -332,7 +343,7 @@ class GetIABooksActivity(activity.Activity):
         os.remove(tempfile)
 
     def download_book(self,  url):
-        print "get book from",  url
+        self.treeview.props.sensitive = False
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
         getter = ReadURLDownloader(url)
@@ -349,7 +360,7 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_type = getter.get_content_type()
 
     def _get_book_result_cb(self, getter, tempfile, suggested_name):
-        print 'Content type:',  self._download_content_type
+        self.treeview.props.sensitive = True
         if self._download_content_type.startswith('text/html'):
             # got an error page instead
             self._get_book_error_cb(getter, 'HTTP Error')
@@ -395,7 +406,11 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['title'] = journal_title
         journal_entry.metadata['title_set_by_user'] = '1'
         journal_entry.metadata['keep'] = '0'
-        journal_entry.metadata['mime_type'] = 'image/vnd.djvu'
+        format = self._books_toolbar.format_combo.props.value
+        if format == '.djvu':
+            journal_entry.metadata['mime_type'] = 'image/vnd.djvu'
+        if format == '.pdf' or format == '_bw.pdf':
+            journal_entry.metadata['mime_type'] = 'application/pdf'
         journal_entry.metadata['buddies'] = ''
         journal_entry.metadata['preview'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()
