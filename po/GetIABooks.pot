@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-27 19:06-0500\n"
+"POT-Creation-Date: 2009-07-02 19:35-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,23 +20,15 @@ msgstr ""
 msgid "Get IA Books"
 msgstr ""
 
-#: GetIABooksActivity.py:77
+#: GetIABooksActivity.py:74
 msgid "Get Book"
 msgstr ""
 
-#: GetIABooksActivity.py:113
-msgid "of"
-msgstr ""
-
-#: GetIABooksActivity.py:113
-msgid "received"
-msgstr ""
-
-#: GetIABooksActivity.py:155
+#: GetIABooksActivity.py:150
 msgid "Books"
 msgstr ""
 
-#: GetIABooksActivity.py:169
+#: GetIABooksActivity.py:166
 msgid "Enter words from the Author or Title to begin search"
 msgstr ""
 
@@ -44,73 +36,73 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: GetIABooksActivity.py:193 GetIABooksActivity.py:232
-#: GetIABooksActivity.py:378
+#: GetIABooksActivity.py:193 GetIABooksActivity.py:242
+#: GetIABooksActivity.py:403
 msgid "Volume"
 msgstr ""
 
-#: GetIABooksActivity.py:198
+#: GetIABooksActivity.py:201
 msgid "Author"
 msgstr ""
 
-#: GetIABooksActivity.py:203 GetIABooksActivity.py:242
+#: GetIABooksActivity.py:206 GetIABooksActivity.py:252
 msgid "Language"
 msgstr ""
 
-#: GetIABooksActivity.py:240
+#: GetIABooksActivity.py:250
 msgid "Subject"
 msgstr ""
 
-#: GetIABooksActivity.py:241
+#: GetIABooksActivity.py:251
 msgid "Publisher"
 msgstr ""
 
-#: GetIABooksActivity.py:246
+#: GetIABooksActivity.py:261
 msgid "Download URL"
 msgstr ""
 
-#: GetIABooksActivity.py:254
+#: GetIABooksActivity.py:268
 msgid "Performing lookup, please wait"
 msgstr ""
 
-#: GetIABooksActivity.py:259 GetIABooksActivity.py:288
-#: GetIABooksActivity.py:302 GetIABooksActivity.py:339
-#: GetIABooksActivity.py:366
+#: GetIABooksActivity.py:273 GetIABooksActivity.py:305
+#: GetIABooksActivity.py:319 GetIABooksActivity.py:357
+#: GetIABooksActivity.py:391
 msgid "Error"
 msgstr ""
 
-#: GetIABooksActivity.py:259
+#: GetIABooksActivity.py:273
 msgid "You must enter at least one search word."
 msgstr ""
 
-#: GetIABooksActivity.py:288
+#: GetIABooksActivity.py:305
 msgid "Connection timed out for CSV: "
 msgstr ""
 
-#: GetIABooksActivity.py:302
+#: GetIABooksActivity.py:319
 msgid "Error getting CSV"
 msgstr ""
 
-#: GetIABooksActivity.py:316
+#: GetIABooksActivity.py:333
 msgid "Finished"
 msgstr ""
 
-#: GetIABooksActivity.py:339
+#: GetIABooksActivity.py:357
 msgid "Connection timed out for "
 msgstr ""
 
-#: GetIABooksActivity.py:366
+#: GetIABooksActivity.py:391
 msgid "Could not download "
 msgstr ""
 
-#: GetIABooksActivity.py:366
+#: GetIABooksActivity.py:391
 msgid " path in catalog may be incorrect."
 msgstr ""
 
-#: GetIABooksActivity.py:393
+#: GetIABooksActivity.py:423
 msgid "Success"
 msgstr ""
 
-#: GetIABooksActivity.py:393
+#: GetIABooksActivity.py:423
 msgid " added to Journal."
 msgstr ""
