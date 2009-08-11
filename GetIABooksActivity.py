@@ -103,7 +103,7 @@ class BooksToolbar(gtk.Toolbar):
     def _get_book_cb(self, button):
         self.activity.get_book()
  
-    def _enable_button(self,  state):
+    def enable_button(self,  state):
         self._download.props.sensitive = state
         self.format_combo.props.sensitive = state
 
@@ -259,10 +259,10 @@ class GetIABooksActivity(activity.Activity):
         format = self._books_toolbar.format_combo.props.value
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(self.book_data + _('Download URL') + ': ' + self.download_url + format)
-        self._books_toolbar._enable_button(True)
+        self._books_toolbar.enable_button(True)
 
     def find_books(self, search_text):
-        self._books_toolbar._enable_button(False)
+        self._books_toolbar.enable_button(False)
         self.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait') + '...')
@@ -284,7 +284,7 @@ class GetIABooksActivity(activity.Activity):
         gobject.idle_add(self.download_csv,  self.search_url)
     
     def get_book(self):
-        self._books_toolbar._enable_button(False)
+        self._books_toolbar.enable_button(False)
         self.progressbar.show()
         format = self._books_toolbar.format_combo.props.value
         gobject.idle_add(self.download_book,  self.download_url + format)
@@ -387,8 +387,12 @@ class GetIABooksActivity(activity.Activity):
         self.progressbar.set_fraction(0.0)
 
     def _get_book_error_cb(self, getter, err):
+        self.treeview.props.sensitive = True
+        self._books_toolbar.enable_button(True)
+        self.progressbar.hide()
         _logger.debug("Error getting document: %s", err)
-        self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog may be incorrect.'))
+        self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog is incorrect.  ' \
+                                                                                   + '  If you tried to download B/W PDF try another format.'))
         self._download_content_length = 0
         self._download_content_type = None
 
