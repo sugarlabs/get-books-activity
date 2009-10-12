@@ -1,4 +1,8 @@
 GetIABooksActivity.py
+opds.py
+listview.py
+extListview.py
+feedparser.py
 NEWS
 setup.py
 activity/get-ia-books.svg
