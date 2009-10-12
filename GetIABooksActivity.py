@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 # Copyright (C) 2009 James D. Simmons
+# Copyright (C) 2009 Sayamindu Dasgupta <sayamindu@laptop.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
+from sugar.graphics import iconentry
 from sugar import profile
 from sugar.activity import activity
 from sugar import network
@@ -38,16 +40,12 @@ import pango
 import dbus
 import gobject
 
+from listview import ListView
+import opds
+
 _TOOLBAR_BOOKS = 1
-COLUMN_CREATOR = 0
-COLUMN_DESCRIPTION=1
-COLUMN_FORMAT = 2
-COLUMN_IDENTIFIER = 3
-COLUMN_LANGUAGE = 4
-COLUMN_PUBLISHER = 5
-COLUMN_SUBJECT = 6
-COLUMN_TITLE = 7
-COLUMN_VOLUME = 8
+_MIMETYPES = { 'PDF' : u'application/pdf', 'EPUB' : u'application/epub+zip' }
+_SOURCES = {'Internet Archive' : 'internet-archive', 'Feedbooks' : 'feedbooks'}
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -58,10 +56,23 @@ class BooksToolbar(gtk.Toolbar):
         gtk.Toolbar.__init__(self)
         book_search_item = gtk.ToolItem()
 
-        self.search_entry = gtk.Entry()
+        self.source_combo = ComboBox()
+        for key in _SOURCES.keys():
+            self.source_combo.append_item(_SOURCES[key], key)
+        self.source_combo.set_active(0)
+        self.source_combo.props.sensitive = True
+        #self.source_combo.connect('changed', self.source_changed_cb)
+        combotool = ToolComboBox(self.source_combo)
+        self.insert(combotool, -1)
+        combotool.show()
+
+        self.search_entry = iconentry.IconEntry()
+        self.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
+                                                'system-search')
+        self.search_entry.add_clear_button()
         self.search_entry.connect('activate', self.search_entry_activate_cb)
 
-        width = int(gtk.gdk.screen_width() / 2)
+        width = int(gtk.gdk.screen_width() / 3)
         self.search_entry.set_size_request(width, -1)
 
         book_search_item.add(self.search_entry)
@@ -69,6 +80,12 @@ class BooksToolbar(gtk.Toolbar):
 
         self.insert(book_search_item, -1)
         book_search_item.show()
+
+        spacer = gtk.SeparatorToolItem()
+        spacer.props.draw = False
+        spacer.set_expand(True)
+        self.insert(spacer, -1)
+        spacer.show()
 
         self._download = ToolButton('go-down')
         self._download.set_tooltip(_('Get Book'))
@@ -78,12 +95,11 @@ class BooksToolbar(gtk.Toolbar):
         self._download.show()
 
         self.format_combo = ComboBox()
-        self.format_combo.connect('changed', self.format_changed_cb)
-        self.format_combo.append_item('.djvu', 'Deja Vu')
-        self.format_combo.append_item('_bw.pdf', 'B/W PDF')
-        self.format_combo.append_item('.pdf', 'Color PDF')
+        for key in _MIMETYPES.keys():
+            self.format_combo.append_item(_MIMETYPES[key], key)
         self.format_combo.set_active(0)
         self.format_combo.props.sensitive = False
+        self.format_combo.connect('changed', self.format_changed_cb)
         combotool = ToolComboBox(self.format_combo)
         self.insert(combotool, -1)
         combotool.show()
@@ -139,6 +155,10 @@ class GetIABooksActivity(activity.Activity):
     def __init__(self, handle):
         "The entry point to the Activity"
         activity.Activity.__init__(self, handle)
+        gtk.gdk.threads_init()
+
+        self.selected_book = None
+        self.queryresults = None
  
         toolbox = activity.ActivityToolbox(self)
         activity_toolbar = toolbox.get_activity_toolbar()
@@ -163,7 +183,7 @@ class GetIABooksActivity(activity.Activity):
         self.textview.set_left_margin(50)
         self.textview.set_right_margin(50)
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(_('Enter words from the Author or Title to begin search') + '.')
+        textbuffer.set_text(_('Enter words from the Author or Title to begin search.'))
         self.scrolled.add(self.textview)
         self.textview.show()
         self.scrolled.show()
@@ -171,47 +191,14 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_length = 0
         self._download_content_type = None
 
-        self.ls = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
-                                gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  gobject.TYPE_STRING,  \
-                                gobject.TYPE_STRING)
-        self.treeview = gtk.TreeView(self.ls)
-        self.treeview.set_rules_hint(True)
-        self.treeview.set_search_column(COLUMN_TITLE)
-        selection = self.treeview.get_selection()
-        selection.set_mode(gtk.SELECTION_SINGLE)
-        selection.connect("changed", self.selection_cb)
-
-        renderer = gtk.CellRendererText()
-        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
-        renderer.set_property('wrap-width', 500)
-        renderer.set_property('width', 500)
-        col = gtk.TreeViewColumn(_('Title'), renderer, text=COLUMN_TITLE)
-        col.set_sort_column_id(COLUMN_TITLE)
-        self.treeview.append_column(col)
-    
-        renderer = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_('Volume'), renderer, text=COLUMN_VOLUME)
-        col.set_sort_column_id(COLUMN_VOLUME)
-        self.treeview.append_column(col)
-    
-        renderer = gtk.CellRendererText()
-        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
-        renderer.set_property('wrap-width', 200)
-        renderer.set_property('width', 200)
-        col = gtk.TreeViewColumn(_('Author'), renderer, text=COLUMN_CREATOR)
-        col.set_sort_column_id(COLUMN_CREATOR)
-        self.treeview.append_column(col)
-
-        renderer = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_('Language'), renderer, text=COLUMN_LANGUAGE)
-        col.set_sort_column_id(COLUMN_LANGUAGE)
-        self.treeview.append_column(col)
-    
+        self.listview = ListView()
+        self.listview.connect('selection-changed', self.selection_cb)
+            
         self.list_scroller = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.list_scroller.add(self.treeview)
+        self.list_scroller.add(self.listview)
         
-        self.progressbar = gtk.ProgressBar()
+        self.progressbar = gtk.ProgressBar() #TODO: Add a way to cancel download
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
         self.progressbar.set_fraction(0.0)
         
@@ -220,7 +207,7 @@ class GetIABooksActivity(activity.Activity):
         vbox.pack_start(self.scrolled)
         vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
-        self.treeview.show()
+        self.listview.show()
         vbox.show()
         self.list_scroller.show()
         self.progressbar.hide()
@@ -228,122 +215,66 @@ class GetIABooksActivity(activity.Activity):
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
 
-    def selection_cb(self, selection):
+    def selection_cb(self, widget):
         self.clear_downloaded_bytes()
-        tv = selection.get_tree_view()
-        model = tv.get_model()
-        sel = selection.get_selected()
-        if sel:
-            model, iter = sel
-            self.book_data = model.get_value(iter,COLUMN_TITLE) + '\n\n'
-            self.selected_title = self.truncate(model.get_value(iter,COLUMN_TITLE),  75)
-            self.selected_volume = model.get_value(iter,COLUMN_VOLUME) 
-            if self.selected_volume != '':
-                self.book_data +=  _('Volume') + ': ' +  self.selected_volume + '\n\n'
-            self.book_data +=  model.get_value(iter,COLUMN_CREATOR) + '\n\n'
-            self.selected_author =  self.truncate(model.get_value(iter,COLUMN_CREATOR),  40)
-            description = model.get_value(iter,COLUMN_DESCRIPTION)
-            if description != '':
-                self.book_data +=  description  + '\n\n'
-            subject = model.get_value(iter,COLUMN_SUBJECT) 
-            if subject != '':
-                self.book_data +=  _('Subject') + ': ' +  subject + '\n\n'
-            self.book_data +=  _('Publisher') + ': ' + model.get_value(iter,COLUMN_PUBLISHER) + '\n\n'
-            self.book_data +=  _('Language') +': '+ model.get_value(iter,COLUMN_LANGUAGE) + '\n\n'
-            self.download_url =   'http://www.archive.org/download/' 
-            identifier = model.get_value(iter,COLUMN_IDENTIFIER)
-            self.download_url +=  identifier + '/' + identifier
+        selected_book = self.listview.get_selected_book()
+        if selected_book:
+            self.selected_book = selected_book
             self.show_book_data()
 
     def show_book_data(self):
-        format = self._books_toolbar.format_combo.props.value
+        self.book_data = _('Title:\t\t') + self.selected_book.get_title() + '\n\n'
+        self.selected_title = self.selected_book.get_title()
+        self.book_data +=  _('Author:\t\t') + self.selected_book.get_author() + '\n\n'
+        self.selected_author =  self.selected_book.get_author()
+        self.book_data +=  _('Publisher:\t') +  self.selected_book.get_publisher() + '\n\n'
+        self.book_data +=  _('Language:\t') + self.selected_book.get_language() + '\n\n'
+        self.download_url =  self.selected_book.get_download_links()[self._books_toolbar.format_combo.props.value]
+
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(self.book_data + _('Download URL') + ': ' + self.download_url + format)
+        textbuffer.set_text(self.book_data + _('Link:\t\t') + self.download_url)
+
         self._books_toolbar.enable_button(True)
 
     def find_books(self, search_text):
         self._books_toolbar.enable_button(False)
         self.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(_('Performing lookup, please wait') + '...')
+        textbuffer.set_text(_('Performing lookup, please wait...'))
         self.book_selected = False
-        self.ls.clear()
-        search_tuple = search_text.lower().split()
-        if len(search_tuple) == 0:
+        self.listview.clear()
+        if len(search_text) == 0:
             self._alert(_('Error'), _('You must enter at least one search word.'))
             self._books_toolbar.search_entry.grab_focus()
             return
-        FL = urllib.quote('fl[]')
-        SORT = urllib.quote('sort[]')
-        self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(title:(' + search_text.lower() + ') OR creator:(' + search_text.lower() +')) AND format:(DJVU)')
-        self.search_url += '&' + FL + '=creator&' + FL + '=description&' + FL + '=format&' + FL + '=identifier&'  \
-            + FL + '=language'
-        self.search_url += '&' + FL +  '=publisher&' + FL + '=subject&' + FL + '=title&' + FL + '=volume'
-        self.search_url += '&' + SORT + '=title&' + SORT + '&' + SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
-        gobject.idle_add(self.download_csv,  self.search_url)
-    
+        
+        if self.queryresults is not None:
+            self.queryresults.cancel()
+            self.queryresults = None
+
+        if self._books_toolbar.source_combo.props.value == 'feedbooks':
+            self.queryresults = opds.FeedBooksQueryResult(search_text)
+        elif self._books_toolbar.source_combo.props.value == 'internet-archive':
+            self.queryresults = opds.InternetArchiveQueryResult(search_text)
+
+        self.queryresults.connect('completed', self.__query_completed_cb)
+
+    def __query_completed_cb(self, query):
+        self.listview.populate(self.queryresults)
+
+        textbuffer = self.textview.get_buffer()
+        if len(self.queryresults) > 0:
+            textbuffer.set_text('')
+        else:
+            textbuffer.set_text(_('Sorry, no books could be found.'))
+        
     def get_book(self):
         self._books_toolbar.enable_button(False)
         self.progressbar.show()
-        format = self._books_toolbar.format_combo.props.value
-        gobject.idle_add(self.download_book,  self.download_url + format)
+        gobject.idle_add(self.download_book,  self.download_url)
         
-    def download_csv(self,  url):
-        print "get csv from",  url
-        path = os.path.join(self.get_activity_root(), 'instance',
-                            'tmp%i.csv' % time.time())
-        print 'path=', path
-        getter = ReadURLDownloader(url)
-        getter.connect("finished", self._get_csv_result_cb)
-        getter.connect("progress", self._get_csv_progress_cb)
-        getter.connect("error", self._get_csv_error_cb)
-        _logger.debug("Starting download to %s...", path)
-        try:
-            getter.start(path)
-        except:
-            self._alert(_('Error'), _('Connection timed out for CSV: ') + url)
-           
-        self._download_content_type = getter.get_content_type()
-
-    def _get_csv_progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...",
-                          bytes_downloaded, self._download_content_length)
-        else:
-            _logger.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-
-    def _get_csv_error_cb(self, getter, err):
-        _logger.debug("Error getting CSV: %s", err)
-        self._alert(_('Error'), _('Error getting CSV') )
-        self._download_content_length = 0
-        self._download_content_type = None
-
-    def _get_csv_result_cb(self, getter, tempfile, suggested_name):
-        print 'Content type:',  self._download_content_type
-        if self._download_content_type.startswith('text/html'):
-            # got an error page instead
-            self._get_csv_error_cb(getter, 'HTTP Error')
-            return
-        self.process_downloaded_csv(tempfile,  suggested_name)
-
-    def process_downloaded_csv(self,  tempfile,  suggested_name):
-        textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(_('Finished'))
-        reader = csv.reader(open(tempfile,  'rb'))
-        reader.next() # skip the first header row.
-        for row in reader:
-            if len(row) < 9:
-                _alert("Server Error",  self.search_url)
-                return
-            iter = self.ls.append()
-            self.ls.set(iter, 0, row[0],  1,  row[1],  2,  row[2],  3,  row[3],  4,  row[4],  5,  row[5],  \
-                        6,  row[6],  7,  row[7],  8,  row[8])
-        os.remove(tempfile)
-
     def download_book(self,  url):
-        self.treeview.props.sensitive = False
+        self.listview.props.sensitive = False
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
         getter = ReadURLDownloader(url)
@@ -360,7 +291,7 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_type = getter.get_content_type()
 
     def _get_book_result_cb(self, getter, tempfile, suggested_name):
-        self.treeview.props.sensitive = True
+        self.listview.props.sensitive = True
         if self._download_content_type.startswith('text/html'):
             # got an error page instead
             self._get_book_error_cb(getter, 'HTTP Error')
@@ -387,7 +318,7 @@ class GetIABooksActivity(activity.Activity):
         self.progressbar.set_fraction(0.0)
 
     def _get_book_error_cb(self, getter, err):
-        self.treeview.props.sensitive = True
+        self.listview.props.sensitive = True
         self._books_toolbar.enable_button(True)
         self.progressbar.hide()
         _logger.debug("Error getting document: %s", err)
@@ -403,18 +334,12 @@ class GetIABooksActivity(activity.Activity):
     def create_journal_entry(self,  tempfile):
         journal_entry = datastore.create()
         journal_title = self.selected_title
-        if self.selected_volume != '':
-            journal_title +=  ' ' + _('Volume') + ' ' +  self.selected_volume
         if self.selected_author != '':
             journal_title = journal_title  + ', by ' + self.selected_author
         journal_entry.metadata['title'] = journal_title
         journal_entry.metadata['title_set_by_user'] = '1'
         journal_entry.metadata['keep'] = '0'
-        format = self._books_toolbar.format_combo.props.value
-        if format == '.djvu':
-            journal_entry.metadata['mime_type'] = 'image/vnd.djvu'
-        if format == '.pdf' or format == '_bw.pdf':
-            journal_entry.metadata['mime_type'] = 'application/pdf'
+        journal_entry.metadata['mime_type'] = self._books_toolbar.format_combo.props.value
         journal_entry.metadata['buddies'] = ''
         journal_entry.metadata['preview'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()
