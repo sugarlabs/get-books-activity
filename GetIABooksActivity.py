@@ -155,7 +155,6 @@ class GetIABooksActivity(activity.Activity):
     def __init__(self, handle):
         "The entry point to the Activity"
         activity.Activity.__init__(self, handle)
-        gtk.gdk.threads_init()
 
         self.selected_book = None
         self.queryresults = None

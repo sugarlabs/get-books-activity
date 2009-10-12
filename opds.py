@@ -20,13 +20,14 @@
 import feedparser
 import threading
 
-import gobject, gtk
+import gobject
 
 _FEEDBOOKS_URI = 'http://feedbooks.com/books/search.atom?query='
 _INTERNETARCHIVE_URI = 'http://bookserver.archive.org/catalog/opensearch?q='
 
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 
+gobject.threads_init()
 
 class DownloadThread(threading.Thread):
     def __init__(self, obj):
@@ -36,11 +37,9 @@ class DownloadThread(threading.Thread):
 
     def _download(self):
         feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
-        self.obj._feedobj = feedobj
 
-        gtk.gdk.threads_enter()
+        self.obj._feedobj = feedobj
         self.obj.emit('completed')
-        gtk.gdk.threads_leave()
         
         return False
     
@@ -119,7 +118,7 @@ class QueryResult(gobject.GObject):
     def cancel(self):
         '''
         Cancels the query job
-        '''                
+        '''
         for d_thread in self.threads:
             d_thread.stop()
 
