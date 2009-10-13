@@ -70,5 +70,10 @@ class ListView(ExtListView):
         self.insertRows(rows)
 
     def get_selected_book(self):
-        return self.getFirstSelectedRow()[self.ROW_BOOK]
+        try:
+            ret = self.getFirstSelectedRow()[self.ROW_BOOK]
+        except IndexError:
+            ret = None
+
+        return ret
 
