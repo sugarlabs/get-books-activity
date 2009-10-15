@@ -48,9 +48,12 @@ class ListView(ExtListView):
                           gobject.TYPE_NONE,
                           ([])),
     }
-    def __init__(self):
+    def __init__(self, lang_code_handler):
         ExtListView.__init__(self, self.columns, sortable=True, useMarkup=False, canShowHideColumns=True)
         #self.enableDNDReordering() # Is this needed ?
+        
+        self._lang_code_handler = lang_code_handler
+
         selection = self.get_selection()
         selection.set_mode(gtk.SELECTION_SINGLE)
         selection.connect("changed", self.__selection_changed_cb)
@@ -63,7 +66,10 @@ class ListView(ExtListView):
 
         for book in results.get_book_list():
             try:
-                rows.append([book.get_title(), book.get_author(), book.get_publisher(), book.get_language(), book.get_published_year(), book])
+                rows.append([book.get_title(), book.get_author(), \
+                    book.get_publisher(), \
+                    self._lang_code_handler.get_full_language_name(book.get_language()), \
+                    book.get_published_year(), book])
             except:
                 _logger.debug(sys.exc_info())
 

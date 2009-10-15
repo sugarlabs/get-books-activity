@@ -42,6 +42,7 @@ import gobject
 
 from listview import ListView
 import opds
+import languagenames
 
 _TOOLBAR_BOOKS = 1
 _MIMETYPES = { 'PDF' : u'application/pdf', 'EPUB' : u'application/epub+zip' }
@@ -190,7 +191,9 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_length = 0
         self._download_content_type = None
 
-        self.listview = ListView()
+        self._lang_code_handler = languagenames.LanguageNames()
+
+        self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
             
         self.list_scroller = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
@@ -214,6 +217,10 @@ class GetIABooksActivity(activity.Activity):
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
 
+    def can_close(self):
+        self._lang_code_handler.close()
+        return True
+
     def selection_cb(self, widget):
         self.clear_downloaded_bytes()
         selected_book = self.listview.get_selected_book()
@@ -227,7 +234,8 @@ class GetIABooksActivity(activity.Activity):
         self.book_data +=  _('Author:\t\t') + self.selected_book.get_author() + '\n\n'
         self.selected_author =  self.selected_book.get_author()
         self.book_data +=  _('Publisher:\t') +  self.selected_book.get_publisher() + '\n\n'
-        self.book_data +=  _('Language:\t') + self.selected_book.get_language() + '\n\n'
+        self.book_data +=  _('Language:\t') + \
+            self._lang_code_handler.get_full_language_name(self.selected_book.get_language()) + '\n\n'
         self.download_url =  self.selected_book.get_download_links()[self._books_toolbar.format_combo.props.value]
 
         textbuffer = self.textview.get_buffer()
@@ -349,7 +357,7 @@ class GetIABooksActivity(activity.Activity):
         datastore.write(journal_entry)
         os.remove(tempfile)
         self.progressbar.hide()
-        self._alert(_('Success: %s was added to Journal.') %s self.selected_title)
+        self._alert(_('Success: %s was added to Journal.') % self.selected_title)
         #self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
 
     def truncate(self,  str,  length):
