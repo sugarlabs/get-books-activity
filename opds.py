@@ -40,6 +40,7 @@ class DownloadThread(threading.Thread):
 
         self.obj._feedobj = feedobj
         self.obj.emit('completed')
+        self.obj._ready = True
         
         return False
     
@@ -105,6 +106,7 @@ class QueryResult(gobject.GObject):
         self._uri = uri
         self._queryterm = queryterm
         self._feedobj = None
+        self._ready = False
 
         self.threads = []
         
@@ -132,6 +134,9 @@ class QueryResult(gobject.GObject):
             ret.append(Book(entry))
 
         return ret
+
+    def is_ready(self):
+        return self._ready
 
 class FeedBooksQueryResult(QueryResult):
     def __init__(self, queryterm):
