@@ -34,7 +34,7 @@ class LanguageNames(object):
 
     def close(self):
         if self._xmldoc is not None:
-            self._xmldoc.free()
+            self._xmldoc.freeDoc()
 
     def get_full_language_name(self, code):
         if self._xmldoc is None:
