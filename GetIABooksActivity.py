@@ -321,8 +321,9 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.enable_button(True)
         self.progressbar.hide()
         _logger.debug("Error getting document: %s", err)
-        self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog is incorrect.  ' \
-                                                                                   + '  If you tried to download B/W PDF try another format.'))
+        self._alert(_('Error: Could not download %s . The path in the catalog seems to be incorrect') % self.selected_title)
+        #self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog is incorrect.  ' \
+        #                                                                           + '  If you tried to download B/W PDF try another format.'))
         self._download_content_length = 0
         self._download_content_type = None
 
@@ -348,7 +349,8 @@ class GetIABooksActivity(activity.Activity):
         datastore.write(journal_entry)
         os.remove(tempfile)
         self.progressbar.hide()
-        self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
+        self._alert(_('Success: %s was added to Journal.') %s self.selected_title)
+        #self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
 
     def truncate(self,  str,  length):
         if len(str) > length:

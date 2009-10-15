@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-15 18:48+0530\n"
+"POT-Creation-Date: 2009-10-15 18:52+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,4 +107,15 @@ msgstr ""
 
 #: listview.py:44
 msgid "Publish Date"
+msgstr ""
+
+#: GetIABooksActivity.py:324
+#, python-format
+msgid ""
+"Error: Could not download %s . The path in the catalog seems to be incorrect"
+msgstr ""
+
+#: GetIABooksActivity.py:352
+#, python-format
+msgid "Success: %s was added to Journal."
 msgstr ""
