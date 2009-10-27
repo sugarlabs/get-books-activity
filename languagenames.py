@@ -20,10 +20,16 @@ import libxml2
 
 _ISO_639_XML_PATH = '/usr/share/xml/iso-codes/iso_639.xml'
 
-
+def singleton(object, instantiated=[]):
+    # From http://norvig.com/python-iaq.html
+    "Raise an exception if an object of this class has been instantiated before."
+    assert object.__class__ not in instantiated, \
+        "%s is a Singleton class but is already instantiated" % object.__class__
+    instantiated.append(object.__class__)
 
 class LanguageNames(object):
     def __init__(self):
+        singleton(self)
         try:
             self._xmldoc = libxml2.parseFile('/usr/share/xml/iso-codes/iso_639.xml')
         except libxml2.parserError:
