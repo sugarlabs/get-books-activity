@@ -19,6 +19,7 @@
 
 import feedparser
 import threading
+import os
 
 import gobject
 
@@ -36,7 +37,10 @@ class DownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
-        feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
+        if not self.obj.is_local():
+            feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
+        else:
+            feedobj = feedparser.parse(self.obj._uri)
 
         self.obj._feedobj = feedobj
         self.obj.emit('completed')
@@ -56,10 +60,20 @@ class Book(object):
         self._entry = entry
 
     def get_title(self):
-        return self._entry['title']
+        try:
+            ret = self._entry['title']
+        except KeyError:
+            ret = 'Unknown'
+
+        return ret
 
     def get_author(self):
-        return self._entry['author']
+        try:
+            ret = self._entry['author']
+        except KeyError:
+            ret = 'Unknown'
+
+        return ret
 
     def get_download_links(self):
         ret = {}
@@ -92,6 +106,18 @@ class Book(object):
             ret = 'Unknown'
 
         return ret
+
+    def match(self, terms):
+        #TODO: Make this more comprehensive
+        for term in terms.split('+'):
+            if term in self.get_title():
+                return True
+            if term in self.get_author():
+                return True
+            if term in self.get_publisher():
+                return True
+
+        return False
 
 
 class QueryResult(gobject.GObject):
@@ -137,6 +163,34 @@ class QueryResult(gobject.GObject):
 
     def is_ready(self):
         return self._ready
+
+    def is_local(self):
+        '''
+        Returns True in case of a local school 
+        server or a local device 
+        (yay! for sneakernet)
+        '''
+        return False
+
+class LocalVolumeQueryResult(QueryResult):
+    def __init__(self, path, queryterm):
+        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'), queryterm)
+    
+    def is_local(self):
+        return True
+
+    def get_book_list(self):
+        ret = []
+        if self._queryterm is None or self._queryterm is '':
+            for entry in self._feedobj['entries']:
+                ret.append(Book(entry))
+        else:
+            for entry in self._feedobj['entries']:
+                book = Book(entry)
+                if book.match(self._queryterm.replace(' ', '+')):
+                    ret.append(book)
+
+        return ret
 
 class FeedBooksQueryResult(QueryResult):
     def __init__(self, queryterm):

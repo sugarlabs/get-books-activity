@@ -43,6 +43,7 @@ import gobject
 from listview import ListView
 import opds
 import languagenames
+import devicemanager
 
 _TOOLBAR_BOOKS = 1
 _MIMETYPES = { 'PDF' : u'application/pdf', 'EPUB' : u'application/epub+zip' }
@@ -52,17 +53,18 @@ _logger = logging.getLogger('get-ia-books-activity')
 
 class BooksToolbar(gtk.Toolbar):
     __gtype_name__ = 'BooksToolbar'
-
+    __gsignals__ = {
+        'source-changed': (gobject.SIGNAL_RUN_FIRST,
+                          gobject.TYPE_NONE,
+                          ([])),
+    }
     def __init__(self):
         gtk.Toolbar.__init__(self)
         book_search_item = gtk.ToolItem()
 
         self.source_combo = ComboBox()
-        for key in _SOURCES.keys():
-            self.source_combo.append_item(_SOURCES[key], key)
-        self.source_combo.set_active(0)
         self.source_combo.props.sensitive = True
-        #self.source_combo.connect('changed', self.source_changed_cb)
+        self.source_combo.connect('changed', self.__source_changed_cb)
         combotool = ToolComboBox(self.source_combo)
         self.insert(combotool, -1)
         combotool.show()
@@ -105,7 +107,42 @@ class BooksToolbar(gtk.Toolbar):
         self.insert(combotool, -1)
         combotool.show()
 
+        self._device_manager = devicemanager.DeviceManager()
+
+        self._refresh_sources()
+
+        self._device_manager.connect('device-added', self.__device_added_cb)
+        self._device_manager.connect('device-removed', self.__device_removed_cb)
+
         self.search_entry.grab_focus()
+
+    def get_search_terms(self):
+        return self.search_entry.props.text
+
+    def __source_changed_cb(self, widget):
+        self.emit('source-changed')
+
+    def __device_added_cb(self):
+        self._refresh_sources()
+
+    def __device_removed_cb(self):
+        self._refresh_sources()
+
+    def _refresh_sources(self):
+        self.source_combo.remove_all() #TODO: Do not blindly clear this
+
+        for key in _SOURCES.keys():
+            self.source_combo.append_item(_SOURCES[key], key)
+
+        self.source_combo.append_separator()
+
+        devices = self._device_manager.get_devices()
+        for device in devices:
+            mount_point = device[1].GetProperty('volume.mount_point')
+            label = device[1].GetProperty('volume.label')
+            self.source_combo.append_item(mount_point, label)
+
+        self.source_combo.set_active(0) 
 
     def set_activity(self, activity):
         self.activity = activity
@@ -167,6 +204,7 @@ class GetIABooksActivity(activity.Activity):
         self.set_toolbox(toolbox)
         
         self._books_toolbar = BooksToolbar()
+        self._books_toolbar.connect('source-changed', self.__source_changed_cb)
         toolbox.add_toolbar(_('Books'), self._books_toolbar)
         self._books_toolbar.set_activity(self)
         self._books_toolbar.show()
@@ -243,26 +281,40 @@ class GetIABooksActivity(activity.Activity):
 
         self._books_toolbar.enable_button(True)
 
-    def find_books(self, search_text):
+    def find_books(self, search_text = ''):
+        source = self._books_toolbar.source_combo.props.value
+
+        if self.queryresults is not None:
+            self.queryresults.cancel()
+            self.queryresults = None
+
+        # This must be kept in sync with the sources list
+        if source == 'feedbooks':
+            if search_text is None:
+                return
+            elif len(search_text) == 0:
+                self._alert(_('Error'), _('You must enter at least one search word.'))
+                self._books_toolbar.search_entry.grab_focus()
+                return
+            self.queryresults = opds.FeedBooksQueryResult(search_text)    
+        elif source == 'internet-archive':
+            if search_text is None:
+                return
+            elif len(search_text) == 0:
+                self._alert(_('Error'), _('You must enter at least one search word.'))
+                self._books_toolbar.search_entry.grab_focus()
+                return
+            self.queryresults = opds.InternetArchiveQueryResult(search_text)
+        else:
+            self.queryresults = opds.LocalVolumeQueryResult( \
+                        self._books_toolbar.source_combo.props.value, search_text)
+
         self._books_toolbar.enable_button(False)
         self.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait...'))
         self.book_selected = False
         self.listview.clear()
-        if len(search_text) == 0:
-            self._alert(_('Error'), _('You must enter at least one search word.'))
-            self._books_toolbar.search_entry.grab_focus()
-            return
-        
-        if self.queryresults is not None:
-            self.queryresults.cancel()
-            self.queryresults = None
-
-        if self._books_toolbar.source_combo.props.value == 'feedbooks':
-            self.queryresults = opds.FeedBooksQueryResult(search_text)
-        elif self._books_toolbar.source_combo.props.value == 'internet-archive':
-            self.queryresults = opds.InternetArchiveQueryResult(search_text)
 
         self.queryresults.connect('completed', self.__query_completed_cb)
 
@@ -274,7 +326,14 @@ class GetIABooksActivity(activity.Activity):
             textbuffer.set_text('')
         else:
             textbuffer.set_text(_('Sorry, no books could be found.'))
-        
+
+    def __source_changed_cb(self, widget):
+        search_terms = self._books_toolbar.get_search_terms()
+        if search_terms == '':
+            self.find_books(None)
+        else:
+            self.find_books(search_terms)
+
     def get_book(self):
         self._books_toolbar.enable_button(False)
         self.progressbar.show()
