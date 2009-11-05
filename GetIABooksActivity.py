@@ -64,7 +64,7 @@ class BooksToolbar(gtk.Toolbar):
 
         self.source_combo = ComboBox()
         self.source_combo.props.sensitive = True
-        self.source_combo.connect('changed', self.__source_changed_cb)
+        self.__source_changed_cb_id = self.source_combo.connect('changed', self.__source_changed_cb)
         combotool = ToolComboBox(self.source_combo)
         self.insert(combotool, -1)
         combotool.show()
@@ -122,30 +122,38 @@ class BooksToolbar(gtk.Toolbar):
     def __source_changed_cb(self, widget):
         self.emit('source-changed')
 
-    def __device_added_cb(self):
+    def __device_added_cb(self, mgr):
+        _logger.debug('Device was added')
         self._refresh_sources()
 
-    def __device_removed_cb(self):
+    def __device_removed_cb(self, mgr):
+        _logger.debug('Device was removed')
         self._refresh_sources()
 
     def _refresh_sources(self):
-        self.source_combo.remove_all() #TODO: Do not blindly clear this
+        self.source_combo.handler_block(self.__source_changed_cb_id)
 
+        self.source_combo.remove_all() #TODO: Do not blindly clear this
         for key in _SOURCES.keys():
             self.source_combo.append_item(_SOURCES[key], key)
 
-        self.source_combo.append_separator()
-
         devices = self._device_manager.get_devices()
+
+        if len(devices):
+            self.source_combo.append_separator()
+
         for device in devices:
             mount_point = device[1].GetProperty('volume.mount_point')
             label = device[1].GetProperty('volume.label')
             if label == '' or label is None:
                 capacity = int(device[1].GetProperty('volume.partition.media_size'))
                 label =  (_('%.2f GB Volume') % (capacity/(1024.0**3)))
+            _logger.debug('Adding device %s' % (label))
             self.source_combo.append_item(mount_point, label)
 
         self.source_combo.set_active(0) 
+
+        self.source_combo.handler_unblock(self.__source_changed_cb_id)
 
     def set_activity(self, activity):
         self.activity = activity
@@ -287,6 +295,11 @@ class GetIABooksActivity(activity.Activity):
     def find_books(self, search_text = ''):
         source = self._books_toolbar.source_combo.props.value
 
+        self._books_toolbar.enable_button(False)
+        self.clear_downloaded_bytes()
+        self.book_selected = False
+        self.listview.clear()
+
         if self.queryresults is not None:
             self.queryresults.cancel()
             self.queryresults = None
@@ -310,14 +323,10 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults = opds.InternetArchiveQueryResult(search_text)
         else:
             self.queryresults = opds.LocalVolumeQueryResult( \
-                        self._books_toolbar.source_combo.props.value, search_text)
+                        source, search_text)
 
-        self._books_toolbar.enable_button(False)
-        self.clear_downloaded_bytes()
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait...'))
-        self.book_selected = False
-        self.listview.clear()
 
         self.queryresults.connect('completed', self.__query_completed_cb)
 

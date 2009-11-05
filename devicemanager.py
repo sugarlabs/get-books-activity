@@ -18,11 +18,13 @@
 
 
 import os
+import logging
 import gobject
 import dbus
 
 from dbus.mainloop.glib import DBusGMainLoop
-DBusGMainLoop(set_as_default=True)
+
+_logger = logging.getLogger('get-ia-books-activity')
 
 class DeviceManager(gobject.GObject):
     __gsignals__ = {
@@ -83,19 +85,22 @@ class DeviceManager(gobject.GObject):
         # get an interface to the device
         dev = dbus.Interface (dev_obj, 'org.freedesktop.Hal.Device')
         if self._is_removable_volume(dev):
-            self.emit('device-added')
             self._devices.append((udi, dev))
+            self.emit('device-added')
+            _logger.debug('DeviceManager: Device was added %s' % str(udi))
 
     def __device_removed(self, udi):
         for device in self._devices:
             if udi in device:
-                self.emit('device-removed')
                 self._devices.remove(device)
+                self.emit('device-removed')
+                _logger.debug('DeviceManager: Device was removed %s' % str(udi))
 
     def get_devices(self):
         return self._devices
 
 if __name__ == '__main__':
+    DBusGMainLoop(set_as_default=True)
     dm = DeviceManager()
     print dm.get_devices()[0][1].GetProperty('volume.mount_point'), dm.get_devices()[0][1].GetProperty('volume.label')
 
