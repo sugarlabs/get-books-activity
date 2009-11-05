@@ -56,8 +56,9 @@ class DownloadThread(threading.Thread):
 
 
 class Book(object):
-    def __init__(self, entry):
+    def __init__(self, entry, basepath = None):
         self._entry = entry
+        self._basepath = basepath
 
     def get_title(self):
         try:
@@ -79,7 +80,13 @@ class Book(object):
         ret = {}
         for link in self._entry['links']:
             if link['rel'] == _REL_OPDS_ACQUISTION:
-                ret[link['type']] = link['href']
+                if self._basepath is not None and \
+                        not (link['href'].startswith('http') or \
+                                link['href'].startswith('ftp')): 
+                    ret[link['type']] = 'file://' \
+                        + os.path.join(self._basepath, link['href'])
+                else:
+                    ret[link['type']] = link['href']
 
         return ret
 
@@ -183,10 +190,10 @@ class LocalVolumeQueryResult(QueryResult):
         ret = []
         if self._queryterm is None or self._queryterm is '':
             for entry in self._feedobj['entries']:
-                ret.append(Book(entry))
+                ret.append(Book(entry, basepath = os.path.dirname(self._uri)))
         else:
             for entry in self._feedobj['entries']:
-                book = Book(entry)
+                book = Book(entry, basepath = os.path.dirname(self._uri))
                 if book.match(self._queryterm.replace(' ', '+')):
                     ret.append(book)
 
