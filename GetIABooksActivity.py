@@ -140,6 +140,9 @@ class BooksToolbar(gtk.Toolbar):
         for device in devices:
             mount_point = device[1].GetProperty('volume.mount_point')
             label = device[1].GetProperty('volume.label')
+            if label == '' or label is None:
+                capacity = int(device[1].GetProperty('volume.partition.media_size'))
+                label =  (_('%.2f GB Volume') % (capacity/(1024.0**3)))
             self.source_combo.append_item(mount_point, label)
 
         self.source_combo.set_active(0) 
