@@ -247,6 +247,8 @@ class GetIABooksActivity(activity.Activity):
             
         self.list_scroller = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        vadjustment = self.list_scroller.get_vadjustment()
+        vadjustment.connect('value-changed', self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
         
         self.progressbar = gtk.ProgressBar() #TODO: Add a way to cancel download
@@ -268,6 +270,9 @@ class GetIABooksActivity(activity.Activity):
 
     def can_close(self):
         self._lang_code_handler.close()
+        if self.queryresults is not None:
+            self.queryresults.cancel()
+            self.queryresults = None
         return True
 
     def selection_cb(self, widget):
@@ -328,16 +333,16 @@ class GetIABooksActivity(activity.Activity):
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait...'))
 
-        self.queryresults.connect('completed', self.__query_completed_cb)
+        self.queryresults.connect('updated', self.__query_updated_cb)
 
-    def __query_completed_cb(self, query):
+    def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
 
         textbuffer = self.textview.get_buffer()
-        if len(self.queryresults) > 0:
-            textbuffer.set_text('')
-        else:
+        if len(self.queryresults) == 0:
             textbuffer.set_text(_('Sorry, no books could be found.'))
+        elif not midway:
+            textbuffer.set_text('')
 
     def __source_changed_cb(self, widget):
         search_terms = self._books_toolbar.get_search_terms()
@@ -345,6 +350,22 @@ class GetIABooksActivity(activity.Activity):
             self.find_books(None)
         else:
             self.find_books(search_terms)
+
+    def __vadjustment_value_changed_cb(self, vadjustment):
+
+        if not self.queryresults.is_ready():
+            return
+        try:
+            # Use various tricks to update resultset as user scrolls down
+            if ((vadjustment.props.upper - vadjustment.props.lower) > 1000 \
+                and (vadjustment.props.upper - vadjustment.props.value - \
+                vadjustment.props.page_size)/(vadjustment.props.upper - \
+                vadjustment.props.lower) < 0.3) or ((vadjustment.props.upper \
+                - vadjustment.props.value - vadjustment.props.page_size) < 200):
+                if self.queryresults.has_next():
+                    self.queryresults.update_with_next()
+        finally:
+            return
 
     def get_book(self):
         self._books_toolbar.enable_button(False)

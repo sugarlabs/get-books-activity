@@ -16,12 +16,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import logging
 
 import feedparser
 import threading
 import os
 
 import gobject
+
+_logger = logging.getLogger('get-ia-books-activity')
 
 _FEEDBOOKS_URI = 'http://feedbooks.com/books/search.atom?query='
 _INTERNETARCHIVE_URI = 'http://bookserver.archive.org/catalog/opensearch?q='
@@ -31,19 +34,22 @@ _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 gobject.threads_init()
 
 class DownloadThread(threading.Thread):
-    def __init__(self, obj):
+    def __init__(self, obj, midway):
         threading.Thread.__init__ (self)
+        self.midway = midway
         self.obj = obj
         self.stopthread = threading.Event()
 
     def _download(self):
-        if not self.obj.is_local():
+        if not self.obj.is_local() and self.midway == False:
             feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
+        for entry in feedobj['entries']:
+            self.obj._booklist.append(Book(entry))
         self.obj._feedobj = feedobj
-        self.obj.emit('completed')
+        self.obj.emit('updated', self.midway)
         self.obj._ready = True
         
         return False
@@ -129,9 +135,9 @@ class Book(object):
 
 class QueryResult(gobject.GObject):
     __gsignals__ = {
-        'completed': (gobject.SIGNAL_RUN_FIRST,
+        'updated': (gobject.SIGNAL_RUN_FIRST,
                           gobject.TYPE_NONE,
-                          ([])),
+                          ([gobject.TYPE_BOOLEAN])),
     }
     def __init__(self, uri, queryterm):
         gobject.GObject.__init__(self)
@@ -139,16 +145,45 @@ class QueryResult(gobject.GObject):
         self._uri = uri
         self._queryterm = queryterm
         self._feedobj = None
+        self._next_uri = ''
         self._ready = False
 
+        self._booklist = []
+
         self.threads = []
-        
-        d_thread = DownloadThread(self)
+        self._start_download()
+       
+    def _start_download(self, midway = False):
+        d_thread = DownloadThread(self, midway)
         self.threads.append(d_thread)
         d_thread.start()
 
     def __len__(self):
-        return len(self._feedobj['entries'])
+        return len(self._booklist)
+
+    def has_next(self):
+        '''
+        Returns True if more result pages are 
+        available for the resultset
+        '''
+        if not self._feedobj['feed'].has_key('links'):
+            return False
+        for link in self._feedobj['feed']['links']:
+            if link['rel'] == u'next':
+                self._next_uri = link['href']
+                return True
+
+        return False
+
+    def update_with_next(self):
+        '''
+        Updates the booklist with the next resultset
+        '''
+        if len(self._next_uri) > 0:
+            self._ready = False
+            self._uri = self._next_uri
+            self.cancel() #XXX: Is this needed ?
+            self._start_download(midway = True)
 
     def cancel(self):
         '''
@@ -157,18 +192,22 @@ class QueryResult(gobject.GObject):
         for d_thread in self.threads:
             d_thread.stop()
 
-
     def get_book_n(self, n):
-        return Book(self._feedobj['entries'][n])
+        '''
+        Gets the n-th book
+        '''
+        return self._booklist[n]
 
     def get_book_list(self):
-        ret = []
-        for entry in self._feedobj['entries']:
-            ret.append(Book(entry))
-
-        return ret
+        '''
+        Gets the entire booklist
+        '''
+        return self._booklist
 
     def is_ready(self):
+        '''
+        Returns False if a query is in progress
+        '''
         return self._ready
 
     def is_local(self):
