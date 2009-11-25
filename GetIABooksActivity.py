@@ -317,7 +317,7 @@ class GetIABooksActivity(activity.Activity):
                 self._alert(_('Error'), _('You must enter at least one search word.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-            self.queryresults = opds.FeedBooksQueryResult(search_text)    
+            self.queryresults = opds.FeedBooksQueryResult(search_text, self.window)    
         elif source == 'internet-archive':
             if search_text is None:
                 return
@@ -325,10 +325,10 @@ class GetIABooksActivity(activity.Activity):
                 self._alert(_('Error'), _('You must enter at least one search word.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-            self.queryresults = opds.InternetArchiveQueryResult(search_text)
+            self.queryresults = opds.InternetArchiveQueryResult(search_text, self.window)
         else:
             self.queryresults = opds.LocalVolumeQueryResult( \
-                        source, search_text)
+                        source, search_text, self.window)
 
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(_('Performing lookup, please wait...'))

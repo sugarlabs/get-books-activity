@@ -22,7 +22,7 @@ import feedparser
 import threading
 import os
 
-import gobject
+import gobject, gtk
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -41,6 +41,8 @@ class DownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
+        if self.obj._win is not None:
+            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
             feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
         else:
@@ -51,6 +53,8 @@ class DownloadThread(threading.Thread):
         self.obj._feedobj = feedobj
         self.obj.emit('updated', self.midway)
         self.obj._ready = True
+        if self.obj._win is not None:
+            self.obj._win.set_cursor(None)
         
         return False
     
@@ -139,15 +143,16 @@ class QueryResult(gobject.GObject):
                           gobject.TYPE_NONE,
                           ([gobject.TYPE_BOOLEAN])),
     }
-    def __init__(self, uri, queryterm):
+    def __init__(self, uri, queryterm, win):
         gobject.GObject.__init__(self)
 
         self._uri = uri
         self._queryterm = queryterm
+        self._win = win
         self._feedobj = None
         self._next_uri = ''
         self._ready = False
-
+        
         self._booklist = []
 
         self.threads = []
@@ -219,8 +224,8 @@ class QueryResult(gobject.GObject):
         return False
 
 class LocalVolumeQueryResult(QueryResult):
-    def __init__(self, path, queryterm):
-        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'), queryterm)
+    def __init__(self, path, queryterm, win):
+        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'), queryterm, win)
     
     def is_local(self):
         return True
@@ -239,9 +244,9 @@ class LocalVolumeQueryResult(QueryResult):
         return ret
 
 class FeedBooksQueryResult(QueryResult):
-    def __init__(self, queryterm):
-        QueryResult.__init__(self, _FEEDBOOKS_URI, queryterm)
+    def __init__(self, queryterm, win):
+        QueryResult.__init__(self, _FEEDBOOKS_URI, queryterm, win)
 
 class InternetArchiveQueryResult(QueryResult):
-    def __init__(self, queryterm):
-        QueryResult.__init__(self, _INTERNETARCHIVE_URI, queryterm)
+    def __init__(self, queryterm, win):
+        QueryResult.__init__(self, _INTERNETARCHIVE_URI, queryterm, win)
