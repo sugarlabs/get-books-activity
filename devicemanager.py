@@ -22,6 +22,8 @@ import logging
 import gobject
 import dbus
 
+import time
+
 from dbus.mainloop.glib import DBusGMainLoop
 
 _logger = logging.getLogger('get-ia-books-activity')
@@ -41,23 +43,16 @@ class DeviceManager(gobject.GObject):
         self._devices = []
         self._bus = dbus.SystemBus ()
 
+        self._hal_obj = self._bus.get_object ('org.freedesktop.Hal', '/org/freedesktop/Hal/Manager')
+        self._hal_mgr = dbus.Interface (self._hal_obj, 'org.freedesktop.Hal.Manager')
+
         self._populate_devices()
 
-        self._bus.add_signal_receiver(self.__device_added,
-				     "DeviceAdded",
-                                     "org.freedesktop.Hal.Manager",
-                                     "org.freedesktop.Hal",
-                                     "/org/freedesktop/Hal/Manager")
-        self._bus.add_signal_receiver(self.__device_removed,
-				     "DeviceRemoved",
-                                     "org.freedesktop.Hal.Manager",
-                                     "org.freedesktop.Hal",
-                                     "/org/freedesktop/Hal/Manager")
-    def _populate_devices(self):
-        hal_obj = self._bus.get_object ('org.freedesktop.Hal', '/org/freedesktop/Hal/Manager')
-        hal = dbus.Interface (hal_obj, 'org.freedesktop.Hal.Manager')
+        self._hal_mgr.connect_to_signal("DeviceAdded", self.__device_added)
+        self._hal_mgr.connect_to_signal("DeviceRemoved", self.__device_removed)
 
-        udis = hal.FindDeviceByCapability ('volume')
+    def _populate_devices(self):
+        udis = self._hal_mgr.FindDeviceByCapability ('volume')
         for udi in udis:
             self.__device_added(udi)
 
@@ -72,10 +67,10 @@ class DeviceManager(gobject.GObject):
         parent_udi = dev.GetProperty('info.parent')
         parent_dev_obj = self._bus.get_object('org.freedesktop.Hal', parent_udi)
         parent = dbus.Interface(parent_dev_obj, 'org.freedesktop.Hal.Device')
-
         if not parent.GetProperty('storage.removable'):
             return False
-
+        
+        time.sleep(1) #XXX: Ugly Hack, needed in some situations
         mount_point = dev.GetProperty('volume.mount_point')
 
         return os.path.exists(os.path.join(mount_point, 'catalog.xml'))
@@ -102,7 +97,7 @@ class DeviceManager(gobject.GObject):
 if __name__ == '__main__':
     DBusGMainLoop(set_as_default=True)
     dm = DeviceManager()
-    print dm.get_devices()[0][1].GetProperty('volume.mount_point'), dm.get_devices()[0][1].GetProperty('volume.label')
+    #print dm.get_devices()[0][1].GetProperty('volume.mount_point'), dm.get_devices()[0][1].GetProperty('volume.label')
 
     loop = gobject.MainLoop()
     loop.run()
