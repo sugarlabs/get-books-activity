@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-15 18:52+0530\n"
+"POT-Creation-Date: 2009-11-26 16:55+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,102 +20,93 @@ msgstr ""
 msgid "Get Books"
 msgstr ""
 
-#: GetIABooksActivity.py:91
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:94
 msgid "Get Book"
 msgstr ""
 
-#: GetIABooksActivity.py:169
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:150
+#, python-format
+msgid "%.2f GB Volume"
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:208
 msgid "Books"
 msgstr ""
 
-#: GetIABooksActivity.py:185
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:224
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 
-#: GetIABooksActivity.py:225
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:282
 msgid "Title:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:227
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:284
 msgid "Author:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:229
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:286
 msgid "Publisher:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:230
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:287
 msgid "Language:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:234
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:292
 msgid "Link:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:242
-msgid "Performing lookup, please wait..."
-msgstr ""
-
-#: GetIABooksActivity.py:246 GetIABooksActivity.py:287
-#: GetIABooksActivity.py:324
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
 msgid "Error"
 msgstr ""
 
-#: GetIABooksActivity.py:246
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
 msgid "You must enter at least one search word."
 msgstr ""
 
-#: GetIABooksActivity.py:268
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:330
+msgid "Performing lookup, please wait..."
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:339
 msgid "Sorry, no books could be found."
 msgstr ""
 
-#: GetIABooksActivity.py:287
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
 msgid "Connection timed out for "
 msgstr ""
 
-#: GetIABooksActivity.py:324
-msgid "Could not download "
-msgstr ""
-
-#: GetIABooksActivity.py:324
-msgid " path in catalog is incorrect.  "
-msgstr ""
-
-#: GetIABooksActivity.py:351
-msgid "Success"
-msgstr ""
-
-#: GetIABooksActivity.py:351
-msgid " added to Journal."
-msgstr ""
-
-#: listview.py:40
-msgid "Title"
-msgstr ""
-
-#: listview.py:41
-msgid "Author"
-msgstr ""
-
-#: listview.py:42
-msgid "Publisher"
-msgstr ""
-
-#: listview.py:43
-msgid "Language"
-msgstr ""
-
-#: listview.py:44
-msgid "Publish Date"
-msgstr ""
-
-#: GetIABooksActivity.py:324
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:427
 #, python-format
 msgid ""
 "Error: Could not download %s . The path in the catalog seems to be incorrect"
 msgstr ""
 
-#: GetIABooksActivity.py:352
+#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:457
 #, python-format
 msgid "Success: %s was added to Journal."
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:40
+msgid "Title"
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:41
+msgid "Author"
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:42
+msgid "Publisher"
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:43
+msgid "Language"
+msgstr ""
+
+#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:44
+msgid "Publish Date"
 msgstr ""
