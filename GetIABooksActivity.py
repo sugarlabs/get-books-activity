@@ -207,7 +207,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.selected_book = None
         self.queryresults = None
- 
+        self._getter = None
+
         toolbox = activity.ActivityToolbox(self)
         activity_toolbar = toolbox.get_activity_toolbar()
         activity_toolbar.keep.props.visible = False
@@ -251,19 +252,26 @@ class GetIABooksActivity(activity.Activity):
         vadjustment.connect('value-changed', self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
         
+        self.progressbox = gtk.HBox(spacing = 20)
+        
         self.progressbar = gtk.ProgressBar() #TODO: Add a way to cancel download
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
         self.progressbar.set_fraction(0.0)
-        
+
+        self.progressbox.pack_start(self.progressbar, expand = True, fill = True)
+        self.cancel_btn = gtk.Button(stock = gtk.STOCK_CANCEL)
+        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
+        self.progressbox.pack_start(self.cancel_btn, expand = False, fill = False)
+
         vbox = gtk.VBox()
-        vbox.pack_start(self.progressbar,  False,  False,  10)
+        vbox.pack_start(self.progressbox,  False,  False,  10)
         vbox.pack_start(self.scrolled)
         vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
         self.listview.show()
         vbox.show()
         self.list_scroller.show()
-        self.progressbar.hide()
+        self.progressbox.hide()
 
         self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
@@ -367,27 +375,34 @@ class GetIABooksActivity(activity.Activity):
         finally:
             return
 
+    def __cancel_btn_clicked_cb(self, btn):
+        if self._getter is not None:
+            self._getter.cancel()
+            self.progressbox.hide()
+            self.listview.props.sensitive = True
+            _logger.debug('Download was canceled by the user.')
+
     def get_book(self):
         self._books_toolbar.enable_button(False)
-        self.progressbar.show()
+        self.progressbox.show_all()
         gobject.idle_add(self.download_book,  self.download_url)
         
     def download_book(self,  url):
         self.listview.props.sensitive = False
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
-        getter = ReadURLDownloader(url)
-        getter.connect("finished", self._get_book_result_cb)
-        getter.connect("progress", self._get_book_progress_cb)
-        getter.connect("error", self._get_book_error_cb)
+        self._getter = ReadURLDownloader(url)
+        self._getter.connect("finished", self._get_book_result_cb)
+        self._getter.connect("progress", self._get_book_progress_cb)
+        self._getter.connect("error", self._get_book_error_cb)
         _logger.debug("Starting download to %s...", path)
         try:
-            getter.start(path)
+            self._getter.start(path)
         except:
             self._alert(_('Error'), _('Connection timed out for ') + self.selected_title)
            
-        self._download_content_length = getter.get_content_length()
-        self._download_content_type = getter.get_content_type()
+        self._download_content_length = self._getter.get_content_length()
+        self._download_content_type = self._getter.get_content_type()
 
     def _get_book_result_cb(self, getter, tempfile, suggested_name):
         self.listview.props.sensitive = True
@@ -419,17 +434,19 @@ class GetIABooksActivity(activity.Activity):
     def _get_book_error_cb(self, getter, err):
         self.listview.props.sensitive = True
         self._books_toolbar.enable_button(True)
-        self.progressbar.hide()
+        self.progressbox.hide()
         _logger.debug("Error getting document: %s", err)
         self._alert(_('Error: Could not download %s . The path in the catalog seems to be incorrect') % self.selected_title)
         #self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog is incorrect.  ' \
         #                                                                           + '  If you tried to download B/W PDF try another format.'))
         self._download_content_length = 0
         self._download_content_type = None
+        self._getter = None
 
     def process_downloaded_book(self,  tempfile,  suggested_name):
         _logger.debug("Got document %s (%s)", tempfile, suggested_name)
         self.create_journal_entry(tempfile)
+        self._getter = None
 
     def create_journal_entry(self,  tempfile):
         journal_entry = datastore.create()
@@ -448,7 +465,7 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.file_path = tempfile
         datastore.write(journal_entry)
         os.remove(tempfile)
-        self.progressbar.hide()
+        self.progressbox.hide()
         self._alert(_('Success: %s was added to Journal.') % self.selected_title)
         #self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
 
