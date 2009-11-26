@@ -102,7 +102,7 @@ class BooksToolbar(gtk.Toolbar):
             self.format_combo.append_item(_MIMETYPES[key], key)
         self.format_combo.set_active(0)
         self.format_combo.props.sensitive = False
-        self.format_combo.connect('changed', self.format_changed_cb)
+        self.__format_changed_cb_id = self.format_combo.connect('changed', self.format_changed_cb)
         combotool = ToolComboBox(self.format_combo)
         self.insert(combotool, -1)
         combotool.show()
@@ -115,6 +115,15 @@ class BooksToolbar(gtk.Toolbar):
         self._device_manager.connect('device-removed', self.__device_removed_cb)
 
         self.search_entry.grab_focus()
+
+    def update_format_combo(self, links):
+        self.format_combo.handler_block(self.__format_changed_cb_id)
+        self.format_combo.remove_all()
+        for key in _MIMETYPES.keys():
+            if _MIMETYPES[key] in links.keys():
+                self.format_combo.append_item(_MIMETYPES[key], key)
+        self.format_combo.set_active(0)
+        self.format_combo.handler_unblock(self.__format_changed_cb_id)
 
     def get_search_terms(self):
         return self.search_entry.props.text
@@ -275,6 +284,7 @@ class GetIABooksActivity(activity.Activity):
         self.clear_downloaded_bytes()
         selected_book = self.listview.get_selected_book()
         if selected_book:
+            self._books_toolbar.update_format_combo(selected_book.get_download_links())
             self.selected_book = selected_book
             self.show_book_data()
 
