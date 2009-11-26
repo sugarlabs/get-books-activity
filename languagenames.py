@@ -36,7 +36,7 @@ class LanguageNames(object):
             self._xmldoc = None
             return
 
-        self._eroot = self._xmldoc.firstElementChild()
+        self._eroot = self._xmldoc.getRootElement()
 
     def close(self):
         if self._xmldoc is not None:
