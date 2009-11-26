@@ -172,18 +172,6 @@ class BooksToolbar(gtk.Toolbar):
         self._download.props.sensitive = state
         self.format_combo.props.sensitive = state
 
-class ReadHTTPRequestHandler(network.ChunkedGlibHTTPRequestHandler):
-    """HTTP Request Handler for transferring document while collaborating.
-
-    RequestHandler class that integrates with Glib mainloop. It writes
-    the specified file to the client in chunks, returning control to the
-    mainloop between chunks.
-
-    """
-    def translate_path(self, path):
-        """Return the filepath to the shared document."""
-        return self.server.filepath
-
 class ReadURLDownloader(network.GlibURLDownloader):
     """URLDownloader that provides content-length and content-type."""
 
