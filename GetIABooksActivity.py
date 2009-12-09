@@ -375,7 +375,10 @@ class GetIABooksActivity(activity.Activity):
 
     def __cancel_btn_clicked_cb(self, btn):
         if self._getter is not None:
-            self._getter.cancel()
+            try:
+                self._getter.cancel()
+            except:
+                _logger.debug('Got an exception while trying to cancel download')
             self.progressbox.hide()
             self.listview.props.sensitive = True
             _logger.debug('Download was canceled by the user.')
