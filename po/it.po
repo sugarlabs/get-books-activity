@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-26 16:55+0530\n"
+"POT-Creation-Date: 2010-01-17 18:15+0200\n"
 "PO-Revision-Date: 2009-12-22 09:06-0400\n"
 "Last-Translator: Carlo Falciola <cfalciola@yahoo.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,95 +21,71 @@ msgstr ""
 msgid "Get Books"
 msgstr "Trova Libri"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr "Trova un Libro"
+#~ msgid "Get Book"
+#~ msgstr "Trova un Libro"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:150
 #, python-format
-msgid "%.2f GB Volume"
-msgstr "%.2f GB Volume"
+#~ msgid "%.2f GB Volume"
+#~ msgstr "%.2f GB Volume"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:208
-msgid "Books"
-msgstr "Libri"
+#~ msgid "Books"
+#~ msgstr "Libri"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:224
-msgid "Enter words from the Author or Title to begin search."
-msgstr "Inserisci dati su autore o titolo per iniziare la ricerca."
+#~ msgid "Enter words from the Author or Title to begin search."
+#~ msgstr "Inserisci dati su autore o titolo per iniziare la ricerca."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:282
-msgid "Title:\t\t"
-msgstr "Titolo:\t\t"
+#~ msgid "Title:\t\t"
+#~ msgstr "Titolo:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:284
-msgid "Author:\t\t"
-msgstr "Autore:\t\t"
+#~ msgid "Author:\t\t"
+#~ msgstr "Autore:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:286
-msgid "Publisher:\t"
-msgstr "Editore:\t"
+#~ msgid "Publisher:\t"
+#~ msgstr "Editore:\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:287
-msgid "Language:\t"
-msgstr "Lingua:\t"
+#~ msgid "Language:\t"
+#~ msgstr "Lingua:\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:292
-msgid "Link:\t\t"
-msgstr "Link:\t\t"
+#~ msgid "Link:\t\t"
+#~ msgstr "Link:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
-msgid "Error"
-msgstr "Errore"
+#~ msgid "Error"
+#~ msgstr "Errore"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
-msgid "You must enter at least one search word."
-msgstr "Bisogna inserire almeno una parola per la ricerca."
+#~ msgid "You must enter at least one search word."
+#~ msgstr "Bisogna inserire almeno una parola per la ricerca."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:330
-msgid "Performing lookup, please wait..."
-msgstr "Ricerca in corso, per favore attendere..."
+#~ msgid "Performing lookup, please wait..."
+#~ msgstr "Ricerca in corso, per favore attendere..."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:339
-msgid "Sorry, no books could be found."
-msgstr "Spiacente, non ho trovato libri."
+#~ msgid "Sorry, no books could be found."
+#~ msgstr "Spiacente, non ho trovato libri."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
-msgid "Connection timed out for "
-msgstr "Connessione fuori tempo massimo per "
+#~ msgid "Connection timed out for "
+#~ msgstr "Connessione fuori tempo massimo per "
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:427
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
-"Errore: Non posso scaricare %s . Il percorso presente nel catalogo parrebbe "
-"sbagliato."
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Errore: Non posso scaricare %s . Il percorso presente nel catalogo parrebbe "
+#~ "sbagliato."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:457
 #, python-format
-msgid "Success: %s was added to Journal."
-msgstr "Successo: %s è stato copiato nel Diario."
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Successo: %s è stato copiato nel Diario."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:40
-msgid "Title"
-msgstr "Titolo"
+#~ msgid "Title"
+#~ msgstr "Titolo"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:41
-msgid "Author"
-msgstr "Autore"
+#~ msgid "Author"
+#~ msgstr "Autore"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:42
-msgid "Publisher"
-msgstr "Editore"
+#~ msgid "Publisher"
+#~ msgstr "Editore"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:43
-msgid "Language"
-msgstr "Lingua"
+#~ msgid "Language"
+#~ msgstr "Lingua"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:44
-msgid "Publish Date"
-msgstr "Data di pubblicazione"
+#~ msgid "Publish Date"
+#~ msgstr "Data di pubblicazione"
