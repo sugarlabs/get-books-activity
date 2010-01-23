@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-17 18:15+0200\n"
+"POT-Creation-Date: 2010-01-20 00:33-0500\n"
 "PO-Revision-Date: 2009-12-22 09:06-0400\n"
 "Last-Translator: Carlo Falciola <cfalciola@yahoo.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,71 +21,93 @@ msgstr ""
 msgid "Get Books"
 msgstr "Trova Libri"
 
-#~ msgid "Get Book"
-#~ msgstr "Trova un Libro"
+#: GetIABooksActivity.py:94
+msgid "Get Book"
+msgstr "Trova un Libro"
 
+#: GetIABooksActivity.py:159
 #, python-format
-#~ msgid "%.2f GB Volume"
-#~ msgstr "%.2f GB Volume"
+msgid "%.2f GB Volume"
+msgstr "%.2f GB Volume"
 
-#~ msgid "Books"
-#~ msgstr "Libri"
+#: GetIABooksActivity.py:217
+msgid "Books"
+msgstr "Libri"
 
-#~ msgid "Enter words from the Author or Title to begin search."
-#~ msgstr "Inserisci dati su autore o titolo per iniziare la ricerca."
+#: GetIABooksActivity.py:233
+msgid "Enter words from the Author or Title to begin search."
+msgstr "Inserisci dati su autore o titolo per iniziare la ricerca."
 
-#~ msgid "Title:\t\t"
-#~ msgstr "Titolo:\t\t"
+#: GetIABooksActivity.py:292
+msgid "Title:\t\t"
+msgstr "Titolo:\t\t"
 
-#~ msgid "Author:\t\t"
-#~ msgstr "Autore:\t\t"
+#: GetIABooksActivity.py:294
+msgid "Author:\t\t"
+msgstr "Autore:\t\t"
 
-#~ msgid "Publisher:\t"
-#~ msgstr "Editore:\t"
+#: GetIABooksActivity.py:296
+msgid "Publisher:\t"
+msgstr "Editore:\t"
 
-#~ msgid "Language:\t"
-#~ msgstr "Lingua:\t"
+#: GetIABooksActivity.py:297
+msgid "Language:\t"
+msgstr "Lingua:\t"
 
-#~ msgid "Link:\t\t"
-#~ msgstr "Link:\t\t"
+#: GetIABooksActivity.py:302
+msgid "Link:\t\t"
+msgstr "Link:\t\t"
 
-#~ msgid "Error"
-#~ msgstr "Errore"
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+#: GetIABooksActivity.py:403
+msgid "Error"
+msgstr "Errore"
 
-#~ msgid "You must enter at least one search word."
-#~ msgstr "Bisogna inserire almeno una parola per la ricerca."
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+msgid "You must enter at least one search word."
+msgstr "Bisogna inserire almeno una parola per la ricerca."
 
-#~ msgid "Performing lookup, please wait..."
-#~ msgstr "Ricerca in corso, per favore attendere..."
+#: GetIABooksActivity.py:340
+msgid "Performing lookup, please wait..."
+msgstr "Ricerca in corso, per favore attendere..."
 
-#~ msgid "Sorry, no books could be found."
-#~ msgstr "Spiacente, non ho trovato libri."
+#: GetIABooksActivity.py:349
+msgid "Sorry, no books could be found."
+msgstr "Spiacente, non ho trovato libri."
 
-#~ msgid "Connection timed out for "
-#~ msgstr "Connessione fuori tempo massimo per "
+#: GetIABooksActivity.py:403
+msgid "Connection timed out for "
+msgstr "Connessione fuori tempo massimo per "
 
+#: GetIABooksActivity.py:440
 #, python-format
-#~ msgid ""
-#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
-#~ msgstr ""
-#~ "Errore: Non posso scaricare %s . Il percorso presente nel catalogo parrebbe "
-#~ "sbagliato."
+msgid ""
+"Error: Could not download %s . The path in the catalog seems to be incorrect"
+msgstr ""
+"Errore: Non posso scaricare %s . Il percorso presente nel catalogo parrebbe "
+"sbagliato."
 
+#: GetIABooksActivity.py:470
 #, python-format
-#~ msgid "Success: %s was added to Journal."
-#~ msgstr "Successo: %s è stato copiato nel Diario."
+msgid "Success: %s was added to Journal."
+msgstr "Successo: %s è stato copiato nel Diario."
 
-#~ msgid "Title"
-#~ msgstr "Titolo"
+#: listview.py:40
+msgid "Title"
+msgstr "Titolo"
 
-#~ msgid "Author"
-#~ msgstr "Autore"
+#: listview.py:41
+msgid "Author"
+msgstr "Autore"
 
-#~ msgid "Publisher"
-#~ msgstr "Editore"
+#: listview.py:42
+msgid "Publisher"
+msgstr "Editore"
 
-#~ msgid "Language"
-#~ msgstr "Lingua"
+#: listview.py:43
+msgid "Language"
+msgstr "Lingua"
 
-#~ msgid "Publish Date"
-#~ msgstr "Data di pubblicazione"
+#: listview.py:44
+msgid "Publish Date"
+msgstr "Data di pubblicazione"
