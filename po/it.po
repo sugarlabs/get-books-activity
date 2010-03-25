@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: 2009-12-22 09:06-0400\n"
-"Last-Translator: Carlo Falciola <cfalciola@yahoo.it>\n"
+"PO-Revision-Date: 2010-03-25 22:28+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.3\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
@@ -85,7 +85,7 @@ msgid ""
 "Error: Could not download %s . The path in the catalog seems to be incorrect"
 msgstr ""
 "Errore: Non posso scaricare %s . Il percorso presente nel catalogo parrebbe "
-"sbagliato."
+"sbagliato"
 
 #: GetIABooksActivity.py:470
 #, python-format
