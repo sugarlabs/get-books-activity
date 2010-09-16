@@ -2,112 +2,132 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-26 16:55+0530\n"
-"PO-Revision-Date: 2009-12-22 11:51-0400\n"
-"Last-Translator: Chris Leonard <cjl@laptop.org>\n"
+"POT-Creation-Date: 2010-01-20 00:33-0500\n"
+"PO-Revision-Date: 2010-08-01 21:00+0200\n"
+"Last-Translator: தங்கமணி <thangam.arunx@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.3\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
-msgstr ""
+msgstr "புத்தகங்களை வாங்கு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:94
+#: GetIABooksActivity.py:94
 msgid "Get Book"
-msgstr ""
+msgstr "புத்தகத்தை வாங்கு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:150
+#: GetIABooksActivity.py:159
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB கணஅளவு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:208
+#: GetIABooksActivity.py:217
 msgid "Books"
-msgstr ""
+msgstr "புத்தகங்கள்"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:224
+#: GetIABooksActivity.py:233
 msgid "Enter words from the Author or Title to begin search."
-msgstr ""
+msgstr "ஆசிரியரிகளிடமிருந்து வார்த்தைகளை தட்டு (அ) தேடலை தலைப்புடன் தொடங்கு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:282
+#: GetIABooksActivity.py:292
 msgid "Title:\t\t"
-msgstr ""
+msgstr "தலைப்பு:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:284
+#: GetIABooksActivity.py:294
 msgid "Author:\t\t"
-msgstr ""
+msgstr "ஆசிரியர்:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:286
+#: GetIABooksActivity.py:296
 msgid "Publisher:\t"
-msgstr ""
+msgstr "வெளியீடுபவர்:\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:287
+#: GetIABooksActivity.py:297
 msgid "Language:\t"
-msgstr ""
+msgstr "மொழி:\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:292
+#: GetIABooksActivity.py:302
 msgid "Link:\t\t"
-msgstr ""
+msgstr "இணைப்பு:\t\t"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+#: GetIABooksActivity.py:403
 msgid "Error"
 msgstr "தவறு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:313
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:321
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
 msgid "You must enter at least one search word."
-msgstr ""
+msgstr "நீங்கள் தயவுசெய்து ஒரு வார்தையாவது தட்டினால் தான் தேடமுடியும்"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:330
+#: GetIABooksActivity.py:340
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "பார்த்தல் செயலுல், தயவுசெய்து காத்திருக்கவும்..."
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:339
+#: GetIABooksActivity.py:349
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "மன்னிக்கவும், ஒரு புத்தகமும் தென்படவில்லை"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:390
+#: GetIABooksActivity.py:403
 msgid "Connection timed out for "
-msgstr ""
+msgstr "இணைப்பின் கால அவகாசம் மிகுதியானது"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:427
+#: GetIABooksActivity.py:440
 #, python-format
 msgid ""
 "Error: Could not download %s . The path in the catalog seems to be incorrect"
 msgstr ""
+"பிழை: பதிவிறக்க முடியவில்லை %s . பட்டியலில் உள்ள பாதை தவறாக தெறிகிறது "
+"           "
 
-#: /home/sayamindu/Work/Devel/get-ia-books/GetIABooksActivity.py:457
+#: GetIABooksActivity.py:470
 #, python-format
 msgid "Success: %s was added to Journal."
-msgstr ""
+msgstr "வெற்றி: %s சஞ்சிகையுடன் சேர்க்கப்பட்டது"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:40
+#: listview.py:40
 msgid "Title"
-msgstr ""
+msgstr "தலைப்பு"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:41
+#: listview.py:41
 msgid "Author"
-msgstr ""
+msgstr "ஆசிரியர்"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:42
+#: listview.py:42
 msgid "Publisher"
-msgstr ""
+msgstr "வெளியிடுபவர்"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:43
+#: listview.py:43
 msgid "Language"
-msgstr ""
+msgstr "மொழி"
 
-#: /home/sayamindu/Work/Devel/get-ia-books/listview.py:44
+#: listview.py:44
 msgid "Publish Date"
-msgstr ""
+msgstr "வளியீடு திகதி"
