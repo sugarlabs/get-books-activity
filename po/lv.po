@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-20 00:33-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.6.0\n"
+
+#: activity/activity.info:2
+msgid "Get Books"
+msgstr ""
+
+#: GetIABooksActivity.py:94
+msgid "Get Book"
+msgstr ""
+
+#: GetIABooksActivity.py:159
+#, python-format
+msgid "%.2f GB Volume"
+msgstr ""
+
+#: GetIABooksActivity.py:217
+msgid "Books"
+msgstr ""
+
+#: GetIABooksActivity.py:233
+msgid "Enter words from the Author or Title to begin search."
+msgstr ""
+
+#: GetIABooksActivity.py:292
+msgid "Title:\t\t"
+msgstr ""
+
+#: GetIABooksActivity.py:294
+msgid "Author:\t\t"
+msgstr ""
+
+#: GetIABooksActivity.py:296
+msgid "Publisher:\t"
+msgstr ""
+
+#: GetIABooksActivity.py:297
+msgid "Language:\t"
+msgstr ""
+
+#: GetIABooksActivity.py:302
+msgid "Link:\t\t"
+msgstr ""
+
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+#: GetIABooksActivity.py:403
+msgid "Error"
+msgstr ""
+
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+msgid "You must enter at least one search word."
+msgstr ""
+
+#: GetIABooksActivity.py:340
+msgid "Performing lookup, please wait..."
+msgstr ""
+
+#: GetIABooksActivity.py:349
+msgid "Sorry, no books could be found."
+msgstr ""
+
+#: GetIABooksActivity.py:403
+msgid "Connection timed out for "
+msgstr ""
+
+#: GetIABooksActivity.py:440
+#, python-format
+msgid ""
+"Error: Could not download %s . The path in the catalog seems to be incorrect"
+msgstr ""
+
+#: GetIABooksActivity.py:470
+#, python-format
+msgid "Success: %s was added to Journal."
+msgstr ""
+
+#: listview.py:40
+msgid "Title"
+msgstr ""
+
+#: listview.py:41
+msgid "Author"
+msgstr ""
+
+#: listview.py:42
+msgid "Publisher"
+msgstr ""
+
+#: listview.py:43
+msgid "Language"
+msgstr ""
+
+#: listview.py:44
+msgid "Publish Date"
+msgstr ""
