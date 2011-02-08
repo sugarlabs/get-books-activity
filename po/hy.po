@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-20 00:33-0500\n"
+"PO-Revision-Date: 2011-01-10 16:42+0200\n"
+"Last-Translator: rubina <rubina@aua.am>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.3\n"
+
+#: activity/activity.info:2
+msgid "Get Books"
+msgstr "Գտնել Գրքեր"
+
+#: GetIABooksActivity.py:94
+msgid "Get Book"
+msgstr "Գտնել Գիրք"
+
+#: GetIABooksActivity.py:159
+#, python-format
+msgid "%.2f GB Volume"
+msgstr "%.2f GB Ծավալ"
+
+#: GetIABooksActivity.py:217
+msgid "Books"
+msgstr "Գրքեր"
+
+#: GetIABooksActivity.py:233
+msgid "Enter words from the Author or Title to begin search."
+msgstr ""
+"Մուտքագրեք հեղինակի անունը կամ վերնագրի մասը գրքի որոնումը սկսելու համար:"
+
+#: GetIABooksActivity.py:292
+msgid "Title:\t\t"
+msgstr "Վերնագիր.\t\t"
+
+#: GetIABooksActivity.py:294
+msgid "Author:\t\t"
+msgstr "Հեղինակ.\t\t"
+
+#: GetIABooksActivity.py:296
+msgid "Publisher:\t"
+msgstr "Հրատարակիչ.\t"
+
+#: GetIABooksActivity.py:297
+msgid "Language:\t"
+msgstr "Լեզու.\t"
+
+#: GetIABooksActivity.py:302
+msgid "Link:\t\t"
+msgstr "Հղում.\t\t"
+
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+#: GetIABooksActivity.py:403
+msgid "Error"
+msgstr "Վրիպում"
+
+#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
+msgid "You must enter at least one search word."
+msgstr "Դուք պետք է մուտքագրեք նվազագույնը մեկ որոնման բառ:"
+
+#: GetIABooksActivity.py:340
+msgid "Performing lookup, please wait..."
+msgstr "Կատարվում է որոնումը, խնդրվում է սպասել..."
+
+#: GetIABooksActivity.py:349
+msgid "Sorry, no books could be found."
+msgstr "Ներեցեք, ոչ մի գիրք չի գտնվել:"
+
+#: GetIABooksActivity.py:403
+msgid "Connection timed out for "
+msgstr "﻿Կապը ժամասպառվել է "
+
+#: GetIABooksActivity.py:440
+#, python-format
+msgid ""
+"Error: Could not download %s . The path in the catalog seems to be incorrect"
+msgstr ""
+"Վրիպում. Հնարավոր չէ բեռնել %s . Գրացուցակում հայտարարված ուղին ոչ ճշգրիտ է:"
+
+#: GetIABooksActivity.py:470
+#, python-format
+msgid "Success: %s was added to Journal."
+msgstr "Հաջողում.﻿ %s ավելացվեց մատյանում:"
+
+#: listview.py:40
+msgid "Title"
+msgstr "Վերնագիր"
+
+#: listview.py:41
+msgid "Author"
+msgstr "Հեղինակ"
+
+#: listview.py:42
+msgid "Publisher"
+msgstr "Հրատարակիչ"
+
+#: listview.py:43
+msgid "Language"
+msgstr "Լեզու"
+
+#: listview.py:44
+msgid "Publish Date"
+msgstr "Հրատարակման թիվը"
