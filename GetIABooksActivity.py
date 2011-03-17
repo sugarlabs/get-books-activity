@@ -54,8 +54,8 @@ import opds
 import languagenames
 import devicemanager
 
-_MIMETYPES = { 'PDF' : u'application/pdf', 'EPUB' : u'application/epub+zip' }
-_SOURCES = {'Internet Archive' : 'internet-archive', 'Feedbooks' : 'feedbooks'}
+_MIMETYPES = {'PDF': u'application/pdf', 'EPUB': u'application/epub+zip'}
+_SOURCES = {'Internet Archive': 'internet-archive', 'Feedbooks': 'feedbooks'}
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -75,6 +75,7 @@ class ReadURLDownloader(network.GlibURLDownloader):
         return None
 
 READ_STREAM_SERVICE = 'read-activity-http'
+
 
 class GetIABooksActivity(activity.Activity):
 
@@ -121,7 +122,6 @@ class GetIABooksActivity(activity.Activity):
         activity_toolbar.keep.props.visible = False
         self._create_controls()
 
-
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
 
@@ -137,7 +137,8 @@ class GetIABooksActivity(activity.Activity):
         toolbar.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
                                                 'system-search')
         toolbar.search_entry.add_clear_button()
-        toolbar.search_entry.connect('activate', self.__search_entry_activate_cb)
+        toolbar.search_entry.connect('activate',
+                self.__search_entry_activate_cb)
         width = int(gtk.gdk.screen_width() / 3)
         toolbar.search_entry.set_size_request(width, -1)
         book_search_item.add(toolbar.search_entry)
@@ -173,19 +174,21 @@ class GetIABooksActivity(activity.Activity):
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
         self._device_manager.connect('device-added', self.__device_added_cb)
-        self._device_manager.connect('device-removed', self.__device_removed_cb)
+        self._device_manager.connect('device-removed',
+                self.__device_removed_cb)
 
         toolbar.search_entry.grab_focus()
         return toolbar
 
     def update_format_combo(self, links):
-        self._books_toolbar.format_combo.handler_block(self._books_toolbar.__format_changed_cb_id)
-        self._books_toolbar.format_combo.remove_all()
+        toolbar = self._books_toolbar
+        toolbar.format_combo.handler_block(toolbar.__format_changed_cb_id)
+        toolbar.format_combo.remove_all()
         for key in _MIMETYPES.keys():
             if _MIMETYPES[key] in links.keys():
-                self._books_toolbar.format_combo.append_item(_MIMETYPES[key], key)
-        self._books_toolbar.format_combo.set_active(0)
-        self._books_toolbar.format_combo.handler_unblock(self._books_toolbar.__format_changed_cb_id)
+                toolbar.format_combo.append_item(_MIMETYPES[key], key)
+        toolbar.format_combo.set_active(0)
+        toolbar.format_combo.handler_unblock(toolbar.__format_changed_cb_id)
 
     def get_search_terms(self):
         return self._books_toolbar.search_entry.props.text
@@ -201,30 +204,33 @@ class GetIABooksActivity(activity.Activity):
         _logger.debug('Device was removed')
         self._refresh_sources(self._books_toolbar)
 
-    def _refresh_sources(self, books_toolbar):
-        books_toolbar.source_combo.handler_block(books_toolbar.__source_changed_cb_id)
+    def _refresh_sources(self, toolbar):
+        toolbar.source_combo.handler_block(toolbar.__source_changed_cb_id)
 
-        books_toolbar.source_combo.remove_all() #TODO: Do not blindly clear this
+        #TODO: Do not blindly clear this
+        toolbar.source_combo.remove_all()
+
         for key in _SOURCES.keys():
-            books_toolbar.source_combo.append_item(_SOURCES[key], key)
+            toolbar.source_combo.append_item(_SOURCES[key], key)
 
         devices = self._device_manager.get_devices()
 
         if len(devices):
-            books_toolbar.source_combo.append_separator()
+            toolbar.source_combo.append_separator()
 
         for device in devices:
-            mount_point = device[1].GetProperty('volume.mount_point')
-            label = device[1].GetProperty('volume.label')
+            dev = device[1]
+            mount_point = dev.GetProperty('volume.mount_point')
+            label = dev.GetProperty('volume.label')
             if label == '' or label is None:
-                capacity = int(device[1].GetProperty('volume.partition.media_size'))
-                label =  (_('%.2f GB Volume') % (capacity/(1024.0**3)))
+                capacity = int(dev.GetProperty('volume.partition.media_size'))
+                label = (_('%.2f GB Volume') % (capacity / (1024.0 ** 3)))
             _logger.debug('Adding device %s' % (label))
-            books_toolbar.source_combo.append_item(mount_point, label)
+            toolbar.source_combo.append_item(mount_point, label)
 
-        books_toolbar.source_combo.set_active(0)
+        toolbar.source_combo.set_active(0)
 
-        books_toolbar.source_combo.handler_unblock(books_toolbar.__source_changed_cb_id)
+        toolbar.source_combo.handler_unblock(toolbar.__source_changed_cb_id)
 
     def __format_changed_cb(self, combo):
         self.show_book_data()
@@ -234,7 +240,7 @@ class GetIABooksActivity(activity.Activity):
 
     def __get_book_cb(self, button):
         self.get_book()
- 
+
     def enable_button(self,  state):
         self._books_toolbar._download.props.sensitive = state
         self._books_toolbar.format_combo.props.sensitive = state
@@ -251,7 +257,8 @@ class GetIABooksActivity(activity.Activity):
         self.textview.set_left_margin(50)
         self.textview.set_right_margin(50)
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(_('Enter words from the Author or Title to begin search.'))
+        textbuffer.set_text(
+                _('Enter words from the Author or Title to begin search.'))
         self.scrolled.add(self.textview)
         self.textview.show()
         self.scrolled.show()
@@ -263,26 +270,32 @@ class GetIABooksActivity(activity.Activity):
 
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
-            
-        self.list_scroller = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
-        self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+        self.list_scroller = gtk.ScrolledWindow(hadjustment=None,
+                vadjustment=None)
+        self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC,
+                gtk.POLICY_AUTOMATIC)
         vadjustment = self.list_scroller.get_vadjustment()
-        vadjustment.connect('value-changed', self.__vadjustment_value_changed_cb)
+        vadjustment.connect('value-changed',
+                self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
-        
-        self.progressbox = gtk.HBox(spacing = 20)
-        
-        self.progressbar = gtk.ProgressBar() #TODO: Add a way to cancel download
+
+        self.progressbox = gtk.HBox(spacing=20)
+
+        #TODO: Add a way to cancel download
+        self.progressbar = gtk.ProgressBar()
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
         self.progressbar.set_fraction(0.0)
 
-        self.progressbox.pack_start(self.progressbar, expand = True, fill = True)
-        self.cancel_btn = gtk.Button(stock = gtk.STOCK_CANCEL)
+        self.progressbox.pack_start(self.progressbar, expand=True,
+                fill=True)
+        self.cancel_btn = gtk.Button(stock=gtk.STOCK_CANCEL)
         self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
-        self.progressbox.pack_start(self.cancel_btn, expand = False, fill = False)
+        self.progressbox.pack_start(self.cancel_btn, expand=False,
+                fill=False)
 
         vbox = gtk.VBox()
-        vbox.pack_start(self.progressbox,  False,  False,  10)
+        vbox.pack_start(self.progressbox, False, False, 10)
         vbox.pack_start(self.scrolled)
         vbox.pack_end(self.list_scroller)
         self.set_canvas(vbox)
@@ -309,21 +322,24 @@ class GetIABooksActivity(activity.Activity):
             self.show_book_data()
 
     def show_book_data(self):
-        self.book_data = _('Title:\t\t') + self.selected_book.get_title() + '\n\n'
         self.selected_title = self.selected_book.get_title()
-        self.book_data +=  _('Author:\t\t') + self.selected_book.get_author() + '\n\n'
-        self.selected_author =  self.selected_book.get_author()
-        self.book_data +=  _('Publisher:\t') +  self.selected_book.get_publisher() + '\n\n'
-        self.book_data +=  _('Language:\t') + \
-            self._lang_code_handler.get_full_language_name(self.selected_book.get_language()) + '\n\n'
-        self.download_url =  self.selected_book.get_download_links()[self._books_toolbar.format_combo.props.value]
-
+        self.book_data = _('Title:\t\t') + self.selected_title + '\n\n'
+        self.selected_author = self.selected_book.get_author()
+        self.book_data += _('Author:\t\t') + self.selected_author + '\n\n'
+        self.selected_publisher = self.selected_book.get_publisher()
+        self.book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
+        self.book_data += _('Language:\t') + \
+                self._lang_code_handler.get_full_language_name(
+                    self.selected_book.get_language()) + '\n\n'
+        self.download_url = self.selected_book.get_download_links()[\
+                self._books_toolbar.format_combo.props.value]
+        self.book_data += _('Link:\t\t') + self.download_url
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(self.book_data + _('Link:\t\t') + self.download_url)
+        textbuffer.set_text(self.book_data)
 
         self.enable_button(True)
 
-    def find_books(self, search_text = ''):
+    def find_books(self, search_text=''):
         source = self._books_toolbar.source_combo.props.value
 
         self.enable_button(False)
@@ -340,18 +356,22 @@ class GetIABooksActivity(activity.Activity):
             if search_text is None:
                 return
             elif len(search_text) == 0:
-                self._alert(_('Error'), _('You must enter at least one search word.'))
+                self._alert(_('Error'),
+                        _('You must enter at least one search word.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-            self.queryresults = opds.FeedBooksQueryResult(search_text, self.window)    
+            self.queryresults = opds.FeedBooksQueryResult(search_text,
+                    self.window)
         elif source == 'internet-archive':
             if search_text is None:
                 return
             elif len(search_text) == 0:
-                self._alert(_('Error'), _('You must enter at least one search word.'))
+                self._alert(_('Error'),
+                        _('You must enter at least one search word.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-            self.queryresults = opds.InternetArchiveQueryResult(search_text, self.window)
+            self.queryresults = opds.InternetArchiveQueryResult(search_text,
+                    self.window)
         else:
             self.queryresults = opds.LocalVolumeQueryResult( \
                         source, search_text, self.window)
@@ -385,9 +405,10 @@ class GetIABooksActivity(activity.Activity):
             # Use various tricks to update resultset as user scrolls down
             if ((vadjustment.props.upper - vadjustment.props.lower) > 1000 \
                 and (vadjustment.props.upper - vadjustment.props.value - \
-                vadjustment.props.page_size)/(vadjustment.props.upper - \
+                vadjustment.props.page_size) / (vadjustment.props.upper - \
                 vadjustment.props.lower) < 0.3) or ((vadjustment.props.upper \
-                - vadjustment.props.value - vadjustment.props.page_size) < 200):
+                - vadjustment.props.value
+                - vadjustment.props.page_size) < 200):
                 if self.queryresults.has_next():
                     self.queryresults.update_with_next()
         finally:
@@ -398,7 +419,8 @@ class GetIABooksActivity(activity.Activity):
             try:
                 self._getter.cancel()
             except:
-                _logger.debug('Got an exception while trying to cancel download')
+                _logger.debug('Got an exception while trying' + \
+                        'to cancel download')
             self.progressbox.hide()
             self.listview.props.sensitive = True
             _logger.debug('Download was canceled by the user.')
@@ -407,7 +429,7 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(False)
         self.progressbox.show_all()
         gobject.idle_add(self.download_book,  self.download_url)
-        
+
     def download_book(self,  url):
         self.listview.props.sensitive = False
         path = os.path.join(self.get_activity_root(), 'instance',
@@ -420,8 +442,9 @@ class GetIABooksActivity(activity.Activity):
         try:
             self._getter.start(path)
         except:
-            self._alert(_('Error'), _('Connection timed out for ') + self.selected_title)
-           
+            self._alert(_('Error'), _('Connection timed out for ') +
+                    self.selected_title)
+
         self._download_content_length = self._getter.get_content_length()
         self._download_content_type = self._getter.get_content_type()
 
@@ -448,7 +471,7 @@ class GetIABooksActivity(activity.Activity):
     def set_downloaded_bytes(self, bytes,  total):
         fraction = float(bytes) / float(total)
         self.progressbar.set_fraction(fraction)
-        
+
     def clear_downloaded_bytes(self):
         self.progressbar.set_fraction(0.0)
 
@@ -457,9 +480,9 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(True)
         self.progressbox.hide()
         _logger.debug("Error getting document: %s", err)
-        self._alert(_('Error: Could not download %s . The path in the catalog seems to be incorrect') % self.selected_title)
-        #self._alert(_('Error'), _('Could not download ') + self.selected_title + _(' path in catalog is incorrect.  ' \
-        #                                                                           + '  If you tried to download B/W PDF try another format.'))
+        self._alert(_('Error: Could not download %s. ' +
+                'The path in the catalog seems to be incorrect') %
+                self.selected_title)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
@@ -473,29 +496,32 @@ class GetIABooksActivity(activity.Activity):
         journal_entry = datastore.create()
         journal_title = self.selected_title
         if self.selected_author != '':
-            journal_title = journal_title  + ', by ' + self.selected_author
+            journal_title = journal_title + ', by ' + self.selected_author
         journal_entry.metadata['title'] = journal_title
         journal_entry.metadata['title_set_by_user'] = '1'
         journal_entry.metadata['keep'] = '0'
-        journal_entry.metadata['mime_type'] = self._books_toolbar.format_combo.props.value
+        journal_entry.metadata['mime_type'] = \
+                self._books_toolbar.format_combo.props.value
         journal_entry.metadata['buddies'] = ''
         journal_entry.metadata['preview'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()
         textbuffer = self.textview.get_buffer()
-        journal_entry.metadata['description'] = textbuffer.get_text(textbuffer.get_start_iter(),  textbuffer.get_end_iter())
+        journal_entry.metadata['description'] = \
+            textbuffer.get_text(textbuffer.get_start_iter(),
+                textbuffer.get_end_iter())
         journal_entry.file_path = tempfile
         datastore.write(journal_entry)
         os.remove(tempfile)
         self.progressbox.hide()
-        self._alert(_('Success: %s was added to Journal.') % self.selected_title)
-        #self._alert(_('Success'), self.selected_title + _(' added to Journal.'))
+        self._alert(_('Success: %s was added to Journal.') %
+            self.selected_title)
 
     def truncate(self,  str,  length):
         if len(str) > length:
-            return str[0:length-1] + '...'
+            return str[0:length - 1] + '...'
         else:
             return str
-    
+
     def _alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
         alert.props.title = title
