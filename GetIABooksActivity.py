@@ -25,6 +25,15 @@ import gtk
 import string
 import csv
 import urllib
+
+OLD_TOOLBAR = False
+try:
+    from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
+    from sugar.activity.widgets import StopButton
+    from sugar.activity.widgets import ActivityToolbarButton
+except ImportError:
+    OLD_TOOLBAR = True
+
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics.toolcombobox import ToolComboBox
@@ -45,141 +54,11 @@ import opds
 import languagenames
 import devicemanager
 
-_TOOLBAR_BOOKS = 1
 _MIMETYPES = { 'PDF' : u'application/pdf', 'EPUB' : u'application/epub+zip' }
 _SOURCES = {'Internet Archive' : 'internet-archive', 'Feedbooks' : 'feedbooks'}
 
 _logger = logging.getLogger('get-ia-books-activity')
 
-class BooksToolbar(gtk.Toolbar):
-    __gtype_name__ = 'BooksToolbar'
-    __gsignals__ = {
-        'source-changed': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
-                          ([])),
-    }
-    def __init__(self):
-        gtk.Toolbar.__init__(self)
-        book_search_item = gtk.ToolItem()
-
-        self.source_combo = ComboBox()
-        self.source_combo.props.sensitive = True
-        self.__source_changed_cb_id = self.source_combo.connect('changed', self.__source_changed_cb)
-        combotool = ToolComboBox(self.source_combo)
-        self.insert(combotool, -1)
-        combotool.show()
-
-        self.search_entry = iconentry.IconEntry()
-        self.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
-                                                'system-search')
-        self.search_entry.add_clear_button()
-        self.search_entry.connect('activate', self.search_entry_activate_cb)
-
-        width = int(gtk.gdk.screen_width() / 3)
-        self.search_entry.set_size_request(width, -1)
-
-        book_search_item.add(self.search_entry)
-        self.search_entry.show()
-
-        self.insert(book_search_item, -1)
-        book_search_item.show()
-
-        spacer = gtk.SeparatorToolItem()
-        spacer.props.draw = False
-        spacer.set_expand(True)
-        self.insert(spacer, -1)
-        spacer.show()
-
-        self._download = ToolButton('go-down')
-        self._download.set_tooltip(_('Get Book'))
-        self._download.props.sensitive = False
-        self._download.connect('clicked', self._get_book_cb)
-        self.insert(self._download, -1)
-        self._download.show()
-
-        self.format_combo = ComboBox()
-        for key in _MIMETYPES.keys():
-            self.format_combo.append_item(_MIMETYPES[key], key)
-        self.format_combo.set_active(0)
-        self.format_combo.props.sensitive = False
-        self.__format_changed_cb_id = self.format_combo.connect('changed', self.format_changed_cb)
-        combotool = ToolComboBox(self.format_combo)
-        self.insert(combotool, -1)
-        combotool.show()
-
-        self._device_manager = devicemanager.DeviceManager()
-
-        self._refresh_sources()
-
-        self._device_manager.connect('device-added', self.__device_added_cb)
-        self._device_manager.connect('device-removed', self.__device_removed_cb)
-
-        self.search_entry.grab_focus()
-
-    def update_format_combo(self, links):
-        self.format_combo.handler_block(self.__format_changed_cb_id)
-        self.format_combo.remove_all()
-        for key in _MIMETYPES.keys():
-            if _MIMETYPES[key] in links.keys():
-                self.format_combo.append_item(_MIMETYPES[key], key)
-        self.format_combo.set_active(0)
-        self.format_combo.handler_unblock(self.__format_changed_cb_id)
-
-    def get_search_terms(self):
-        return self.search_entry.props.text
-
-    def __source_changed_cb(self, widget):
-        self.emit('source-changed')
-
-    def __device_added_cb(self, mgr):
-        _logger.debug('Device was added')
-        self._refresh_sources()
-
-    def __device_removed_cb(self, mgr):
-        _logger.debug('Device was removed')
-        self._refresh_sources()
-
-    def _refresh_sources(self):
-        self.source_combo.handler_block(self.__source_changed_cb_id)
-
-        self.source_combo.remove_all() #TODO: Do not blindly clear this
-        for key in _SOURCES.keys():
-            self.source_combo.append_item(_SOURCES[key], key)
-
-        devices = self._device_manager.get_devices()
-
-        if len(devices):
-            self.source_combo.append_separator()
-
-        for device in devices:
-            mount_point = device[1].GetProperty('volume.mount_point')
-            label = device[1].GetProperty('volume.label')
-            if label == '' or label is None:
-                capacity = int(device[1].GetProperty('volume.partition.media_size'))
-                label =  (_('%.2f GB Volume') % (capacity/(1024.0**3)))
-            _logger.debug('Adding device %s' % (label))
-            self.source_combo.append_item(mount_point, label)
-
-        self.source_combo.set_active(0) 
-
-        self.source_combo.handler_unblock(self.__source_changed_cb_id)
-
-    def set_activity(self, activity):
-        self.activity = activity
-
-    def format_changed_cb(self, combo):
-        if self.activity != None:
-            self.activity.show_book_data()
-
-    def search_entry_activate_cb(self, entry):
-        self.activity.find_books(entry.props.text)
-
-    def _get_book_cb(self, button):
-        self.activity.get_book()
- 
-    def enable_button(self,  state):
-        self._download.props.sensitive = state
-        self.format_combo.props.sensitive = state
 
 class ReadURLDownloader(network.GlibURLDownloader):
     """URLDownloader that provides content-length and content-type."""
@@ -198,27 +77,169 @@ class ReadURLDownloader(network.GlibURLDownloader):
 READ_STREAM_SERVICE = 'read-activity-http'
 
 class GetIABooksActivity(activity.Activity):
+
     def __init__(self, handle):
         "The entry point to the Activity"
         activity.Activity.__init__(self, handle)
+        self.max_participants = 1
 
         self.selected_book = None
         self.queryresults = None
         self._getter = None
 
-        toolbox = activity.ActivityToolbox(self)
-        activity_toolbar = toolbox.get_activity_toolbar()
-        activity_toolbar.keep.props.visible = False
-        activity_toolbar.share.props.visible = False
-        self.set_toolbox(toolbox)
-        
-        self._books_toolbar = BooksToolbar()
-        self._books_toolbar.connect('source-changed', self.__source_changed_cb)
-        toolbox.add_toolbar(_('Books'), self._books_toolbar)
-        self._books_toolbar.set_activity(self)
-        self._books_toolbar.show()
+        if OLD_TOOLBAR:
 
-        toolbox.show()
+            toolbox = activity.ActivityToolbox(self)
+            activity_toolbar = toolbox.get_activity_toolbar()
+
+            self.set_toolbox(toolbox)
+            self._books_toolbar = gtk.Toolbar()
+            self._add_search_controls(self._books_toolbar)
+            self.toolbox.add_toolbar(_('Books'), self._books_toolbar)
+            self._books_toolbar.show()
+            toolbox.show()
+            toolbox.set_current_toolbar(1)
+
+        else:
+            toolbar_box = ToolbarBox()
+            activity_button = ActivityToolbarButton(self)
+            activity_toolbar = activity_button.page
+            toolbar_box.toolbar.insert(activity_button, 0)
+            self._add_search_controls(toolbar_box.toolbar)
+
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = False
+            separator.set_expand(True)
+            toolbar_box.toolbar.insert(separator, -1)
+
+            toolbar_box.toolbar.insert(StopButton(self), -1)
+
+            self.set_toolbar_box(toolbar_box)
+            toolbar_box.show_all()
+            self._books_toolbar = toolbar_box.toolbar
+
+        activity_toolbar.keep.props.visible = False
+        self._create_controls()
+
+
+    def _add_search_controls(self, toolbar):
+        book_search_item = gtk.ToolItem()
+
+        toolbar.source_combo = ComboBox()
+        toolbar.source_combo.props.sensitive = True
+        toolbar.__source_changed_cb_id = \
+            toolbar.source_combo.connect('changed', self.__source_changed_cb)
+        combotool = ToolComboBox(toolbar.source_combo)
+        toolbar.insert(combotool, -1)
+        combotool.show()
+
+        toolbar.search_entry = iconentry.IconEntry()
+        toolbar.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
+                                                'system-search')
+        toolbar.search_entry.add_clear_button()
+        toolbar.search_entry.connect('activate', self.__search_entry_activate_cb)
+        width = int(gtk.gdk.screen_width() / 3)
+        toolbar.search_entry.set_size_request(width, -1)
+        book_search_item.add(toolbar.search_entry)
+        toolbar.search_entry.show()
+        toolbar.insert(book_search_item, -1)
+        book_search_item.show()
+
+        spacer = gtk.SeparatorToolItem()
+        spacer.props.draw = False
+        spacer.set_expand(True)
+        toolbar.insert(spacer, -1)
+        spacer.show()
+
+        toolbar._download = ToolButton('go-down')
+        toolbar._download.set_tooltip(_('Get Book'))
+        toolbar._download.props.sensitive = False
+        toolbar._download.connect('clicked', self.__get_book_cb)
+        toolbar.insert(toolbar._download, -1)
+        toolbar._download.show()
+
+        toolbar.format_combo = ComboBox()
+        for key in _MIMETYPES.keys():
+            toolbar.format_combo.append_item(_MIMETYPES[key], key)
+        toolbar.format_combo.set_active(0)
+        toolbar.format_combo.props.sensitive = False
+        toolbar.__format_changed_cb_id = \
+                toolbar.format_combo.connect('changed',
+                self.__format_changed_cb)
+        combotool = ToolComboBox(toolbar.format_combo)
+        toolbar.insert(combotool, -1)
+        combotool.show()
+
+        self._device_manager = devicemanager.DeviceManager()
+        self._refresh_sources(toolbar)
+        self._device_manager.connect('device-added', self.__device_added_cb)
+        self._device_manager.connect('device-removed', self.__device_removed_cb)
+
+        toolbar.search_entry.grab_focus()
+        return toolbar
+
+    def update_format_combo(self, links):
+        self._books_toolbar.format_combo.handler_block(self._books_toolbar.__format_changed_cb_id)
+        self._books_toolbar.format_combo.remove_all()
+        for key in _MIMETYPES.keys():
+            if _MIMETYPES[key] in links.keys():
+                self._books_toolbar.format_combo.append_item(_MIMETYPES[key], key)
+        self._books_toolbar.format_combo.set_active(0)
+        self._books_toolbar.format_combo.handler_unblock(self._books_toolbar.__format_changed_cb_id)
+
+    def get_search_terms(self):
+        return self._books_toolbar.search_entry.props.text
+
+    def __source_changed_cb(self, widget):
+        self.emit('source-changed')
+
+    def __device_added_cb(self, mgr):
+        _logger.debug('Device was added')
+        self._refresh_sources(self._books_toolbar)
+
+    def __device_removed_cb(self, mgr):
+        _logger.debug('Device was removed')
+        self._refresh_sources(self._books_toolbar)
+
+    def _refresh_sources(self, books_toolbar):
+        books_toolbar.source_combo.handler_block(books_toolbar.__source_changed_cb_id)
+
+        books_toolbar.source_combo.remove_all() #TODO: Do not blindly clear this
+        for key in _SOURCES.keys():
+            books_toolbar.source_combo.append_item(_SOURCES[key], key)
+
+        devices = self._device_manager.get_devices()
+
+        if len(devices):
+            books_toolbar.source_combo.append_separator()
+
+        for device in devices:
+            mount_point = device[1].GetProperty('volume.mount_point')
+            label = device[1].GetProperty('volume.label')
+            if label == '' or label is None:
+                capacity = int(device[1].GetProperty('volume.partition.media_size'))
+                label =  (_('%.2f GB Volume') % (capacity/(1024.0**3)))
+            _logger.debug('Adding device %s' % (label))
+            books_toolbar.source_combo.append_item(mount_point, label)
+
+        books_toolbar.source_combo.set_active(0)
+
+        books_toolbar.source_combo.handler_unblock(books_toolbar.__source_changed_cb_id)
+
+    def __format_changed_cb(self, combo):
+        self.show_book_data()
+
+    def __search_entry_activate_cb(self, entry):
+        self.find_books(entry.props.text)
+
+    def __get_book_cb(self, button):
+        self.get_book()
+ 
+    def enable_button(self,  state):
+        self._books_toolbar._download.props.sensitive = state
+        self._books_toolbar.format_combo.props.sensitive = state
+
+    def _create_controls(self):
         self.scrolled = gtk.ScrolledWindow()
         self.scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.scrolled.props.shadow_type = gtk.SHADOW_NONE
@@ -270,7 +291,6 @@ class GetIABooksActivity(activity.Activity):
         self.list_scroller.show()
         self.progressbox.hide()
 
-        self.toolbox.set_current_toolbar(_TOOLBAR_BOOKS)
         self._books_toolbar.search_entry.grab_focus()
 
     def can_close(self):
@@ -284,7 +304,7 @@ class GetIABooksActivity(activity.Activity):
         self.clear_downloaded_bytes()
         selected_book = self.listview.get_selected_book()
         if selected_book:
-            self._books_toolbar.update_format_combo(selected_book.get_download_links())
+            self.update_format_combo(selected_book.get_download_links())
             self.selected_book = selected_book
             self.show_book_data()
 
@@ -301,12 +321,12 @@ class GetIABooksActivity(activity.Activity):
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text(self.book_data + _('Link:\t\t') + self.download_url)
 
-        self._books_toolbar.enable_button(True)
+        self.enable_button(True)
 
     def find_books(self, search_text = ''):
         source = self._books_toolbar.source_combo.props.value
 
-        self._books_toolbar.enable_button(False)
+        self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
         self.listview.clear()
@@ -351,7 +371,7 @@ class GetIABooksActivity(activity.Activity):
             textbuffer.set_text('')
 
     def __source_changed_cb(self, widget):
-        search_terms = self._books_toolbar.get_search_terms()
+        search_terms = self.get_search_terms()
         if search_terms == '':
             self.find_books(None)
         else:
@@ -384,7 +404,7 @@ class GetIABooksActivity(activity.Activity):
             _logger.debug('Download was canceled by the user.')
 
     def get_book(self):
-        self._books_toolbar.enable_button(False)
+        self.enable_button(False)
         self.progressbox.show_all()
         gobject.idle_add(self.download_book,  self.download_url)
         
@@ -434,7 +454,7 @@ class GetIABooksActivity(activity.Activity):
 
     def _get_book_error_cb(self, getter, err):
         self.listview.props.sensitive = True
-        self._books_toolbar.enable_button(True)
+        self.enable_button(True)
         self.progressbox.hide()
         _logger.debug("Error getting document: %s", err)
         self._alert(_('Error: Could not download %s . The path in the catalog seems to be incorrect') % self.selected_title)
