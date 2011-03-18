@@ -22,7 +22,8 @@ import feedparser
 import threading
 import os
 
-import gobject, gtk
+import gobject
+import gtk
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -34,9 +35,11 @@ _REL_OPDS_COVER = u'http://opds-spec.org/image'
 
 gobject.threads_init()
 
+
 class DownloadThread(threading.Thread):
+
     def __init__(self, obj, midway):
-        threading.Thread.__init__ (self)
+        threading.Thread.__init__(self)
         self.midway = midway
         self.obj = obj
         self.stopthread = threading.Event()
@@ -45,7 +48,8 @@ class DownloadThread(threading.Thread):
         if self.obj._win is not None:
             self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
-            feedobj = feedparser.parse(self.obj._uri + self.obj._queryterm.replace(' ', '+'))
+            feedobj = feedparser.parse(self.obj._uri + \
+                    self.obj._queryterm.replace(' ', '+'))
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
@@ -56,18 +60,18 @@ class DownloadThread(threading.Thread):
         self.obj._ready = True
         if self.obj._win is not None:
             self.obj._win.set_cursor(None)
-        
         return False
-    
-    def run (self):
+
+    def run(self):
         self._download()
-      
+
     def stop(self):
         self.stopthread.set()
 
 
 class Book(object):
-    def __init__(self, entry, basepath = None):
+
+    def __init__(self, entry, basepath=None):
         self._entry = entry
         self._basepath = basepath
 
@@ -93,7 +97,7 @@ class Book(object):
             if link['rel'] == _REL_OPDS_ACQUISTION:
                 if self._basepath is not None and \
                         not (link['href'].startswith('http') or \
-                                link['href'].startswith('ftp')): 
+                                link['href'].startswith('ftp')):
                     ret[link['type']] = 'file://' \
                         + os.path.join(self._basepath, link['href'])
                 else:
@@ -138,7 +142,7 @@ class Book(object):
                     else:
                         ret[link['type']] = link['href']
         except KeyError:
-               ret = 'Unknown'
+            ret = 'Unknown'
         return ret
 
     def match(self, terms):
@@ -150,32 +154,30 @@ class Book(object):
                 return True
             if term in self.get_publisher():
                 return True
-
         return False
 
 
 class QueryResult(gobject.GObject):
+
     __gsignals__ = {
         'updated': (gobject.SIGNAL_RUN_FIRST,
                           gobject.TYPE_NONE,
                           ([gobject.TYPE_BOOLEAN])),
     }
+
     def __init__(self, uri, queryterm, win):
         gobject.GObject.__init__(self)
-
         self._uri = uri
         self._queryterm = queryterm
         self._win = win
         self._feedobj = None
         self._next_uri = ''
         self._ready = False
-        
         self._booklist = []
-
         self.threads = []
         self._start_download()
-       
-    def _start_download(self, midway = False):
+
+    def _start_download(self, midway=False):
         d_thread = DownloadThread(self, midway)
         self.threads.append(d_thread)
         d_thread.start()
@@ -185,10 +187,10 @@ class QueryResult(gobject.GObject):
 
     def has_next(self):
         '''
-        Returns True if more result pages are 
+        Returns True if more result pages are
         available for the resultset
         '''
-        if not self._feedobj['feed'].has_key('links'):
+        if not 'links' in self._feedobj['feed']:
             return False
         for link in self._feedobj['feed']['links']:
             if link['rel'] == u'next':
@@ -204,8 +206,8 @@ class QueryResult(gobject.GObject):
         if len(self._next_uri) > 0:
             self._ready = False
             self._uri = self._next_uri
-            self.cancel() #XXX: Is this needed ?
-            self._start_download(midway = True)
+            self.cancel()  # XXX: Is this needed ?
+            self._start_download(midway=True)
 
     def cancel(self):
         '''
@@ -234,16 +236,19 @@ class QueryResult(gobject.GObject):
 
     def is_local(self):
         '''
-        Returns True in case of a local school 
-        server or a local device 
+        Returns True in case of a local school
+        server or a local device
         (yay! for sneakernet)
         '''
         return False
 
+
 class LocalVolumeQueryResult(QueryResult):
+
     def __init__(self, path, queryterm, win):
-        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'), queryterm, win)
-    
+        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'),
+                queryterm, win)
+
     def is_local(self):
         return True
 
@@ -251,18 +256,19 @@ class LocalVolumeQueryResult(QueryResult):
         ret = []
         if self._queryterm is None or self._queryterm is '':
             for entry in self._feedobj['entries']:
-                ret.append(Book(entry, basepath = os.path.dirname(self._uri)))
+                ret.append(Book(entry, basepath=os.path.dirname(self._uri)))
         else:
             for entry in self._feedobj['entries']:
-                book = Book(entry, basepath = os.path.dirname(self._uri))
+                book = Book(entry, basepath=os.path.dirname(self._uri))
                 if book.match(self._queryterm.replace(' ', '+')):
                     ret.append(book)
-
         return ret
+
 
 class FeedBooksQueryResult(QueryResult):
     def __init__(self, queryterm, win):
         QueryResult.__init__(self, _FEEDBOOKS_URI, queryterm, win)
+
 
 class InternetArchiveQueryResult(QueryResult):
     def __init__(self, queryterm, win):
