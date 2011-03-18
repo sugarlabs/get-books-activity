@@ -124,15 +124,6 @@ class GetIABooksActivity(activity.Activity):
 
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
-
-        toolbar.source_combo = ComboBox()
-        toolbar.source_combo.props.sensitive = True
-        toolbar.__source_changed_cb_id = \
-            toolbar.source_combo.connect('changed', self.__source_changed_cb)
-        combotool = ToolComboBox(toolbar.source_combo)
-        toolbar.insert(combotool, -1)
-        combotool.show()
-
         toolbar.search_entry = iconentry.IconEntry()
         toolbar.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
                                                 'system-search')
@@ -146,28 +137,11 @@ class GetIABooksActivity(activity.Activity):
         toolbar.insert(book_search_item, -1)
         book_search_item.show()
 
-        spacer = gtk.SeparatorToolItem()
-        spacer.props.draw = False
-        spacer.set_expand(True)
-        toolbar.insert(spacer, -1)
-        spacer.show()
-
-        toolbar._download = ToolButton('go-down')
-        toolbar._download.set_tooltip(_('Get Book'))
-        toolbar._download.props.sensitive = False
-        toolbar._download.connect('clicked', self.__get_book_cb)
-        toolbar.insert(toolbar._download, -1)
-        toolbar._download.show()
-
-        toolbar.format_combo = ComboBox()
-        for key in _MIMETYPES.keys():
-            toolbar.format_combo.append_item(_MIMETYPES[key], key)
-        toolbar.format_combo.set_active(0)
-        toolbar.format_combo.props.sensitive = False
-        toolbar.__format_changed_cb_id = \
-                toolbar.format_combo.connect('changed',
-                self.__format_changed_cb)
-        combotool = ToolComboBox(toolbar.format_combo)
+        toolbar.source_combo = ComboBox()
+        toolbar.source_combo.props.sensitive = True
+        toolbar.__source_changed_cb_id = \
+            toolbar.source_combo.connect('changed', self.__source_changed_cb)
+        combotool = ToolComboBox(toolbar.source_combo)
         toolbar.insert(combotool, -1)
         combotool.show()
 
@@ -181,14 +155,13 @@ class GetIABooksActivity(activity.Activity):
         return toolbar
 
     def update_format_combo(self, links):
-        toolbar = self._books_toolbar
-        toolbar.format_combo.handler_block(toolbar.__format_changed_cb_id)
-        toolbar.format_combo.remove_all()
+        self.format_combo.handler_block(self.__format_changed_cb_id)
+        self.format_combo.remove_all()
         for key in _MIMETYPES.keys():
             if _MIMETYPES[key] in links.keys():
-                toolbar.format_combo.append_item(_MIMETYPES[key], key)
-        toolbar.format_combo.set_active(0)
-        toolbar.format_combo.handler_unblock(toolbar.__format_changed_cb_id)
+                self.format_combo.append_item(_MIMETYPES[key], key)
+        self.format_combo.set_active(0)
+        self.format_combo.handler_unblock(self.__format_changed_cb_id)
 
     def get_search_terms(self):
         return self._books_toolbar.search_entry.props.text
@@ -242,32 +215,29 @@ class GetIABooksActivity(activity.Activity):
         self.get_book()
 
     def enable_button(self,  state):
-        self._books_toolbar._download.props.sensitive = state
-        self._books_toolbar.format_combo.props.sensitive = state
+        self._download.props.sensitive = state
+        self.format_combo.props.sensitive = state
 
     def _create_controls(self):
-        self.scrolled = gtk.ScrolledWindow()
-        self.scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.scrolled.props.shadow_type = gtk.SHADOW_NONE
-        self.textview = gtk.TextView()
-        self.textview.set_editable(False)
-        self.textview.set_cursor_visible(False)
-        self.textview.set_wrap_mode(gtk.WRAP_WORD)
-        self.textview.set_justification(gtk.JUSTIFY_LEFT)
-        self.textview.set_left_margin(50)
-        self.textview.set_right_margin(50)
-        textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(
-                _('Enter words from the Author or Title to begin search.'))
-        self.scrolled.add(self.textview)
-        self.textview.show()
-        self.scrolled.show()
 
         self._download_content_length = 0
         self._download_content_type = None
 
-        self._lang_code_handler = languagenames.LanguageNames()
+        self.progressbox = gtk.HBox(spacing=20)
+        #TODO: Add a way to cancel download
+        self.progressbar = gtk.ProgressBar()
+        self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
+        self.progressbar.set_fraction(0.0)
+        self.progressbox.pack_start(self.progressbar, expand=True,
+                fill=True)
+        self.cancel_btn = gtk.Button(stock=gtk.STOCK_CANCEL)
+        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
+        self.progressbox.pack_start(self.cancel_btn, expand=False,
+                fill=False)
 
+        self.msg_label = gtk.Label()
+
+        self._lang_code_handler = languagenames.LanguageNames()
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
 
@@ -280,29 +250,63 @@ class GetIABooksActivity(activity.Activity):
                 self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
 
-        self.progressbox = gtk.HBox(spacing=20)
+        self.scrolled = gtk.ScrolledWindow()
+        self.scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.scrolled.props.shadow_type = gtk.SHADOW_NONE
+        self.textview = gtk.TextView()
+        self.textview.set_editable(False)
+        self.textview.set_cursor_visible(False)
+        self.textview.set_wrap_mode(gtk.WRAP_WORD)
+        self.textview.set_justification(gtk.JUSTIFY_LEFT)
+        self.textview.set_left_margin(20)
+        self.textview.set_right_margin(20)
+        textbuffer = self.textview.get_buffer()
+        self.scrolled.add(self.textview)
+        self.textview.show()
+        self.scrolled.show()
 
-        #TODO: Add a way to cancel download
-        self.progressbar = gtk.ProgressBar()
-        self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
-        self.progressbar.set_fraction(0.0)
+        self.image = gtk.Image()
+        self.add_default_image()
 
-        self.progressbox.pack_start(self.progressbar, expand=True,
-                fill=True)
-        self.cancel_btn = gtk.Button(stock=gtk.STOCK_CANCEL)
-        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
-        self.progressbox.pack_start(self.cancel_btn, expand=False,
-                fill=False)
+        vbox_download = gtk.VBox()
+
+        hbox_format = gtk.HBox()
+        format_label = gtk.Label(_('Format:'))
+        self.format_combo = ComboBox()
+        for key in _MIMETYPES.keys():
+            self.format_combo.append_item(_MIMETYPES[key], key)
+        self.format_combo.set_active(0)
+        self.format_combo.props.sensitive = False
+        self.__format_changed_cb_id = \
+                self.format_combo.connect('changed', self.__format_changed_cb)
+
+        hbox_format.pack_start(format_label, False, False, 10)
+        hbox_format.pack_start(self.format_combo, False, False, 10)
+        vbox_download.pack_start(hbox_format, False, False, 10)
+
+        self._download = gtk.Button(_('Get Book'))
+        self._download.props.sensitive = False
+        self._download.connect('clicked', self.__get_book_cb)
+        vbox_download.pack_start(self._download, False, False, 10)
+
+        bottom_hbox = gtk.HBox()
+        bottom_hbox.pack_start(self.image, False, False, 10)
+        bottom_hbox.pack_start(self.scrolled, True, True, 10)
+        bottom_hbox.pack_start(vbox_download, False, False, 10)
+        bottom_hbox.show_all()
 
         vbox = gtk.VBox()
+        vbox.pack_start(self.msg_label, False, False, 10)
         vbox.pack_start(self.progressbox, False, False, 10)
-        vbox.pack_start(self.scrolled)
-        vbox.pack_end(self.list_scroller)
+        vbox.pack_start(self.list_scroller, True, True, 0)
+        vbox.pack_start(bottom_hbox, False, False, 10)
         self.set_canvas(vbox)
         self.listview.show()
         vbox.show()
         self.list_scroller.show()
         self.progressbox.hide()
+        self.show_message(
+                _('Enter words from the Author or Title to begin search.'))
 
         self._books_toolbar.search_entry.grab_focus()
 
@@ -321,6 +325,13 @@ class GetIABooksActivity(activity.Activity):
             self.selected_book = selected_book
             self.show_book_data()
 
+    def show_message(self, text):
+        self.msg_label.set_text(text)
+        self.msg_label.show()
+
+    def hide_message(self):
+        self.msg_label.hide()
+
     def show_book_data(self):
         self.selected_title = self.selected_book.get_title()
         self.book_data = _('Title:\t\t') + self.selected_title + '\n\n'
@@ -332,12 +343,107 @@ class GetIABooksActivity(activity.Activity):
                 self._lang_code_handler.get_full_language_name(
                     self.selected_book.get_language()) + '\n\n'
         self.download_url = self.selected_book.get_download_links()[\
-                self._books_toolbar.format_combo.props.value]
+                self.format_combo.props.value]
         self.book_data += _('Link:\t\t') + self.download_url
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(self.book_data)
-
+        textbuffer.set_text('\n' + self.book_data)
         self.enable_button(True)
+
+        # Cover Image
+        self.exist_cover_image = False
+        url_image = self.selected_book.get_image_url()
+        logging.error('url_image %s' % url_image)
+        if url_image:
+            self.download_image(url_image.values()[0])
+        else:
+            self.add_default_image()
+
+    def download_image(self,  url):
+        path = os.path.join(self.get_activity_root(), 'instance',
+                            'tmp%i' % time.time())
+        self._getter = ReadURLDownloader(url)
+        self._getter.connect("finished", self._get_image_result_cb)
+        self._getter.connect("progress", self._get_image_progress_cb)
+        self._getter.connect("error", self._get_image_error_cb)
+        _logger.debug("Starting download to %s...", path)
+        try:
+            self._getter.start(path)
+        except:
+            _logger.debug("Connection timed out for")
+            self.add_default_image()
+            self.progressbox.hide()
+
+        self._download_image_content_length = \
+                self._getter.get_content_length()
+        self._download_image_content_type = self._getter.get_content_type()
+
+    def _get_image_result_cb(self, getter, tempfile, suggested_name):
+        self.process_downloaded_cover(tempfile, suggested_name)
+
+    def process_downloaded_cover(self,  tempfile,  suggested_name):
+        _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
+        self._getter = None
+        self.add_image(tempfile)
+        self.exist_cover_image = True
+        os.remove(tempfile)
+
+    def _get_image_progress_cb(self, getter, bytes_downloaded):
+        if self._download_content_length > 0:
+            _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
+                        self._download_image_content_length)
+        else:
+            _logger.debug("Downloaded %u bytes...",
+                          bytes_downloaded)
+        total = self._download_image_content_length
+        while gtk.events_pending():
+            gtk.main_iteration()
+
+    def _get_image_error_cb(self, getter, err):
+        self.listview.props.sensitive = True
+        self._books_toolbar.enable_button(True)
+        self.progressbox.hide()
+        _logger.debug("Error getting image: %s", err)
+        self.add_default_image()
+        self._download_image_content_length = 0
+        self._download_image_content_type = None
+        self._getter = None
+
+    def add_default_image(self):
+        file_path = os.path.join(activity.get_bundle_path(),
+                'generic_cover.png')
+        self.add_image(file_path)
+
+    def add_image(self, file_path):
+        pixbuf = gtk.gdk.pixbuf_new_from_file(file_path)
+        self.add_image_buffer(pixbuf)
+
+    def add_image_buffer(self, pixbuf):
+        MAX_WIDTH_IMAGE = int(gtk.gdk.screen_width() / 5)
+        width, height = pixbuf.get_width(), pixbuf.get_height()
+        if width > MAX_WIDTH_IMAGE:
+            scale = MAX_WIDTH_IMAGE / float(width)
+
+            pixbuf = pixbuf.scale_simple(int(width * scale),
+                    int(height * scale), gtk.gdk.INTERP_BILINEAR)
+
+        """
+            pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
+                                pixbuf.get_has_alpha(), \
+                                pixbuf.get_bits_per_sample(), \
+                                preview_width, preview_height)
+            #pixbuf2.fill(style.COLOR_WHITE.get_int())
+
+            margin_x = int((preview_width - (width * scale)) / 2)
+            margin_y = int((preview_height - (height * scale)) / 2)
+
+            pixbuf.scale(pixbuf2, margin_x, margin_y, \
+                                preview_width - (margin_x * 2), \
+                                preview_height - (margin_y * 2), \
+                                margin_x, margin_y, scale, scale, \
+                                gtk.gdk.INTERP_BILINEAR)
+        """
+
+        self.image.set_from_pixbuf(pixbuf)
 
     def find_books(self, search_text=''):
         source = self._books_toolbar.source_combo.props.value
@@ -376,19 +482,16 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults = opds.LocalVolumeQueryResult( \
                         source, search_text, self.window)
 
-        textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(_('Performing lookup, please wait...'))
+        self.show_message(_('Performing lookup, please wait...'))
 
         self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
-
-        textbuffer = self.textview.get_buffer()
         if len(self.queryresults) == 0:
-            textbuffer.set_text(_('Sorry, no books could be found.'))
+            self.show_message(_('Sorry, no books could be found.'))
         elif not midway:
-            textbuffer.set_text('')
+            self.hide_message()
 
     def __source_changed_cb(self, widget):
         search_terms = self.get_search_terms()
@@ -501,7 +604,7 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['title_set_by_user'] = '1'
         journal_entry.metadata['keep'] = '0'
         journal_entry.metadata['mime_type'] = \
-                self._books_toolbar.format_combo.props.value
+                self.format_combo.props.value
         journal_entry.metadata['buddies'] = ''
         journal_entry.metadata['preview'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()

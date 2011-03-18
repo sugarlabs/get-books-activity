@@ -30,6 +30,7 @@ _FEEDBOOKS_URI = 'http://feedbooks.com/books/search.atom?query='
 _INTERNETARCHIVE_URI = 'http://bookserver.archive.org/catalog/opensearch?q='
 
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
+_REL_OPDS_COVER = u'http://opds-spec.org/image'
 
 gobject.threads_init()
 
@@ -122,6 +123,22 @@ class Book(object):
         except KeyError:
             ret = 'Unknown'
 
+        return ret
+
+    def get_image_url(self):
+        try:
+            ret = {}
+            for link in self._entry['links']:
+                if link['rel'] == _REL_OPDS_COVER:
+                    if self._basepath is not None and \
+                            not (link['href'].startswith('http') or \
+                                    link['href'].startswith('ftp')):
+                        ret[link['type']] = 'file://' \
+                            + os.path.join(self._basepath, link['href'])
+                    else:
+                        ret[link['type']] = link['href']
+        except KeyError:
+               ret = 'Unknown'
         return ret
 
     def match(self, terms):
