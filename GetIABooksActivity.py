@@ -225,7 +225,6 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_type = None
 
         self.progressbox = gtk.HBox(spacing=20)
-        #TODO: Add a way to cancel download
         self.progressbar = gtk.ProgressBar()
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
         self.progressbar.set_fraction(0.0)
@@ -510,6 +509,7 @@ class GetIABooksActivity(activity.Activity):
                         'to cancel download')
             self.progressbox.hide()
             self.listview.props.sensitive = True
+            self._books_toolbar.search_entry.set_sensitive(True)
             _logger.debug('Download was canceled by the user.')
 
     def get_book(self):
@@ -519,6 +519,7 @@ class GetIABooksActivity(activity.Activity):
 
     def download_book(self,  url):
         self.listview.props.sensitive = False
+        self._books_toolbar.search_entry.set_sensitive(False)
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
         self._getter = ReadURLDownloader(url)
@@ -537,6 +538,7 @@ class GetIABooksActivity(activity.Activity):
 
     def _get_book_result_cb(self, getter, tempfile, suggested_name):
         self.listview.props.sensitive = True
+        self._books_toolbar.search_entry.set_sensitive(True)
         if self._download_content_type.startswith('text/html'):
             # got an error page instead
             self._get_book_error_cb(getter, 'HTTP Error')
