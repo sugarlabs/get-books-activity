@@ -49,6 +49,7 @@ from gettext import gettext as _
 import pango
 import dbus
 import gobject
+import ConfigParser
 
 from listview import ListView
 import opds
@@ -56,7 +57,8 @@ import languagenames
 import devicemanager
 
 _MIMETYPES = {'PDF': u'application/pdf', 'EPUB': u'application/epub+zip'}
-_SOURCES = {'Internet Archive': 'internet-archive', 'Feedbooks': 'feedbooks'}
+_SOURCES = {}
+_SOURCES_CONFIG = {}
 
 _logger = logging.getLogger('get-ia-books-activity')
 
@@ -93,6 +95,10 @@ class GetIABooksActivity(activity.Activity):
         self.queryresults = None
         self._getter = None
 
+        self._read_configuration()
+        if os.path.exists('/etc/get-books.cfg'):
+            self._read_configuration('/etc/get-books.cfg')
+
         if OLD_TOOLBAR:
 
             toolbox = activity.ActivityToolbox(self)
@@ -126,6 +132,25 @@ class GetIABooksActivity(activity.Activity):
 
         activity_toolbar.keep.props.visible = False
         self._create_controls()
+
+    def _read_configuration(self, file_name='get-books.cfg'):
+        logging.error('Reading configuration')
+        config = ConfigParser.ConfigParser()
+        config.readfp(open(file_name))
+        self.show_images = True
+        if config.has_option('GetBooks', 'show_images'):
+            self.show_images = config.getboolean('GetBooks', 'show_images')
+
+        for section in config.sections():
+            if section != 'GetBooks':
+                name = config.get(section, 'name')
+                _SOURCES[section] = name
+                repo_config = {}
+                repo_config['query_uri'] = config.get(section, 'query_uri')
+                repo_config['opds_cover'] = config.get(section, 'opds_cover')
+                _SOURCES_CONFIG[section] = repo_config
+        logging.error('_SOURCES %s' % _SOURCES)
+        logging.error('_SOURCES_CONFIG %s' % _SOURCES_CONFIG)
 
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
@@ -444,27 +469,18 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.cancel()
             self.queryresults = None
 
-        # This must be kept in sync with the sources list
-        if source == 'feedbooks':
-            if search_text is None:
-                return
-            elif len(search_text) == 0:
-                self._alert(_('Error'),
-                        _('You must enter at least one search word.'))
-                self._books_toolbar.search_entry.grab_focus()
-                return
-            self.queryresults = opds.FeedBooksQueryResult(search_text,
-                    self.window)
-        elif source == 'internet-archive':
-            if search_text is None:
-                return
-            elif len(search_text) == 0:
-                self._alert(_('Error'),
-                        _('You must enter at least one search word.'))
-                self._books_toolbar.search_entry.grab_focus()
-                return
-            self.queryresults = opds.InternetArchiveQueryResult(search_text,
-                    self.window)
+        if search_text is None:
+            return
+        elif len(search_text) == 0:
+            self._alert(_('Error'),
+                    _('You must enter at least one search word.'))
+            self._books_toolbar.search_entry.grab_focus()
+            return
+
+        if source in _SOURCES_CONFIG:
+            repo_configuration = _SOURCES_CONFIG[source]
+            self.queryresults = opds.RemoteQueryResult(repo_configuration,
+                    search_text, self.window)
         else:
             self.queryresults = opds.LocalVolumeQueryResult( \
                         source, search_text, self.window)

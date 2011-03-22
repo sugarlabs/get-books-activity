@@ -54,7 +54,7 @@ class DownloadThread(threading.Thread):
             feedobj = feedparser.parse(self.obj._uri)
 
         for entry in feedobj['entries']:
-            self.obj._booklist.append(Book(entry))
+            self.obj._booklist.append(Book(self.obj._configuration, entry))
         self.obj._feedobj = feedobj
         self.obj.emit('updated', self.midway)
         self.obj._ready = True
@@ -71,9 +71,10 @@ class DownloadThread(threading.Thread):
 
 class Book(object):
 
-    def __init__(self, entry, basepath=None):
+    def __init__(self, configuration, entry, basepath=None):
         self._entry = entry
         self._basepath = basepath
+        self._configuration = configuration
 
     def get_title(self):
         try:
@@ -133,7 +134,7 @@ class Book(object):
         try:
             ret = {}
             for link in self._entry['links']:
-                if link['rel'] == _REL_OPDS_COVER:
+                if link['rel'] == self._configuration['opds_cover']:
                     if self._basepath is not None and \
                             not (link['href'].startswith('http') or \
                                     link['href'].startswith('ftp')):
@@ -165,9 +166,10 @@ class QueryResult(gobject.GObject):
                           ([gobject.TYPE_BOOLEAN])),
     }
 
-    def __init__(self, uri, queryterm, win):
+    def __init__(self, configuration, queryterm, win):
         gobject.GObject.__init__(self)
-        self._uri = uri
+        self._configuration = configuration
+        self._uri = self._configuration['query_uri']
         self._queryterm = queryterm
         self._win = win
         self._feedobj = None
@@ -246,8 +248,8 @@ class QueryResult(gobject.GObject):
 class LocalVolumeQueryResult(QueryResult):
 
     def __init__(self, path, queryterm, win):
-        QueryResult.__init__(self, os.path.join(path, 'catalog.xml'),
-                queryterm, win)
+        configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
+        QueryResult.__init__(self, configuration, queryterm, win)
 
     def is_local(self):
         return True
@@ -265,11 +267,7 @@ class LocalVolumeQueryResult(QueryResult):
         return ret
 
 
-class FeedBooksQueryResult(QueryResult):
-    def __init__(self, queryterm, win):
-        QueryResult.__init__(self, _FEEDBOOKS_URI, queryterm, win)
+class RemoteQueryResult(QueryResult):
 
-
-class InternetArchiveQueryResult(QueryResult):
-    def __init__(self, queryterm, win):
-        QueryResult.__init__(self, _INTERNETARCHIVE_URI, queryterm, win)
+    def __init__(self, configuration, queryterm, win):
+        QueryResult.__init__(self, configuration, queryterm, win)
