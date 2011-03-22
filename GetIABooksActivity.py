@@ -34,6 +34,7 @@ try:
 except ImportError:
     OLD_TOOLBAR = True
 
+from sugar.graphics import style
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics.toolcombobox import ToolComboBox
@@ -426,23 +427,6 @@ class GetIABooksActivity(activity.Activity):
             pixbuf = pixbuf.scale_simple(int(width * scale),
                     int(height * scale), gtk.gdk.INTERP_BILINEAR)
 
-        """
-            pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
-                                pixbuf.get_has_alpha(), \
-                                pixbuf.get_bits_per_sample(), \
-                                preview_width, preview_height)
-            #pixbuf2.fill(style.COLOR_WHITE.get_int())
-
-            margin_x = int((preview_width - (width * scale)) / 2)
-            margin_y = int((preview_height - (height * scale)) / 2)
-
-            pixbuf.scale(pixbuf2, margin_x, margin_y, \
-                                preview_width - (margin_x * 2), \
-                                preview_height - (margin_y * 2), \
-                                margin_x, margin_y, scale, scale, \
-                                gtk.gdk.INTERP_BILINEAR)
-        """
-
         self.image.set_from_pixbuf(pixbuf)
 
     def find_books(self, search_text=''):
@@ -606,18 +590,55 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['mime_type'] = \
                 self.format_combo.props.value
         journal_entry.metadata['buddies'] = ''
-        journal_entry.metadata['preview'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()
         textbuffer = self.textview.get_buffer()
         journal_entry.metadata['description'] = \
             textbuffer.get_text(textbuffer.get_start_iter(),
                 textbuffer.get_end_iter())
+        if self.exist_cover_image:
+            journal_entry.metadata['preview'] = self._get_preview_image()
+
         journal_entry.file_path = tempfile
         datastore.write(journal_entry)
         os.remove(tempfile)
         self.progressbox.hide()
         self._alert(_('Success: %s was added to Journal.') %
             self.selected_title)
+
+    def _get_preview_image(self):
+        preview_width, preview_height = style.zoom(300), style.zoom(225)
+
+        pixbuf = self.image.get_pixbuf()
+        width, height = pixbuf.get_width(), pixbuf.get_height()
+
+        scale = 1
+        if (width > preview_width) or (height > preview_height):
+            scale_x = preview_width / float(width)
+            scale_y = preview_height / float(height)
+            scale = min(scale_x, scale_y)
+
+        pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
+                            pixbuf.get_has_alpha(), \
+                            pixbuf.get_bits_per_sample(), \
+                            preview_width, preview_height)
+        pixbuf2.fill(style.COLOR_WHITE.get_int())
+
+        margin_x = int((preview_width - (width * scale)) / 2)
+        margin_y = int((preview_height - (height * scale)) / 2)
+
+        pixbuf.scale(pixbuf2, margin_x, margin_y, \
+                            preview_width - (margin_x * 2), \
+                            preview_height - (margin_y * 2), \
+                            margin_x, margin_y, scale, scale, \
+                            gtk.gdk.INTERP_BILINEAR)
+        preview_data = []
+
+        def save_func(buf, data):
+            data.append(buf)
+
+        pixbuf2.save_to_callback(save_func, 'png', user_data=preview_data)
+        preview_data = ''.join(preview_data)
+        return dbus.ByteArray(preview_data)
 
     def truncate(self,  str,  length):
         if len(str) > length:
