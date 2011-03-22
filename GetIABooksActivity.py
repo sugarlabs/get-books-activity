@@ -67,7 +67,11 @@ class ReadURLDownloader(network.GlibURLDownloader):
     def get_content_length(self):
         """Return the content-length of the download."""
         if self._info is not None:
-            return int(self._info.headers.get('Content-Length'))
+            length = self._info.headers.get('Content-Length')
+            if length is not None:
+                return int(length)
+            else:
+                return 0
 
     def get_content_type(self):
         """Return the content-type of the download."""
@@ -388,7 +392,7 @@ class GetIABooksActivity(activity.Activity):
         os.remove(tempfile)
 
     def _get_image_progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
+        if self._download_image_content_length > 0:
             _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
                         self._download_image_content_length)
         else:
