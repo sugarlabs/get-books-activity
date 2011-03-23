@@ -294,9 +294,6 @@ class GetIABooksActivity(activity.Activity):
         self.textview.show()
         self.scrolled.show()
 
-        self.image = gtk.Image()
-        self.add_default_image()
-
         vbox_download = gtk.VBox()
 
         hbox_format = gtk.HBox()
@@ -319,7 +316,11 @@ class GetIABooksActivity(activity.Activity):
         vbox_download.pack_start(self._download, False, False, 10)
 
         bottom_hbox = gtk.HBox()
-        bottom_hbox.pack_start(self.image, False, False, 10)
+
+        if self.show_images:
+            self.image = gtk.Image()
+            self.add_default_image()
+            bottom_hbox.pack_start(self.image, False, False, 10)
         bottom_hbox.pack_start(self.scrolled, True, True, 10)
         bottom_hbox.pack_start(vbox_download, False, False, 10)
         bottom_hbox.show_all()
@@ -379,13 +380,14 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(True)
 
         # Cover Image
-        self.exist_cover_image = False
-        url_image = self.selected_book.get_image_url()
-        logging.error('url_image %s' % url_image)
-        if url_image:
-            self.download_image(url_image.values()[0])
-        else:
-            self.add_default_image()
+        if self.show_images:
+            self.exist_cover_image = False
+            url_image = self.selected_book.get_image_url()
+            logging.error('url_image %s' % url_image)
+            if url_image:
+                self.download_image(url_image.values()[0])
+            else:
+                self.add_default_image()
 
     def download_image(self,  url):
         path = os.path.join(self.get_activity_root(), 'instance',
