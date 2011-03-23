@@ -18,25 +18,18 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import os
 import logging
-import tempfile
 import time
-import pygtk
 import gtk
-import string
-import csv
-import urllib
 
 OLD_TOOLBAR = False
 try:
-    from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
+    from sugar.graphics.toolbarbox import ToolbarBox
     from sugar.activity.widgets import StopButton
     from sugar.activity.widgets import ActivityToolbarButton
 except ImportError:
     OLD_TOOLBAR = True
 
 from sugar.graphics import style
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.menuitem import MenuItem
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics import iconentry
@@ -46,7 +39,6 @@ from sugar import network
 from sugar.datastore import datastore
 from sugar.graphics.alert import NotifyAlert
 from gettext import gettext as _
-import pango
 import dbus
 import gobject
 import ConfigParser
@@ -94,6 +86,7 @@ class GetIABooksActivity(activity.Activity):
         self.selected_book = None
         self.queryresults = None
         self._getter = None
+        self.show_images = True
 
         self._read_configuration()
         if os.path.exists('/etc/get-books.cfg'):
@@ -134,10 +127,9 @@ class GetIABooksActivity(activity.Activity):
         self._create_controls()
 
     def _read_configuration(self, file_name='get-books.cfg'):
-        logging.error('Reading configuration')
+        logging.error('Reading configuration from file %s', file_name)
         config = ConfigParser.ConfigParser()
         config.readfp(open(file_name))
-        self.show_images = True
         if config.has_option('GetBooks', 'show_images'):
             self.show_images = config.getboolean('GetBooks', 'show_images')
 
@@ -149,8 +141,8 @@ class GetIABooksActivity(activity.Activity):
                 repo_config['query_uri'] = config.get(section, 'query_uri')
                 repo_config['opds_cover'] = config.get(section, 'opds_cover')
                 _SOURCES_CONFIG[section] = repo_config
-        logging.error('_SOURCES %s' % _SOURCES)
-        logging.error('_SOURCES_CONFIG %s' % _SOURCES_CONFIG)
+        logging.error('_SOURCES %s', _SOURCES)
+        logging.error('_SOURCES_CONFIG %s', _SOURCES_CONFIG)
 
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
@@ -169,7 +161,7 @@ class GetIABooksActivity(activity.Activity):
 
         toolbar.source_combo = ComboBox()
         toolbar.source_combo.props.sensitive = True
-        toolbar.__source_changed_cb_id = \
+        toolbar.source_changed_cb_id = \
             toolbar.source_combo.connect('changed', self.__source_changed_cb)
         combotool = ToolComboBox(toolbar.source_combo)
         toolbar.insert(combotool, -1)
@@ -196,9 +188,6 @@ class GetIABooksActivity(activity.Activity):
     def get_search_terms(self):
         return self._books_toolbar.search_entry.props.text
 
-    def __source_changed_cb(self, widget):
-        self.emit('source-changed')
-
     def __device_added_cb(self, mgr):
         _logger.debug('Device was added')
         self._refresh_sources(self._books_toolbar)
@@ -208,7 +197,7 @@ class GetIABooksActivity(activity.Activity):
         self._refresh_sources(self._books_toolbar)
 
     def _refresh_sources(self, toolbar):
-        toolbar.source_combo.handler_block(toolbar.__source_changed_cb_id)
+        toolbar.source_combo.handler_block(toolbar.source_changed_cb_id)
 
         #TODO: Do not blindly clear this
         toolbar.source_combo.remove_all()
@@ -233,7 +222,7 @@ class GetIABooksActivity(activity.Activity):
 
         toolbar.source_combo.set_active(0)
 
-        toolbar.source_combo.handler_unblock(toolbar.__source_changed_cb_id)
+        toolbar.source_combo.handler_unblock(toolbar.source_changed_cb_id)
 
     def __format_changed_cb(self, combo):
         self.show_book_data()
@@ -249,7 +238,6 @@ class GetIABooksActivity(activity.Activity):
         self.format_combo.props.sensitive = state
 
     def _create_controls(self):
-
         self._download_content_length = 0
         self._download_content_type = None
 
@@ -289,7 +277,6 @@ class GetIABooksActivity(activity.Activity):
         self.textview.set_justification(gtk.JUSTIFY_LEFT)
         self.textview.set_left_margin(20)
         self.textview.set_right_margin(20)
-        textbuffer = self.textview.get_buffer()
         self.scrolled.add(self.textview)
         self.textview.show()
         self.scrolled.show()
@@ -364,26 +351,26 @@ class GetIABooksActivity(activity.Activity):
 
     def show_book_data(self):
         self.selected_title = self.selected_book.get_title()
-        self.book_data = _('Title:\t\t') + self.selected_title + '\n\n'
+        book_data = _('Title:\t\t') + self.selected_title + '\n\n'
         self.selected_author = self.selected_book.get_author()
-        self.book_data += _('Author:\t\t') + self.selected_author + '\n\n'
+        book_data += _('Author:\t\t') + self.selected_author + '\n\n'
         self.selected_publisher = self.selected_book.get_publisher()
-        self.book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
-        self.book_data += _('Language:\t') + \
+        book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
+        book_data += _('Language:\t') + \
                 self._lang_code_handler.get_full_language_name(
                     self.selected_book.get_language()) + '\n\n'
         self.download_url = self.selected_book.get_download_links()[\
                 self.format_combo.props.value]
-        self.book_data += _('Link:\t\t') + self.download_url
+        book_data += _('Link:\t\t') + self.download_url
         textbuffer = self.textview.get_buffer()
-        textbuffer.set_text('\n' + self.book_data)
+        textbuffer.set_text('\n' + book_data)
         self.enable_button(True)
 
         # Cover Image
+        self.exist_cover_image = False
         if self.show_images:
-            self.exist_cover_image = False
             url_image = self.selected_book.get_image_url()
-            logging.error('url_image %s' % url_image)
+            logging.error('url_image %s', url_image)
             if url_image:
                 self.download_image(url_image.values()[0])
             else:
@@ -425,7 +412,6 @@ class GetIABooksActivity(activity.Activity):
         else:
             _logger.debug("Downloaded %u bytes...",
                           bytes_downloaded)
-        total = self._download_image_content_length
         while gtk.events_pending():
             gtk.main_iteration()
 
@@ -579,8 +565,8 @@ class GetIABooksActivity(activity.Activity):
         while gtk.events_pending():
             gtk.main_iteration()
 
-    def set_downloaded_bytes(self, bytes,  total):
-        fraction = float(bytes) / float(total)
+    def set_downloaded_bytes(self, downloaded_bytes,  total):
+        fraction = float(downloaded_bytes) / float(total)
         self.progressbar.set_fraction(fraction)
 
     def clear_downloaded_bytes(self):
@@ -664,11 +650,11 @@ class GetIABooksActivity(activity.Activity):
         preview_data = ''.join(preview_data)
         return dbus.ByteArray(preview_data)
 
-    def truncate(self,  str,  length):
-        if len(str) > length:
-            return str[0:length - 1] + '...'
+    def truncate(self,  word,  length):
+        if len(word) > length:
+            return word[0:length - 1] + '...'
         else:
-            return str
+            return word
 
     def _alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
