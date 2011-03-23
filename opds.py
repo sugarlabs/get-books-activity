@@ -27,11 +27,7 @@ import gtk
 
 _logger = logging.getLogger('get-ia-books-activity')
 
-_FEEDBOOKS_URI = 'http://feedbooks.com/books/search.atom?query='
-_INTERNETARCHIVE_URI = 'http://bookserver.archive.org/catalog/opensearch?q='
-
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
-_REL_OPDS_COVER = u'http://opds-spec.org/image'
 
 gobject.threads_init()
 
