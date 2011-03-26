@@ -87,10 +87,13 @@ class GetIABooksActivity(activity.Activity):
         self.queryresults = None
         self._getter = None
         self.show_images = True
+        self.languages = {}
+        self._lang_code_handler = languagenames.LanguageNames()
 
-        self._read_configuration()
         if os.path.exists('/etc/get-books.cfg'):
             self._read_configuration('/etc/get-books.cfg')
+        else:
+            self._read_configuration()
 
         if OLD_TOOLBAR:
 
@@ -132,6 +135,14 @@ class GetIABooksActivity(activity.Activity):
         config.readfp(open(file_name))
         if config.has_option('GetBooks', 'show_images'):
             self.show_images = config.getboolean('GetBooks', 'show_images')
+        self.languages = {}
+        if config.has_option('GetBooks', 'languages'):
+            languages_param = config.get('GetBooks', 'languages')
+            for language in languages_param.split(','):
+                lang_code = language.strip()
+                if len(lang_code) > 0:
+                    self.languages[lang_code] = \
+                        self._lang_code_handler.get_full_language_name(lang_code)
 
         for section in config.sections():
             if section != 'GetBooks':
@@ -143,6 +154,7 @@ class GetIABooksActivity(activity.Activity):
                 _SOURCES_CONFIG[section] = repo_config
         logging.error('_SOURCES %s', _SOURCES)
         logging.error('_SOURCES_CONFIG %s', _SOURCES_CONFIG)
+        logging.error('languages %s', self.languages)
 
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
@@ -166,6 +178,20 @@ class GetIABooksActivity(activity.Activity):
         combotool = ToolComboBox(toolbar.source_combo)
         toolbar.insert(combotool, -1)
         combotool.show()
+
+        if len(self.languages) > 0:
+            toolbar.language_combo = ComboBox()
+            toolbar.language_combo.props.sensitive = True
+            toolbar.language_changed_cb_id = \
+                toolbar.language_combo.connect('changed',
+                self.__language_changed_cb)
+            combotool = ToolComboBox(toolbar.language_combo)
+            toolbar.language_combo.append_item('all',_('Any language'))
+            for key in self.languages.keys():
+                toolbar.language_combo.append_item(key, self.languages[key])
+            toolbar.language_combo.set_active(0)
+            toolbar.insert(combotool, -1)
+            combotool.show()
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -227,6 +253,13 @@ class GetIABooksActivity(activity.Activity):
     def __format_changed_cb(self, combo):
         self.show_book_data()
 
+    def __language_changed_cb(self, combo):
+        search_terms = self.get_search_terms()
+        if search_terms == '':
+            self.find_books(None)
+        else:
+            self.find_books(search_terms)
+
     def __search_entry_activate_cb(self, entry):
         self.find_books(entry.props.text)
 
@@ -254,7 +287,6 @@ class GetIABooksActivity(activity.Activity):
 
         self.msg_label = gtk.Label()
 
-        self._lang_code_handler = languagenames.LanguageNames()
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
 
@@ -448,6 +480,10 @@ class GetIABooksActivity(activity.Activity):
     def find_books(self, search_text=''):
         source = self._books_toolbar.source_combo.props.value
 
+        query_language = None
+        if len(self.languages) > 0:
+            query_language = self._books_toolbar.language_combo.props.value
+
         self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
@@ -468,7 +504,7 @@ class GetIABooksActivity(activity.Activity):
         if source in _SOURCES_CONFIG:
             repo_configuration = _SOURCES_CONFIG[source]
             self.queryresults = opds.RemoteQueryResult(repo_configuration,
-                    search_text, self.window)
+                    search_text, query_language, self.window)
         else:
             self.queryresults = opds.LocalVolumeQueryResult( \
                         source, search_text, self.window)

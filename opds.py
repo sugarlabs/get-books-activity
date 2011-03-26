@@ -44,8 +44,11 @@ class DownloadThread(threading.Thread):
         if self.obj._win is not None:
             self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
-            feedobj = feedparser.parse(self.obj._uri + \
-                    self.obj._queryterm.replace(' ', '+'))
+            uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
+            if self.obj._language is not None and self.obj._language != 'all':
+                uri = uri + '&lang=' + self.obj._language
+            logging.error('Searching URL %s', uri)
+            feedobj = feedparser.parse(uri)
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
@@ -162,11 +165,12 @@ class QueryResult(gobject.GObject):
                           ([gobject.TYPE_BOOLEAN])),
     }
 
-    def __init__(self, configuration, queryterm, win):
+    def __init__(self, configuration, queryterm, language, win):
         gobject.GObject.__init__(self)
         self._configuration = configuration
         self._uri = self._configuration['query_uri']
         self._queryterm = queryterm
+        self._language = language
         self._win = win
         self._feedobj = None
         self._next_uri = ''
@@ -243,7 +247,7 @@ class QueryResult(gobject.GObject):
 
 class LocalVolumeQueryResult(QueryResult):
 
-    def __init__(self, path, queryterm, win):
+    def __init__(self, path, queryterm, language, win):
         configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
         QueryResult.__init__(self, configuration, queryterm, win)
 
@@ -265,5 +269,5 @@ class LocalVolumeQueryResult(QueryResult):
 
 class RemoteQueryResult(QueryResult):
 
-    def __init__(self, configuration, queryterm, win):
-        QueryResult.__init__(self, configuration, queryterm, win)
+    def __init__(self, configuration, queryterm, language, win):
+        QueryResult.__init__(self, configuration, queryterm, language, win)
