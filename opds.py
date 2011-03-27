@@ -18,6 +18,9 @@
 
 import logging
 
+import sys
+sys.path.insert(0, './')
+
 import feedparser
 import threading
 import os
@@ -45,10 +48,14 @@ class DownloadThread(threading.Thread):
             self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
             uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
+            headers = {}
             if self.obj._language is not None and self.obj._language != 'all':
-                uri = uri + '&lang=' + self.obj._language
-            logging.error('Searching URL %s', uri)
-            feedobj = feedparser.parse(uri)
+                headers['Accept-Language'] = self.obj._language
+            logging.error('Searching URL %s headers %s' % (uri, headers))
+            logging.error('feedpaser version %s', feedparser.__version__)
+            feedobj = feedparser.parse(uri, etag=None, modified=None,
+                    agent=None, referrer=None, handlers=[],
+                    request_headers=headers)
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
