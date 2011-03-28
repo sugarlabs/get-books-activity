@@ -186,7 +186,7 @@ class GetIABooksActivity(activity.Activity):
         toolbar.search_entry.add_clear_button()
         toolbar.search_entry.connect('activate',
                 self.__search_entry_activate_cb)
-        width = int(gtk.gdk.screen_width() / 3)
+        width = int(gtk.gdk.screen_width() / 5)
         toolbar.search_entry.set_size_request(width, -1)
         book_search_item.add(toolbar.search_entry)
         toolbar.search_entry.show()
