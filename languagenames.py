@@ -17,21 +17,25 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import libxml2
+import logging
 
 _ISO_639_XML_PATH = '/usr/share/xml/iso-codes/iso_639.xml'
 
+
 def singleton(object, instantiated=[]):
     # From http://norvig.com/python-iaq.html
-    "Raise an exception if an object of this class has been instantiated before."
+    "Raise an exception if an obj of this class has been instantiated before"
     assert object.__class__ not in instantiated, \
-        "%s is a Singleton class but is already instantiated" % object.__class__
+    "%s is a Singleton class but is already instantiated" % object.__class__
     instantiated.append(object.__class__)
+
 
 class LanguageNames(object):
     def __init__(self):
         singleton(self)
         try:
-            self._xmldoc = libxml2.parseFile('/usr/share/xml/iso-codes/iso_639.xml')
+            self._xmldoc = libxml2.parseFile(_ISO_639_XML_PATH)
+            self._cache = None
         except libxml2.parserError:
             self._xmldoc = None
             return
@@ -43,19 +47,21 @@ class LanguageNames(object):
             self._xmldoc.freeDoc()
 
     def get_full_language_name(self, code):
-        if self._xmldoc is None:
-            return code
+        if self._cache == None:
+            self._cache = {}
+            for child in self._eroot.children:
+                if child.properties is not None:
+                    lang_code = None
+                    lang_name = None
+                    for property in child.properties:
+                        if property.get_name() == 'name':
+                            lang_name = property.get_content()
+                        elif property.get_name() == 'iso_639_1_code':
+                            lang_code = property.get_content()
 
-        for child in self._eroot.children:
-            if child.properties is not None:
-                for property in child.properties:
-                    if property.get_content() == code:
-                        return self._real_get_full_language_name(child)
+                    if lang_code is not None and lang_name is not None:
+                        self._cache[lang_code] = lang_name
+            self._xmldoc.freeDoc()
+            self._xmldoc = None
 
-        return code
-
-    def _real_get_full_language_name(self, node):
-        for property in node.properties:
-            if property.get_name() == 'name':
-                return property.get_content()
-
+        return self._cache[code]
