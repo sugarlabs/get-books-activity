@@ -30,8 +30,10 @@ except ImportError:
     OLD_TOOLBAR = True
 
 from sugar.graphics import style
+from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
+from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import iconentry
 from sugar import profile
 from sugar.activity import activity
@@ -89,6 +91,7 @@ class GetIABooksActivity(activity.Activity):
         self.show_images = True
         self.languages = {}
         self._lang_code_handler = languagenames.LanguageNames()
+        self.catalogs = {}
 
         if os.path.exists('/etc/get-books.cfg'):
             self._read_configuration('/etc/get-books.cfg')
@@ -142,19 +145,38 @@ class GetIABooksActivity(activity.Activity):
                 lang_code = language.strip()
                 if len(lang_code) > 0:
                     self.languages[lang_code] = \
-                        self._lang_code_handler.get_full_language_name(lang_code)
+                    self._lang_code_handler.get_full_language_name(lang_code)
 
         for section in config.sections():
-            if section != 'GetBooks':
+            if section != 'GetBooks' and not section.startswith('Catalogs'):
                 name = config.get(section, 'name')
                 _SOURCES[section] = name
                 repo_config = {}
                 repo_config['query_uri'] = config.get(section, 'query_uri')
                 repo_config['opds_cover'] = config.get(section, 'opds_cover')
                 _SOURCES_CONFIG[section] = repo_config
+
         logging.error('_SOURCES %s', _SOURCES)
         logging.error('_SOURCES_CONFIG %s', _SOURCES_CONFIG)
+
+        for section in config.sections():
+            if section.startswith('Catalogs'):
+                catalog_source = section.split('_')[1]
+                if not catalog_source in _SOURCES_CONFIG:
+                    logging.error('There are not a source for the catalog ' +
+                                    'section  %s', section)
+                    break
+                source_config = _SOURCES_CONFIG[catalog_source]
+                opds_cover = source_config['opds_cover']
+                for catalog in config.options(section):
+                    catalog_config = {}
+                    catalog_config['query_uri'] = config.get(section, catalog)
+                    catalog_config['opds_cover'] = opds_cover
+                    catalog_config['source'] = catalog_source
+                    self.catalogs[catalog] = catalog_config
+
         logging.error('languages %s', self.languages)
+        logging.error('catalogs %s', self.catalogs)
 
     def _add_search_controls(self, toolbar):
         book_search_item = gtk.ToolItem()
@@ -182,16 +204,31 @@ class GetIABooksActivity(activity.Activity):
         if len(self.languages) > 0:
             toolbar.language_combo = ComboBox()
             toolbar.language_combo.props.sensitive = True
-            toolbar.language_changed_cb_id = \
-                toolbar.language_combo.connect('changed',
-                self.__language_changed_cb)
             combotool = ToolComboBox(toolbar.language_combo)
-            toolbar.language_combo.append_item('all',_('Any language'))
+            toolbar.language_combo.append_item('all', _('Any language'))
             for key in self.languages.keys():
                 toolbar.language_combo.append_item(key, self.languages[key])
             toolbar.language_combo.set_active(0)
             toolbar.insert(combotool, -1)
             combotool.show()
+            toolbar.language_changed_cb_id = \
+                toolbar.language_combo.connect('changed',
+                self.__language_changed_cb)
+
+        if len(self.catalogs) > 0:
+            bt_catalogs = ToolButton('catalogs')
+            bt_catalogs.set_tooltip(_('Catalogs'))
+
+            toolbar.insert(bt_catalogs, -1)
+            bt_catalogs.show()
+            palette = bt_catalogs.get_palette()
+
+            for key in self.catalogs.keys():
+                menu_item = MenuItem(key)
+                menu_item.connect('activate',
+                    self.__activate_catalog_cb, self.catalogs[key])
+                palette.menu.append(menu_item)
+                menu_item.show()
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -201,6 +238,24 @@ class GetIABooksActivity(activity.Activity):
 
         toolbar.search_entry.grab_focus()
         return toolbar
+
+    def __activate_catalog_cb(self, menu, catalog_config):
+        query_language = self.get_query_language()
+
+        self.enable_button(False)
+        self.clear_downloaded_bytes()
+        self.book_selected = False
+        self.listview.clear()
+
+        if self.queryresults is not None:
+            self.queryresults.cancel()
+            self.queryresults = None
+
+        self.queryresults = opds.RemoteQueryResult(catalog_config,
+                '', query_language, self.window)
+        self.show_message(_('Performing lookup, please wait...'))
+
+        self.queryresults.connect('updated', self.__query_updated_cb)
 
     def update_format_combo(self, links):
         self.format_combo.handler_block(self.__format_changed_cb_id)
@@ -477,12 +532,16 @@ class GetIABooksActivity(activity.Activity):
 
         self.image.set_from_pixbuf(pixbuf)
 
-    def find_books(self, search_text=''):
-        source = self._books_toolbar.source_combo.props.value
-
+    def get_query_language(self):
         query_language = None
         if len(self.languages) > 0:
             query_language = self._books_toolbar.language_combo.props.value
+        return query_language
+
+    def find_books(self, search_text=''):
+        source = self._books_toolbar.source_combo.props.value
+
+        query_language = self.get_query_language()
 
         self.enable_button(False)
         self.clear_downloaded_bytes()
@@ -495,9 +554,8 @@ class GetIABooksActivity(activity.Activity):
 
         if search_text is None:
             return
-        elif len(search_text) == 0:
-            self._alert(_('Error'),
-                    _('You must enter at least one search word.'))
+        elif len(search_text) < 3:
+            self.show_message(_('You must enter at least 3 letters.'))
             self._books_toolbar.search_entry.grab_focus()
             return
 
@@ -519,6 +577,19 @@ class GetIABooksActivity(activity.Activity):
             self.show_message(_('Sorry, no books could be found.'))
         elif not midway:
             self.hide_message()
+            query_language = self.get_query_language()
+            logging.error('LANGUAGE %s', query_language)
+            if query_language != 'all' and query_language != 'en':
+                # the bookserver send english books if there are not books in
+                # the requested language
+                only_english = True
+                for book in self.queryresults.get_book_list():
+                    if book.get_language() == query_language:
+                        only_english = False
+                        break
+                if only_english:
+                    self.show_message(
+                            _('Sorry, we only found english books.'))
 
     def __source_changed_cb(self, widget):
         search_terms = self.get_search_terms()
