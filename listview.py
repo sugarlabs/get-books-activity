@@ -62,13 +62,21 @@ class ListView(ExtListView):
         self.emit('selection-changed')
 
     def populate(self, results):
+        self.populate_with_books(results.get_book_list())
+
+    def populate_with_books(self, books):
         rows = []
 
-        for book in results.get_book_list():
+        for book in books:
+            lang = ''
+            try:
+                lang = self._lang_code_handler.get_full_language_name(
+                                                        book.get_language())
+            except:
+                pass
             try:
                 rows.append([book.get_title(), book.get_author(), \
-                    book.get_publisher(), \
-                    self._lang_code_handler.get_full_language_name(book.get_language()), \
+                    book.get_publisher(), lang , \
                     book.get_published_year(), book])
             except:
                 _logger.debug(sys.exc_info())

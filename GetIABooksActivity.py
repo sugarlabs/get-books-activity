@@ -286,6 +286,13 @@ class GetIABooksActivity(activity.Activity):
         for key in _SOURCES.keys():
             toolbar.source_combo.append_item(_SOURCES[key], key)
 
+        # Add menu for local books
+        if len(_SOURCES) > 0:
+            toolbar.source_combo.append_separator()
+        toolbar.source_combo.append_item('local_books', _('My books'),
+                icon_name='computer-xo')
+
+        # TODO: I don't know how work the devices section
         devices = self._device_manager.get_devices()
 
         if len(devices):
@@ -437,15 +444,18 @@ class GetIABooksActivity(activity.Activity):
         self.msg_label.hide()
 
     def show_book_data(self):
+        self.selected_source = self._books_toolbar.source_combo.props.value
         self.selected_title = self.selected_book.get_title()
         book_data = _('Title:\t\t') + self.selected_title + '\n\n'
         self.selected_author = self.selected_book.get_author()
         book_data += _('Author:\t\t') + self.selected_author + '\n\n'
         self.selected_publisher = self.selected_book.get_publisher()
         book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
-        book_data += _('Language:\t') + \
-                self._lang_code_handler.get_full_language_name(
-                    self.selected_book.get_language()) + '\n\n'
+        self.selected_language_code = self.selected_book.get_language()
+        self.selected_language = \
+            self._lang_code_handler.get_full_language_name(
+                self.selected_book.get_language())
+        book_data += _('Language:\t') + self.selected_language + '\n\n'
         self.download_url = self.selected_book.get_download_links()[\
                 self.format_combo.props.value]
         book_data += _('Link:\t\t') + self.download_url
@@ -552,24 +562,29 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.cancel()
             self.queryresults = None
 
-        if search_text is None:
-            return
-        elif len(search_text) < 3:
-            self.show_message(_('You must enter at least 3 letters.'))
-            self._books_toolbar.search_entry.grab_focus()
-            return
-
-        if source in _SOURCES_CONFIG:
-            repo_configuration = _SOURCES_CONFIG[source]
-            self.queryresults = opds.RemoteQueryResult(repo_configuration,
-                    search_text, query_language, self.window)
+        logging.error('find books source = %s', source)
+        if source == 'local_books':
+            self.listview.populate_with_books(
+                    self.get_entrys_info(search_text))
         else:
-            self.queryresults = opds.LocalVolumeQueryResult( \
-                        source, search_text, self.window)
+            if search_text is None:
+                return
+            elif len(search_text) < 3:
+                self.show_message(_('You must enter at least 3 letters.'))
+                self._books_toolbar.search_entry.grab_focus()
+                return
 
-        self.show_message(_('Performing lookup, please wait...'))
+            if source in _SOURCES_CONFIG:
+                repo_configuration = _SOURCES_CONFIG[source]
+                self.queryresults = opds.RemoteQueryResult(repo_configuration,
+                        search_text, query_language, self.window)
+            else:
+                self.queryresults = opds.LocalVolumeQueryResult( \
+                            source, search_text, self.window)
 
-        self.queryresults.connect('updated', self.__query_updated_cb)
+            self.show_message(_('Performing lookup, please wait...'))
+
+            self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
@@ -714,6 +729,14 @@ class GetIABooksActivity(activity.Activity):
                 textbuffer.get_end_iter())
         if self.exist_cover_image:
             journal_entry.metadata['preview'] = self._get_preview_image()
+            journal_entry.metadata['cover_image'] = self._get_preview_image()
+        else:
+            journal_entry.metadata['cover_image'] = ""
+
+        journal_entry.metadata['tags'] = self.selected_source
+        journal_entry.metadata['author'] = self.selected_author
+        journal_entry.metadata['publisher'] = self.selected_publisher
+        journal_entry.metadata['language'] = self.selected_language_code
 
         journal_entry.file_path = tempfile
         datastore.write(journal_entry)
@@ -774,3 +797,47 @@ class GetIABooksActivity(activity.Activity):
     def _alert_cancel_cb(self, alert, response_id):
         self.remove_alert(alert)
         self.textview.grab_focus()
+
+    def get_entrys_info(self, query):
+        books_pdf = self.get_entry_info_format(query, _MIMETYPES['PDF'])
+        books_epub = self.get_entry_info_format(query, _MIMETYPES['EPUB'])
+        return books_pdf + books_epub
+
+    def get_entry_info_format(self, query, format):
+        books = []
+        if query is not None:
+            ds_objects, num_objects = datastore.find(
+                    {'mime_type': '%s' % format,
+                    'query': '*%s*' % query})
+        else:
+            ds_objects, num_objects = datastore.find(
+                    {'mime_type': '%s' % format})
+
+        logging.error('Local search %d books found', num_objects)
+        for i in range(0, num_objects):
+            entry = {}
+            logging.error('title %s', ds_objects[i].metadata['title'])
+            logging.error('mime %s', ds_objects[i].metadata['mime_type'])
+            entry['title'] = ds_objects[i].metadata['title']
+            entry['mime'] = ds_objects[i].metadata['mime_type']
+            entry['object_id'] = ds_objects[i].object_id
+
+            if 'author' in ds_objects[i].metadata:
+                entry['author'] = ds_objects[i].metadata['author']
+            else:
+                entry['author'] = ''
+
+            if 'publisher' in ds_objects[i].metadata:
+                entry['dcterms_publisher'] = \
+                    ds_objects[i].metadata['publisher']
+            else:
+                entry['dcterms_publisher'] = ''
+
+            if 'language' in ds_objects[i].metadata:
+                entry['dcterms_language'] = \
+                    ds_objects[i].metadata['language']
+            else:
+                entry['dcterms_language'] = ''
+
+            books.append(opds.Book(None, entry, ''))
+        return books
