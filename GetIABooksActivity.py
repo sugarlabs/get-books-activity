@@ -25,7 +25,6 @@ OLD_TOOLBAR = False
 try:
     from sugar.graphics.toolbarbox import ToolbarBox
     from sugar.activity.widgets import StopButton
-    from sugar.activity.widgets import ActivityToolbarButton
 except ImportError:
     OLD_TOOLBAR = True
 
@@ -35,8 +34,10 @@ from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import iconentry
+from sugar.graphics.xocolor import XoColor
 from sugar import profile
 from sugar.activity import activity
+from sugar.bundle.activitybundle import ActivityBundle
 from sugar import network
 from sugar.datastore import datastore
 from sugar.graphics.alert import NotifyAlert
@@ -84,7 +85,7 @@ class GetIABooksActivity(activity.Activity):
 
     def __init__(self, handle):
         "The entry point to the Activity"
-        activity.Activity.__init__(self, handle)
+        activity.Activity.__init__(self, handle, False)
         self.max_participants = 1
 
         self.selected_book = None
@@ -101,7 +102,6 @@ class GetIABooksActivity(activity.Activity):
             self._read_configuration()
 
         if OLD_TOOLBAR:
-
             toolbox = activity.ActivityToolbox(self)
             activity_toolbar = toolbox.get_activity_toolbar()
 
@@ -112,11 +112,15 @@ class GetIABooksActivity(activity.Activity):
             self._books_toolbar.show()
             toolbox.show()
             toolbox.set_current_toolbar(1)
-
         else:
             toolbar_box = ToolbarBox()
-            activity_button = ActivityToolbarButton(self)
-            activity_toolbar = activity_button.page
+            activity_button = ToolButton()
+            color = XoColor(profile.get_color())
+            bundle = ActivityBundle(activity.get_bundle_path())
+            icon = Icon(file=bundle.get_icon(), xo_color=color)
+            activity_button.set_icon_widget(icon)
+            activity_button.show()
+
             toolbar_box.toolbar.insert(activity_button, 0)
             self._add_search_controls(toolbar_box.toolbar)
 
@@ -131,7 +135,6 @@ class GetIABooksActivity(activity.Activity):
             toolbar_box.show_all()
             self._books_toolbar = toolbar_box.toolbar
 
-        activity_toolbar.keep.props.visible = False
         self._create_controls()
 
     def _read_configuration(self, file_name='get-books.cfg'):
@@ -900,3 +903,10 @@ class GetIABooksActivity(activity.Activity):
 
             books.append(opds.Book(None, entry, ''))
         return books
+
+    def close(self,  skip_save=False):
+        "Override the close method so we don't try to create a Journal entry."
+        activity.Activity.close(self,  True)
+
+    def save(self):
+        pass
