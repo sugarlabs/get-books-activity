@@ -40,6 +40,8 @@ from sugar.activity import activity
 from sugar import network
 from sugar.datastore import datastore
 from sugar.graphics.alert import NotifyAlert
+from sugar.graphics.alert import Alert
+from sugar.graphics.icon import Icon
 from gettext import gettext as _
 import dbus
 import gobject
@@ -429,12 +431,24 @@ class GetIABooksActivity(activity.Activity):
         return True
 
     def selection_cb(self, widget):
-        self.clear_downloaded_bytes()
+        # Testing...
         selected_book = self.listview.get_selected_book()
-        if selected_book:
-            self.update_format_combo(selected_book.get_download_links())
-            self.selected_book = selected_book
-            self.show_book_data()
+        if self.source == 'local_books':
+            if selected_book:
+                self.download_url = ''
+                self.selected_book = selected_book
+                self._download.hide()
+                self.show_book_data()
+                self._object_id = selected_book.get_object_id()
+                self._show_journal_alert(_('Selected book'),
+                        self.selected_title)
+        else:
+            self.clear_downloaded_bytes()
+            if selected_book:
+                self.update_format_combo(selected_book.get_download_links())
+                self.selected_book = selected_book
+                self._download.show()
+                self.show_book_data()
 
     def show_message(self, text):
         self.msg_label.set_text(text)
@@ -444,7 +458,6 @@ class GetIABooksActivity(activity.Activity):
         self.msg_label.hide()
 
     def show_book_data(self):
-        self.selected_source = self._books_toolbar.source_combo.props.value
         self.selected_title = self.selected_book.get_title()
         book_data = _('Title:\t\t') + self.selected_title + '\n\n'
         self.selected_author = self.selected_book.get_author()
@@ -452,13 +465,16 @@ class GetIABooksActivity(activity.Activity):
         self.selected_publisher = self.selected_book.get_publisher()
         book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
         self.selected_language_code = self.selected_book.get_language()
-        self.selected_language = \
-            self._lang_code_handler.get_full_language_name(
-                self.selected_book.get_language())
-        book_data += _('Language:\t') + self.selected_language + '\n\n'
-        self.download_url = self.selected_book.get_download_links()[\
-                self.format_combo.props.value]
-        book_data += _('Link:\t\t') + self.download_url
+        if self.selected_language_code != '':
+            self.selected_language = \
+                self._lang_code_handler.get_full_language_name(
+                    self.selected_book.get_language())
+            book_data += _('Language:\t') + self.selected_language + '\n\n'
+        if self.source != 'local_books':
+            self.download_url = self.selected_book.get_download_links()[\
+                    self.format_combo.props.value]
+            if len(self.download_url) > 0:
+                book_data += _('Link:\t\t') + self.download_url
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text('\n' + book_data)
         self.enable_button(True)
@@ -466,12 +482,38 @@ class GetIABooksActivity(activity.Activity):
         # Cover Image
         self.exist_cover_image = False
         if self.show_images:
-            url_image = self.selected_book.get_image_url()
-            logging.error('url_image %s', url_image)
-            if url_image:
-                self.download_image(url_image.values()[0])
+            if self.source == 'local_books':
+                cover_image_data = self.get_journal_entry_cover_image(
+                        self.selected_book.get_object_id())
+                if (cover_image_data):
+                    self.add_image_buffer(
+                        self.get_pixbuf_from_buffer(cover_image_data))
+                else:
+                    self.add_default_image()
             else:
-                self.add_default_image()
+                url_image = self.selected_book.get_image_url()
+                logging.error('url_image %s', url_image)
+                if url_image:
+                    self.download_image(url_image.values()[0])
+                else:
+                    self.add_default_image()
+
+    def get_pixbuf_from_buffer(self, buffer):
+        """Encoded Buffer To Pixbuf"""
+        pixbuf_loader = gtk.gdk.PixbufLoader()
+        pixbuf_loader.write(buffer)
+        pixbuf_loader.close()
+        pixbuf = pixbuf_loader.get_pixbuf()
+        return pixbuf
+
+    def get_journal_entry_cover_image(self, object_id):
+        ds_object = datastore.get(object_id)
+        if 'cover_image' in ds_object.metadata:
+            return ds_object.metadata['cover_image']
+        elif 'preview' in ds_object.metadata:
+            return ds_object.metadata['preview']
+        else:
+            return ""
 
     def download_image(self,  url):
         path = os.path.join(self.get_activity_root(), 'instance',
@@ -549,7 +591,7 @@ class GetIABooksActivity(activity.Activity):
         return query_language
 
     def find_books(self, search_text=''):
-        source = self._books_toolbar.source_combo.props.value
+        self.source = self._books_toolbar.source_combo.props.value
 
         query_language = self.get_query_language()
 
@@ -562,8 +604,7 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.cancel()
             self.queryresults = None
 
-        logging.error('find books source = %s', source)
-        if source == 'local_books':
+        if self.source == 'local_books':
             self.listview.populate_with_books(
                     self.get_entrys_info(search_text))
         else:
@@ -574,13 +615,13 @@ class GetIABooksActivity(activity.Activity):
                 self._books_toolbar.search_entry.grab_focus()
                 return
 
-            if source in _SOURCES_CONFIG:
-                repo_configuration = _SOURCES_CONFIG[source]
+            if self.source in _SOURCES_CONFIG:
+                repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language, self.window)
             else:
                 self.queryresults = opds.LocalVolumeQueryResult( \
-                            source, search_text, self.window)
+                            self.source, search_text, self.window)
 
             self.show_message(_('Performing lookup, please wait...'))
 
@@ -660,7 +701,7 @@ class GetIABooksActivity(activity.Activity):
         try:
             self._getter.start(path)
         except:
-            self._alert(_('Error'), _('Connection timed out for ') +
+            self.show_error_alert(_('Error'), _('Connection timed out for ') +
                     self.selected_title)
 
         self._download_content_length = self._getter.get_content_length()
@@ -699,7 +740,7 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(True)
         self.progressbox.hide()
         _logger.debug("Error getting document: %s", err)
-        self._alert(_('Error: Could not download %s. ' +
+        self._show_error_alert(_('Error: Could not download %s. ' +
                 'The path in the catalog seems to be incorrect') %
                 self.selected_title)
         self._download_content_length = 0
@@ -733,7 +774,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             journal_entry.metadata['cover_image'] = ""
 
-        journal_entry.metadata['tags'] = self.selected_source
+        journal_entry.metadata['tags'] = self.source
         journal_entry.metadata['author'] = self.selected_author
         journal_entry.metadata['publisher'] = self.selected_publisher
         journal_entry.metadata['language'] = self.selected_language_code
@@ -742,8 +783,32 @@ class GetIABooksActivity(activity.Activity):
         datastore.write(journal_entry)
         os.remove(tempfile)
         self.progressbox.hide()
-        self._alert(_('Success: %s was added to Journal.') %
-            self.selected_title)
+        self._object_id = journal_entry.object_id
+        self._show_journal_alert(_('Download completed'), self.selected_title)
+
+    def _show_journal_alert(self, title, msg):
+        _stop_alert = Alert()
+        _stop_alert.props.title = title
+        _stop_alert.props.msg = msg
+        open_icon = Icon(icon_name='zoom-activity')
+        _stop_alert.add_button(gtk.RESPONSE_APPLY,
+                                    _('Show in Journal'), open_icon)
+        open_icon.show()
+        ok_icon = Icon(icon_name='dialog-ok')
+        _stop_alert.add_button(gtk.RESPONSE_OK, _('Ok'), ok_icon)
+        ok_icon.show()
+        # Remove other alerts
+        for alert in self._alerts:
+            self.remove_alert(alert)
+
+        self.add_alert(_stop_alert)
+        _stop_alert.connect('response', self.__stop_response_cb)
+        _stop_alert.show()
+
+    def __stop_response_cb(self, alert, response_id):
+        if response_id is gtk.RESPONSE_APPLY:
+            activity.show_object_in_journal(self._object_id)
+        self.remove_alert(alert)
 
     def _get_preview_image(self):
         preview_width, preview_height = style.zoom(300), style.zoom(225)
@@ -780,13 +845,7 @@ class GetIABooksActivity(activity.Activity):
         preview_data = ''.join(preview_data)
         return dbus.ByteArray(preview_data)
 
-    def truncate(self,  word,  length):
-        if len(word) > length:
-            return word[0:length - 1] + '...'
-        else:
-            return word
-
-    def _alert(self, title, text=None):
+    def _show_error_alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
         alert.props.title = title
         alert.props.msg = text
@@ -799,13 +858,14 @@ class GetIABooksActivity(activity.Activity):
         self.textview.grab_focus()
 
     def get_entrys_info(self, query):
-        books_pdf = self.get_entry_info_format(query, _MIMETYPES['PDF'])
-        books_epub = self.get_entry_info_format(query, _MIMETYPES['EPUB'])
-        return books_pdf + books_epub
+        books = []
+        for key in _MIMETYPES.keys():
+            books.extend(self.get_entry_info_format(query, _MIMETYPES[key]))
+        return books
 
     def get_entry_info_format(self, query, format):
         books = []
-        if query is not None:
+        if query is not None and len(query) > 0:
             ds_objects, num_objects = datastore.find(
                     {'mime_type': '%s' % format,
                     'query': '*%s*' % query})
@@ -813,11 +873,10 @@ class GetIABooksActivity(activity.Activity):
             ds_objects, num_objects = datastore.find(
                     {'mime_type': '%s' % format})
 
-        logging.error('Local search %d books found', num_objects)
+        logging.error('Local search %d books found %s format', num_objects,
+                    format)
         for i in range(0, num_objects):
             entry = {}
-            logging.error('title %s', ds_objects[i].metadata['title'])
-            logging.error('mime %s', ds_objects[i].metadata['mime_type'])
             entry['title'] = ds_objects[i].metadata['title']
             entry['mime'] = ds_objects[i].metadata['mime_type']
             entry['object_id'] = ds_objects[i].object_id

@@ -149,6 +149,14 @@ class Book(object):
             ret = 'Unknown'
         return ret
 
+    def get_object_id(self):
+        try:
+            ret = self._entry['object_id']
+        except KeyError:
+            ret = 'Unknown'
+
+        return ret
+
     def match(self, terms):
         #TODO: Make this more comprehensive
         for term in terms.split('+'):
