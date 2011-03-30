@@ -16,7 +16,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gobject, gtk, gtk.gdk, pango, sys
+import gobject
+import gtk
+import pango
+import sys
 from gettext import gettext as _
 import logging
 
@@ -24,34 +27,37 @@ from extListview import ExtListView
 
 _logger = logging.getLogger('get-ia-books-activity')
 
+
 class ListView(ExtListView):
-    __txtRdr    = gtk.CellRendererText()
+    __txtRdr = gtk.CellRendererText()
     __txtRdr.props.wrap_mode = pango.WRAP_WORD
     __txtRdr.props.wrap_width = 500
     __txtRdr.props.width = 500
-    (
-        ROW_TITLE,
-        ROW_AUTHOR,
-        ROW_PUBLISHER,
-        ROW_LANGUAGE,
-        ROW_PUB_DATE,
-        ROW_BOOK
-    ) = range(6)
-    columns = ((_('Title'), [(__txtRdr, gobject.TYPE_STRING)], (ROW_TITLE,), False, True),
-               (_('Author'), [(__txtRdr, gobject.TYPE_STRING)], (ROW_AUTHOR, ROW_TITLE), False,  True),
-               (_('Publisher'), [(__txtRdr, gobject.TYPE_STRING)], (ROW_AUTHOR, ROW_TITLE), False,  False),
-               (_('Language'), [(__txtRdr, gobject.TYPE_STRING)], (ROW_AUTHOR, ROW_TITLE), False,  False),
-               (_('Publish Date'), [(__txtRdr, gobject.TYPE_STRING)], (ROW_AUTHOR, ROW_TITLE), False,  False),
+    (ROW_TITLE, ROW_AUTHOR, ROW_PUBLISHER,
+    ROW_LANGUAGE, ROW_PUB_DATE, ROW_BOOK) = range(6)
+
+    columns = ((_('Title'), [(__txtRdr, gobject.TYPE_STRING)],
+                    (ROW_TITLE,), False, True),
+               (_('Author'), [(__txtRdr, gobject.TYPE_STRING)],
+                    (ROW_AUTHOR, ROW_TITLE), False,  True),
+               (_('Publisher'), [(__txtRdr, gobject.TYPE_STRING)],
+                    (ROW_AUTHOR, ROW_TITLE), False,  False),
+               (_('Language'), [(__txtRdr, gobject.TYPE_STRING)],
+                    (ROW_AUTHOR, ROW_TITLE), False,  False),
+               (_('Publish Date'), [(__txtRdr, gobject.TYPE_STRING)],
+                    (ROW_AUTHOR, ROW_TITLE), False,  False),
                (None, [(None, gobject.TYPE_PYOBJECT)], (None,), False, False))
     __gsignals__ = {
         'selection-changed': (gobject.SIGNAL_RUN_FIRST,
                           gobject.TYPE_NONE,
                           ([])),
     }
+
     def __init__(self, lang_code_handler):
-        ExtListView.__init__(self, self.columns, sortable=True, useMarkup=False, canShowHideColumns=True)
+        ExtListView.__init__(self, self.columns, sortable=True,
+                useMarkup=False, canShowHideColumns=True)
         #self.enableDNDReordering() # Is this needed ?
-        
+
         self._lang_code_handler = lang_code_handler
 
         selection = self.get_selection()
@@ -76,7 +82,7 @@ class ListView(ExtListView):
                 pass
             try:
                 rows.append([book.get_title(), book.get_author(), \
-                    book.get_publisher(), lang , \
+                    book.get_publisher(), lang, \
                     book.get_published_year(), book])
             except:
                 _logger.debug(sys.exc_info())
@@ -88,6 +94,4 @@ class ListView(ExtListView):
             ret = self.getFirstSelectedRow()[self.ROW_BOOK]
         except IndexError:
             ret = None
-
         return ret
-
