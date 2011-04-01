@@ -232,6 +232,11 @@ class GetIABooksActivity(activity.Activity):
         self.clear_downloaded_bytes()
         self.book_selected = False
         self.listview.clear()
+        logging.error('SOURCE %s', catalog_config['source'])
+        self._books_toolbar.search_entry.props.text = ''
+        source = catalog_config['source']
+        position = _SOURCES_CONFIG[source]['position']
+        self._books_toolbar.source_combo.set_active(position)
 
         if self.queryresults is not None:
             self.queryresults.cancel()
@@ -269,8 +274,11 @@ class GetIABooksActivity(activity.Activity):
         #TODO: Do not blindly clear this
         toolbar.source_combo.remove_all()
 
+        position = 0
         for key in _SOURCES.keys():
             toolbar.source_combo.append_item(_SOURCES[key], key)
+            _SOURCES_CONFIG[key]['position'] = position
+            position = position + 1
 
         # Add menu for local books
         if len(_SOURCES) > 0:
