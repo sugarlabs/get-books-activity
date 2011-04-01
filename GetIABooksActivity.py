@@ -523,10 +523,10 @@ class GetIABooksActivity(activity.Activity):
         self.add_image_buffer(pixbuf)
 
     def add_image_buffer(self, pixbuf):
-        MAX_WIDTH_IMAGE = int(gtk.gdk.screen_width() / 5)
+        MAX_HEIGHT_IMAGE = int(gtk.gdk.screen_height() / 3)
         width, height = pixbuf.get_width(), pixbuf.get_height()
-        if width > MAX_WIDTH_IMAGE:
-            scale = MAX_WIDTH_IMAGE / float(width)
+        if height > MAX_HEIGHT_IMAGE:
+            scale = MAX_HEIGHT_IMAGE / float(height)
 
             pixbuf = pixbuf.scale_simple(int(width * scale),
                     int(height * scale), gtk.gdk.INTERP_BILINEAR)
