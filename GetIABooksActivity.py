@@ -38,7 +38,6 @@ from sugar.graphics.xocolor import XoColor
 from sugar import profile
 from sugar.activity import activity
 from sugar.bundle.activitybundle import ActivityBundle
-from sugar import network
 from sugar.datastore import datastore
 from sugar.graphics.alert import NotifyAlert
 from sugar.graphics.alert import Alert
@@ -53,30 +52,12 @@ import opds
 import languagenames
 import devicemanager
 
-_MIMETYPES = {'PDF': u'application/pdf', 'EPUB': u'application/epub+zip'}
+_MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw',
+                'EPUB': u'application/epub+zip', 'DJVU': u'image/x.djvu'}
 _SOURCES = {}
 _SOURCES_CONFIG = {}
 
 _logger = logging.getLogger('get-ia-books-activity')
-
-
-class ReadURLDownloader(network.GlibURLDownloader):
-    """URLDownloader that provides content-length and content-type."""
-
-    def get_content_length(self):
-        """Return the content-length of the download."""
-        if self._info is not None:
-            length = self._info.headers.get('Content-Length')
-            if length is not None:
-                return int(length)
-            else:
-                return 0
-
-    def get_content_type(self):
-        """Return the content-type of the download."""
-        if self._info is not None:
-            return self._info.headers.get('Content-type')
-        return None
 
 READ_STREAM_SERVICE = 'read-activity-http'
 
@@ -321,14 +302,10 @@ class GetIABooksActivity(activity.Activity):
         self.show_book_data()
 
     def __language_changed_cb(self, combo):
-        search_terms = self.get_search_terms()
-        if search_terms == '':
-            self.find_books(None)
-        else:
-            self.find_books(search_terms)
+        self.find_books(self.get_search_terms())
 
     def __search_entry_activate_cb(self, entry):
-        self.find_books(entry.props.text)
+        self.find_books(self.get_search_terms())
 
     def __get_book_cb(self, button):
         self.get_book()
@@ -469,15 +446,21 @@ class GetIABooksActivity(activity.Activity):
         book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
         self.selected_language_code = self.selected_book.get_language()
         if self.selected_language_code != '':
-            self.selected_language = \
-                self._lang_code_handler.get_full_language_name(
-                    self.selected_book.get_language())
+            try:
+                self.selected_language = \
+                    self._lang_code_handler.get_full_language_name(
+                        self.selected_book.get_language())
+            except:
+                self.selected_language = self.selected_book.get_language()
             book_data += _('Language:\t') + self.selected_language + '\n\n'
         if self.source != 'local_books':
-            self.download_url = self.selected_book.get_download_links()[\
-                    self.format_combo.props.value]
-            if len(self.download_url) > 0:
-                book_data += _('Link:\t\t') + self.download_url
+            try:
+                self.download_url = self.selected_book.get_download_links()[\
+                        self.format_combo.props.value]
+                if len(self.download_url) > 0:
+                    book_data += _('Link:\t\t') + self.download_url
+            except:
+                pass
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text('\n' + book_data)
         self.enable_button(True)
@@ -521,7 +504,7 @@ class GetIABooksActivity(activity.Activity):
     def download_image(self,  url):
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
-        self._getter = ReadURLDownloader(url)
+        self._getter = opds.ReadURLDownloader(url)
         self._getter.connect("finished", self._get_image_result_cb)
         self._getter.connect("progress", self._get_image_progress_cb)
         self._getter.connect("error", self._get_image_error_cb)
@@ -618,7 +601,11 @@ class GetIABooksActivity(activity.Activity):
                 self._books_toolbar.search_entry.grab_focus()
                 return
 
-            if self.source in _SOURCES_CONFIG:
+            if self.source == 'Internet Archive':
+                self.queryresults = \
+                        opds.InternetArchiveQueryResult(search_text,
+                        query_language, self)
+            elif self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language, self.window)
@@ -696,7 +683,7 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.set_sensitive(False)
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
-        self._getter = ReadURLDownloader(url)
+        self._getter = opds.ReadURLDownloader(url)
         self._getter.connect("finished", self._get_book_result_cb)
         self._getter.connect("progress", self._get_book_progress_cb)
         self._getter.connect("error", self._get_book_error_cb)
@@ -765,6 +752,10 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['keep'] = '0'
         journal_entry.metadata['mime_type'] = \
                 self.format_combo.props.value
+        # Fix fake mime type for black&white pdfs
+        if journal_entry.metadata['mime_type'] == _MIMETYPES['PDF BW']:
+            journal_entry.metadata['mime_type'] = _MIMETYPES['PDF']
+
         journal_entry.metadata['buddies'] = ''
         journal_entry.metadata['icon-color'] = profile.get_color().to_string()
         textbuffer = self.textview.get_buffer()

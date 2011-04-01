@@ -18,21 +18,44 @@
 
 import logging
 
-import sys
-sys.path.insert(0, './')
-
-import feedparser
 import threading
 import os
-
+import urllib
 import gobject
 import gtk
+import time
+import csv
+
+from sugar import network
+
+import sys
+sys.path.insert(0, './')
+import feedparser
 
 _logger = logging.getLogger('get-ia-books-activity')
 
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 
 gobject.threads_init()
+
+
+class ReadURLDownloader(network.GlibURLDownloader):
+    """URLDownloader that provides content-length and content-type."""
+
+    def get_content_length(self):
+        """Return the content-length of the download."""
+        if self._info is not None:
+            length = self._info.headers.get('Content-Length')
+            if length is not None:
+                return int(length)
+            else:
+                return 0
+
+    def get_content_type(self):
+        """Return the content-type of the download."""
+        if self._info is not None:
+            return self._info.headers.get('Content-type')
+        return None
 
 
 class DownloadThread(threading.Thread):
@@ -283,3 +306,156 @@ class RemoteQueryResult(QueryResult):
 
     def __init__(self, configuration, queryterm, language, win):
         QueryResult.__init__(self, configuration, queryterm, language, win)
+
+
+class IABook(Book):
+
+    def __init__(self, configuration, entry, basepath=None):
+        Book.__init__(self, configuration, entry, basepath=None)
+
+    def get_download_links(self):
+        return self._entry['links']
+
+    def get_image_url(self):
+        return {'jpg': self._entry['cover_image']}
+
+
+class DownloadIAThread(threading.Thread):
+
+    def __init__(self, obj, midway):
+        threading.Thread.__init__(self)
+        self.midway = midway
+        self.obj = obj
+        self._download_content_length = 0
+        self._download_content_type = None
+        self.stopthread = threading.Event()
+
+    def _download(self):
+        if self.obj._win is not None:
+            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+
+        self._booklist = []
+        queryterm = self.obj._queryterm
+        search_tuple = queryterm.lower().split()
+        FL = urllib.quote('fl[]')
+        SORT = urllib.quote('sort[]')
+        self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
+            urllib.quote('(title:(' + self.obj._queryterm.lower() + ') OR ' + \
+            'creator:(' + queryterm.lower() + ')) AND format:(DJVU)')
+        self.search_url += '&' + FL + '=creator&' + FL + '=description&' + \
+            FL + '=format&' + FL + '=identifier&' + FL + '=language'
+        self.search_url += '&' + FL + '=publisher&' + FL + '=title&' + \
+            FL + '=volume'
+        self.search_url += '&' + SORT + '=title&' + SORT + '&' + \
+            SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
+        gobject.idle_add(self.download_csv, self.search_url)
+
+    def download_csv(self, url):
+        logging.error('get csv from %s', url)
+        path = os.path.join(self.obj._activity.get_activity_root(), 'instance',
+                'tmp%i.csv' % time.time())
+        print 'path=', path
+        getter = ReadURLDownloader(url)
+        getter.connect("finished", self._get_csv_result_cb)
+        getter.connect("progress", self._get_csv_progress_cb)
+        getter.connect("error", self._get_csv_error_cb)
+        _logger.debug("Starting download to %s...", path)
+        try:
+            getter.start(path)
+        except:
+            pass
+        self._download_content_type = getter.get_content_type()
+
+    def _get_csv_progress_cb(self, getter, bytes_downloaded):
+        if self._download_content_length > 0:
+            _logger.debug("Downloaded %u of %u bytes...",
+                          bytes_downloaded, self._download_content_length)
+        else:
+            _logger.debug("Downloaded %u bytes...",
+                          bytes_downloaded)
+
+    def _get_csv_error_cb(self, getter, err):
+        _logger.debug("Error getting CSV: %s", err)
+        self._download_content_length = 0
+        self._download_content_type = None
+
+    def _get_csv_result_cb(self, getter, tempfile, suggested_name):
+        print 'Content type:',  self._download_content_type
+        if self._download_content_type.startswith('text/html'):
+            # got an error page instead
+            self._get_csv_error_cb(getter, 'HTTP Error')
+            return
+        self.process_downloaded_csv(tempfile,  suggested_name)
+
+    def process_downloaded_csv(self,  tempfile,  suggested_name):
+        reader = csv.reader(open(tempfile,  'rb'))
+        reader.next()  # skip the first header row.
+        for row in reader:
+            if len(row) < 7:
+                _logger.debug("Server Error",  self.search_url)
+                return
+            entry = {}
+            entry['author'] = row[0]
+            entry['description'] = row[1]
+            entry['format'] = row[2]
+            entry['identifier'] = row[3]
+            entry['dcterms_language'] = row[4]
+            entry['dcterms_publisher'] = row[5]
+            entry['title'] = row[6]
+            volume = row[7]
+            if volume is not None and len(volume) > 0:
+                entry['title'] = row[6] + 'Volume ' + volume
+
+            entry['links'] = {}
+            url_base = 'http://www.archive.org/download/' + \
+                        row[3] + '/' + row[3]
+
+            if entry['format'].find('DjVu') > -1:
+                entry['links']['image/x.djvu'] = url_base + '.djvu'
+            if entry['format'].find('Grayscale LuraTech PDF') > -1:
+                # Fake mime type
+                entry['links']['application/pdf-bw'] = url_base + '_bw.pdf'
+            if entry['format'].find('PDF') > -1:
+                entry['links']['application/pdf'] = url_base + '.pdf'
+            if entry['format'].find('EPUB') > -1:
+                entry['links']['application/epub+zip'] = url_base + '.epub'
+            entry['cover_image'] = 'http://www.archive.org/download/' + \
+                        row[3] + '/page/cover_thumb.jpg'
+
+            self.obj._booklist.append(IABook(None, entry, ''))
+
+        os.remove(tempfile)
+        self.obj.emit('updated', self.midway)
+        self.obj._ready = True
+        if self.obj._win is not None:
+            self.obj._win.set_cursor(None)
+        return False
+
+    def run(self):
+        self._download()
+
+    def stop(self):
+        self.stopthread.set()
+
+
+class InternetArchiveQueryResult(QueryResult):
+
+    # Search in internet archive does not use OPDS
+    # because the server implementation is not working very well
+
+    def __init__(self, queryterm, language, activity):
+        gobject.GObject.__init__(self)
+        self._activity = activity
+        self._queryterm = queryterm
+        self._language = language
+        self._win = activity.window
+        self._next_uri = ''
+        self._ready = False
+        self._booklist = []
+        self.threads = []
+        self._start_download()
+
+    def _start_download(self, midway=False):
+        d_thread = DownloadIAThread(self, midway)
+        self.threads.append(d_thread)
+        d_thread.start()
