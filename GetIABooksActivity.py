@@ -299,7 +299,7 @@ class GetIABooksActivity(activity.Activity):
         toolbar.source_combo.handler_unblock(toolbar.source_changed_cb_id)
 
     def __format_changed_cb(self, combo):
-        self.show_book_data()
+        self.show_book_data(False)
 
     def __language_changed_cb(self, combo):
         self.find_books(self.get_search_terms())
@@ -437,7 +437,7 @@ class GetIABooksActivity(activity.Activity):
     def hide_message(self):
         self.msg_label.hide()
 
-    def show_book_data(self):
+    def show_book_data(self, load_image=True):
         self.selected_title = self.selected_book.get_title()
         book_data = _('Title:\t\t') + self.selected_title + '\n\n'
         self.selected_author = self.selected_book.get_author()
@@ -467,7 +467,7 @@ class GetIABooksActivity(activity.Activity):
 
         # Cover Image
         self.exist_cover_image = False
-        if self.show_images:
+        if self.show_images and load_image:
             if self.source == 'local_books':
                 cover_image_data = self.get_journal_entry_cover_image(
                         self.selected_book.get_object_id())
