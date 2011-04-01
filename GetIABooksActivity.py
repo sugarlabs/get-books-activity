@@ -484,10 +484,10 @@ class GetIABooksActivity(activity.Activity):
                 else:
                     self.add_default_image()
 
-    def get_pixbuf_from_buffer(self, buffer):
+    def get_pixbuf_from_buffer(self, image_buffer):
         """Encoded Buffer To Pixbuf"""
         pixbuf_loader = gtk.gdk.PixbufLoader()
-        pixbuf_loader.write(buffer)
+        pixbuf_loader.write(image_buffer)
         pixbuf_loader.close()
         pixbuf = pixbuf_loader.get_pixbuf()
         return pixbuf
@@ -502,53 +502,16 @@ class GetIABooksActivity(activity.Activity):
             return ""
 
     def download_image(self,  url):
-        path = os.path.join(self.get_activity_root(), 'instance',
-                            'tmp%i' % time.time())
-        self._getter = opds.ReadURLDownloader(url)
-        self._getter.connect("finished", self._get_image_result_cb)
-        self._getter.connect("progress", self._get_image_progress_cb)
-        self._getter.connect("error", self._get_image_error_cb)
-        _logger.debug("Starting download to %s...", path)
-        try:
-            self._getter.start(path)
-        except:
-            _logger.debug("Connection timed out for")
-            self.add_default_image()
-            self.progressbox.hide()
+        image_downloader = opds.ImageDownloader(self, url)
+        image_downloader.connect('updated', self.__image_updated_cb)
 
-        self._download_image_content_length = \
-                self._getter.get_content_length()
-        self._download_image_content_type = self._getter.get_content_type()
-
-    def _get_image_result_cb(self, getter, tempfile, suggested_name):
-        self.process_downloaded_cover(tempfile, suggested_name)
-
-    def process_downloaded_cover(self,  tempfile,  suggested_name):
-        _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
-        self._getter = None
-        self.add_image(tempfile)
-        self.exist_cover_image = True
-        os.remove(tempfile)
-
-    def _get_image_progress_cb(self, getter, bytes_downloaded):
-        if self._download_image_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
-                        self._download_image_content_length)
+    def __image_updated_cb(self, downloader, file_name):
+        if file_name is not None:
+            self.add_image(file_name)
+            self.exist_cover_image = True
+            os.remove(file_name)
         else:
-            _logger.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-        while gtk.events_pending():
-            gtk.main_iteration()
-
-    def _get_image_error_cb(self, getter, err):
-        self.listview.props.sensitive = True
-        self._books_toolbar.enable_button(True)
-        self.progressbox.hide()
-        _logger.debug("Error getting image: %s", err)
-        self.add_default_image()
-        self._download_image_content_length = 0
-        self._download_image_content_type = None
-        self._getter = None
+            self.add_default_image()
 
     def add_default_image(self):
         file_path = os.path.join(activity.get_bundle_path(),

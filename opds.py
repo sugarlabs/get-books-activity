@@ -328,12 +328,6 @@ class DownloadIAThread(threading.Thread):
         self.obj = obj
         self._download_content_length = 0
         self._download_content_type = None
-        self.stopthread = threading.Event()
-
-    def _download(self):
-        if self.obj._win is not None:
-            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-
         self._booklist = []
         queryterm = self.obj._queryterm
         search_tuple = queryterm.lower().split()
@@ -348,6 +342,11 @@ class DownloadIAThread(threading.Thread):
             FL + '=volume'
         self.search_url += '&' + SORT + '=title&' + SORT + '&' + \
             SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
+        self.stopthread = threading.Event()
+
+    def _download(self):
+        if self.obj._win is not None:
+            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         gobject.idle_add(self.download_csv, self.search_url)
 
     def download_csv(self, url):
@@ -457,5 +456,82 @@ class InternetArchiveQueryResult(QueryResult):
 
     def _start_download(self, midway=False):
         d_thread = DownloadIAThread(self, midway)
+        self.threads.append(d_thread)
+        d_thread.start()
+
+
+class ImageDownloaderThread(threading.Thread):
+
+    def __init__(self, obj):
+        threading.Thread.__init__(self)
+        self.obj = obj
+        self._getter = ReadURLDownloader(self.obj._url)
+        self._download_content_length = 0
+        self._download_content_type = None
+        self.stopthread = threading.Event()
+
+    def _download_image(self):
+        path = os.path.join(self.obj._activity.get_activity_root(),
+                            'instance', 'tmp%i' % time.time())
+        self._getter.connect("finished", self._get_image_result_cb)
+        self._getter.connect("progress", self._get_image_progress_cb)
+        self._getter.connect("error", self._get_image_error_cb)
+        _logger.debug("Starting download to %s...", path)
+        try:
+            self._getter.start(path)
+        except:
+            _logger.debug("Connection timed out for")
+            self.obj.emit('updated', None)
+
+        self._download_content_length = \
+                self._getter.get_content_length()
+        self._download_content_type = self._getter.get_content_type()
+
+    def _get_image_result_cb(self, getter, tempfile, suggested_name):
+        _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
+        self._getter = None
+        self.obj.emit('updated', tempfile)
+
+    def _get_image_progress_cb(self, getter, bytes_downloaded):
+        if self._download_content_length > 0:
+            _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
+                        self._download_content_length)
+        else:
+            _logger.debug("Downloaded %u bytes...",
+                          bytes_downloaded)
+        while gtk.events_pending():
+            gtk.main_iteration()
+
+    def _get_image_error_cb(self, getter, err):
+        _logger.debug("Error getting image: %s", err)
+        self._download_content_length = 0
+        self._download_content_type = None
+        self._getter = None
+        self.obj.emit('updated', None)
+
+    def run(self):
+        self._download_image()
+
+    def stop(self):
+        self.stopthread.set()
+
+
+class ImageDownloader(gobject.GObject):
+
+    __gsignals__ = {
+        'updated': (gobject.SIGNAL_RUN_FIRST,
+                          gobject.TYPE_NONE,
+                          ([gobject.TYPE_STRING])),
+    }
+
+    def __init__(self, activity, url):
+        gobject.GObject.__init__(self)
+        self.threads = []
+        self._activity = activity
+        self._url = url
+        self._start_download()
+
+    def _start_download(self):
+        d_thread = ImageDownloaderThread(self)
         self.threads.append(d_thread)
         d_thread.start()
