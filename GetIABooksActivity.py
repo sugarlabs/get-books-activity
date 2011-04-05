@@ -46,6 +46,7 @@ from gettext import gettext as _
 import dbus
 import gobject
 import ConfigParser
+import base64
 
 from listview import ListView
 import opds
@@ -493,7 +494,7 @@ class GetIABooksActivity(activity.Activity):
                     self.add_default_image()
 
     def get_pixbuf_from_buffer(self, image_buffer):
-        """Encoded Buffer To Pixbuf"""
+        """Buffer To Pixbuf"""
         pixbuf_loader = gtk.gdk.PixbufLoader()
         pixbuf_loader.write(image_buffer)
         pixbuf_loader.close()
@@ -503,7 +504,8 @@ class GetIABooksActivity(activity.Activity):
     def get_journal_entry_cover_image(self, object_id):
         ds_object = datastore.get(object_id)
         if 'cover_image' in ds_object.metadata:
-            return ds_object.metadata['cover_image']
+            cover_data = ds_object.metadata['cover_image']
+            return base64.b64decode(cover_data)
         elif 'preview' in ds_object.metadata:
             return ds_object.metadata['preview']
         else:
@@ -734,8 +736,10 @@ class GetIABooksActivity(activity.Activity):
             textbuffer.get_text(textbuffer.get_start_iter(),
                 textbuffer.get_end_iter())
         if self.exist_cover_image:
-            journal_entry.metadata['preview'] = self._get_preview_image()
-            journal_entry.metadata['cover_image'] = self._get_preview_image()
+            image_buffer = self._get_preview_image()
+            journal_entry.metadata['preview'] = dbus.ByteArray(image_buffer)
+            journal_entry.metadata['cover_image'] = \
+                dbus.ByteArray(base64.b64encode(image_buffer))
         else:
             journal_entry.metadata['cover_image'] = ""
 
@@ -808,7 +812,7 @@ class GetIABooksActivity(activity.Activity):
 
         pixbuf2.save_to_callback(save_func, 'png', user_data=preview_data)
         preview_data = ''.join(preview_data)
-        return dbus.ByteArray(preview_data)
+        return preview_data
 
     def _show_error_alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
