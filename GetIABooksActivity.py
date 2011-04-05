@@ -285,7 +285,7 @@ class GetIABooksActivity(activity.Activity):
         if len(_SOURCES) > 0:
             toolbar.source_combo.append_separator()
         toolbar.source_combo.append_item('local_books', _('My books'),
-                icon_name='computer-xo')
+                icon_name='activity-journal')
 
         # TODO: I don't know how work the devices section
         devices = self._device_manager.get_devices()
