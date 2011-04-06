@@ -573,12 +573,12 @@ class GetIABooksActivity(activity.Activity):
                 self.show_message(_('You must enter at least 3 letters.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-
             if self.source == 'Internet Archive':
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
                         query_language, self)
             elif self.source in _SOURCES_CONFIG:
+            #if self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language, self.window)
@@ -652,6 +652,7 @@ class GetIABooksActivity(activity.Activity):
         gobject.idle_add(self.download_book,  self.download_url)
 
     def download_book(self,  url):
+        logging.error('DOWNLOAD BOOK %s', url)
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
         path = os.path.join(self.get_activity_root(), 'instance',
@@ -691,24 +692,33 @@ class GetIABooksActivity(activity.Activity):
         while gtk.events_pending():
             gtk.main_iteration()
 
+    def _get_book_error_cb(self, getter, err):
+        self.listview.props.sensitive = True
+        self.enable_button(True)
+        self.progressbox.hide()
+        _logger.debug("Error getting document: %s", err)
+        self._download_content_length = 0
+        self._download_content_type = None
+        self._getter = None
+        if self.source == 'Internet Archive' and \
+           getter.url.endswith('_text.pdf'):
+            # in the IA server there are files ending with _text.pdf
+            # smaller and better than the .pdf files, but not for all
+            # the books. We try to download them and if is not present
+            # download the .pdf file
+            self.download_url = self.download_url.replace('_text.pdf', '.pdf')
+            self.get_book()
+        else:
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The path in the catalog seems to be incorrect') %
+                    self.selected_title)
+
     def set_downloaded_bytes(self, downloaded_bytes,  total):
         fraction = float(downloaded_bytes) / float(total)
         self.progressbar.set_fraction(fraction)
 
     def clear_downloaded_bytes(self):
         self.progressbar.set_fraction(0.0)
-
-    def _get_book_error_cb(self, getter, err):
-        self.listview.props.sensitive = True
-        self.enable_button(True)
-        self.progressbox.hide()
-        _logger.debug("Error getting document: %s", err)
-        self._show_error_alert(_('Error: Could not download %s. ' +
-                'The path in the catalog seems to be incorrect') %
-                self.selected_title)
-        self._download_content_length = 0
-        self._download_content_type = None
-        self._getter = None
 
     def process_downloaded_book(self,  tempfile,  suggested_name):
         _logger.debug("Got document %s (%s)", tempfile, suggested_name)

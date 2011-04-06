@@ -81,6 +81,7 @@ class DownloadThread(threading.Thread):
             feedobj = feedparser.parse(self.obj._uri)
 
         for entry in feedobj['entries']:
+            #logging.error('%s', entry)
             self.obj._booklist.append(Book(self.obj._configuration, entry))
         self.obj._feedobj = feedobj
         self.obj.emit('updated', self.midway)
@@ -416,7 +417,7 @@ class DownloadIAThread(threading.Thread):
                 # Fake mime type
                 entry['links']['application/pdf-bw'] = url_base + '_bw.pdf'
             if entry['format'].find('PDF') > -1:
-                entry['links']['application/pdf'] = url_base + '.pdf'
+                entry['links']['application/pdf'] = url_base + '_text.pdf'
             if entry['format'].find('EPUB') > -1:
                 entry['links']['application/epub+zip'] = url_base + '.epub'
             entry['cover_image'] = 'http://www.archive.org/download/' + \
