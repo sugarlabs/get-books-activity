@@ -478,16 +478,15 @@ class GetIABooksActivity(activity.Activity):
         self.exist_cover_image = False
         if self.show_images and load_image:
             if self.source == 'local_books':
-                cover_image_data = self.get_journal_entry_cover_image(
+                cover_image_buffer = self.get_journal_entry_cover_image(
                         self.selected_book.get_object_id())
-                if (cover_image_data):
+                if (cover_image_buffer):
                     self.add_image_buffer(
-                        self.get_pixbuf_from_buffer(cover_image_data))
+                        self.get_pixbuf_from_buffer(cover_image_buffer))
                 else:
                     self.add_default_image()
             else:
                 url_image = self.selected_book.get_image_url()
-                logging.error('url_image %s', url_image)
                 if url_image:
                     self.download_image(url_image.values()[0])
                 else:
@@ -533,15 +532,31 @@ class GetIABooksActivity(activity.Activity):
         self.add_image_buffer(pixbuf)
 
     def add_image_buffer(self, pixbuf):
-        MAX_HEIGHT_IMAGE = int(gtk.gdk.screen_height() / 3)
+        image_height = int(gtk.gdk.screen_height() / 4)
+        image_width = image_height / 3 * 2
         width, height = pixbuf.get_width(), pixbuf.get_height()
-        if height > MAX_HEIGHT_IMAGE:
-            scale = MAX_HEIGHT_IMAGE / float(height)
+        scale = 1
+        if (width > image_width) or (height > image_height):
+            scale_x = image_width / float(width)
+            scale_y = image_height / float(height)
+            scale = min(scale_x, scale_y)
 
-            pixbuf = pixbuf.scale_simple(int(width * scale),
-                    int(height * scale), gtk.gdk.INTERP_BILINEAR)
+        pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
+                            pixbuf.get_has_alpha(), \
+                            pixbuf.get_bits_per_sample(), \
+                            image_width, image_height)
+        pixbuf2.fill(style.COLOR_PANEL_GREY.get_int())
 
-        self.image.set_from_pixbuf(pixbuf)
+        margin_x = int((image_width - (width * scale)) / 2)
+        margin_y = int((image_height - (height * scale)) / 2)
+
+        pixbuf.scale(pixbuf2, margin_x, margin_y, \
+                            image_width - (margin_x * 2), \
+                            image_height - (margin_y * 2), \
+                            margin_x, margin_y, scale, scale, \
+                            gtk.gdk.INTERP_BILINEAR)
+
+        self.image.set_from_pixbuf(pixbuf2)
 
     def get_query_language(self):
         query_language = None
@@ -746,8 +761,9 @@ class GetIABooksActivity(activity.Activity):
             textbuffer.get_text(textbuffer.get_start_iter(),
                 textbuffer.get_end_iter())
         if self.exist_cover_image:
-            image_buffer = self._get_preview_image()
+            image_buffer = self._get_preview_image_buffer()
             journal_entry.metadata['preview'] = dbus.ByteArray(image_buffer)
+            image_buffer = self._get_cover_image_buffer()
             journal_entry.metadata['cover_image'] = \
                 dbus.ByteArray(base64.b64encode(image_buffer))
         else:
@@ -789,7 +805,7 @@ class GetIABooksActivity(activity.Activity):
             activity.show_object_in_journal(self._object_id)
         self.remove_alert(alert)
 
-    def _get_preview_image(self):
+    def _get_preview_image_buffer(self):
         preview_width, preview_height = style.zoom(300), style.zoom(225)
 
         pixbuf = self.image.get_pixbuf()
@@ -823,6 +839,17 @@ class GetIABooksActivity(activity.Activity):
         pixbuf2.save_to_callback(save_func, 'png', user_data=preview_data)
         preview_data = ''.join(preview_data)
         return preview_data
+
+    def _get_cover_image_buffer(self):
+        pixbuf = self.image.get_pixbuf()
+        cover_data = []
+
+        def save_func(buf, data):
+            data.append(buf)
+
+        pixbuf.save_to_callback(save_func, 'png', user_data=cover_data)
+        cover_data = ''.join(cover_data)
+        return cover_data
 
     def _show_error_alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
