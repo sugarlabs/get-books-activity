@@ -74,6 +74,7 @@ class DownloadThread(threading.Thread):
             headers = {}
             if self.obj._language is not None and self.obj._language != 'all':
                 headers['Accept-Language'] = self.obj._language
+                uri = uri + '&lang=' + self.obj._language
             logging.error('Searching URL %s headers %s' % (uri, headers))
             feedobj = feedparser.parse(uri, request_headers=headers)
         else:
