@@ -67,6 +67,7 @@ class DownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
+        logging.debug('feedparser version %s', feedparser.__version__)
         if self.obj._win is not None:
             self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
@@ -80,14 +81,16 @@ class DownloadThread(threading.Thread):
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
+        logging.debug('despues de feedparser %d entries', len(feedobj['entries']))
         for entry in feedobj['entries']:
             #logging.error('%s', entry)
             self.obj._booklist.append(Book(self.obj._configuration, entry))
         self.obj._feedobj = feedobj
-        self.obj.emit('updated', self.midway)
         self.obj._ready = True
         if self.obj._win is not None:
             self.obj._win.set_cursor(None)
+        gobject.idle_add(self.obj.notify_updated, self.midway)
+        #self.obj.emit('updated', self.midway)
         return False
 
     def run(self):
@@ -220,6 +223,9 @@ class QueryResult(gobject.GObject):
         d_thread = DownloadThread(self, midway)
         self.threads.append(d_thread)
         d_thread.start()
+
+    def notify_updated(self, midway):
+        self.emit('updated', midway)
 
     def __len__(self):
         return len(self._booklist)

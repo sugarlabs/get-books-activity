@@ -62,6 +62,10 @@ _logger = logging.getLogger('get-ia-books-activity')
 
 READ_STREAM_SERVICE = 'read-activity-http'
 
+# directory exists if powerd is running.  create a file here,
+# named after our pid, to inhibit suspend.
+POWERD_INHIBIT_DIR = '/var/run/powerd-inhibit-suspend'
+
 
 class GetIABooksActivity(activity.Activity):
 
@@ -118,6 +122,57 @@ class GetIABooksActivity(activity.Activity):
             self._books_toolbar = toolbar_box.toolbar
 
         self._create_controls()
+
+        if not self.powerd_running():
+            try:
+                bus = dbus.SystemBus()
+                proxy = bus.get_object('org.freedesktop.ohm',
+                               '/org/freedesktop/ohm/Keystore')
+                self.ohm_keystore = dbus.Interface(proxy,
+                                 'org.freedesktop.ohm.Keystore')
+            except dbus.DBusException, e:
+                logging.warning("Error setting OHM inhibit: %s" % e)
+                self.ohm_keystore = None
+
+    def powerd_running(self):
+        self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
+        logging.error("using_powerd: %d" % self.using_powerd)
+        return self.using_powerd
+
+    def _inhibit_suspend(self):
+        if self.using_powerd:
+            fd = open(POWERD_INHIBIT_DIR + "/%u" % os.getpid(), 'w')
+            logging.error("inhibit_suspend file is %s" % POWERD_INHIBIT_DIR \
+                    + "/%u" % os.getpid())
+            fd.close()
+            return True
+
+        if self.ohm_keystore is not None:
+            try:
+                self.ohm_keystore.SetKey('suspend.inhibit', 1)
+                return self.ohm_keystore.GetKey('suspend.inhibit')
+            except dbus.exceptions.DBusException:
+                logging.debug("failed to inhibit suspend")
+                return False
+        else:
+            return False
+
+    def _allow_suspend(self):
+        if self.using_powerd:
+            os.unlink(POWERD_INHIBIT_DIR + "/%u" % os.getpid())
+            logging.error("allow_suspend unlinking %s" % POWERD_INHIBIT_DIR \
+                    + "/%u" % os.getpid())
+            return True
+
+        if self.ohm_keystore is not None:
+            try:
+                self.ohm_keystore.SetKey('suspend.inhibit', 0)
+                return self.ohm_keystore.GetKey('suspend.inhibit')
+            except dbus.exceptions.DBusException:
+                logging.error("failed to allow suspend")
+                return False
+        else:
+            return False
 
     def _read_configuration(self, file_name='get-books.cfg'):
         logging.error('Reading configuration from file %s', file_name)
@@ -511,6 +566,7 @@ class GetIABooksActivity(activity.Activity):
             return ""
 
     def download_image(self,  url):
+        self._inhibit_suspend()
         image_downloader = opds.ImageDownloader(self, url)
         image_downloader.connect('updated', self.__image_updated_cb)
 
@@ -521,6 +577,7 @@ class GetIABooksActivity(activity.Activity):
             os.remove(file_name)
         else:
             self.add_default_image()
+        self._allow_suspend()
 
     def add_default_image(self):
         file_path = os.path.join(activity.get_bundle_path(),
@@ -565,6 +622,7 @@ class GetIABooksActivity(activity.Activity):
         return query_language
 
     def find_books(self, search_text=''):
+        self._inhibit_suspend()
         self.source = self._books_toolbar.source_combo.props.value
 
         query_language = self.get_query_language()
@@ -606,6 +664,7 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
+        logging.debug('__query_updated_cb midway %s', midway)
         self.listview.populate(self.queryresults)
         if len(self.queryresults) == 0:
             self.show_message(_('Sorry, no books could be found.'))
@@ -624,6 +683,7 @@ class GetIABooksActivity(activity.Activity):
                 if only_english:
                     self.show_message(
                             _('Sorry, we only found english books.'))
+        self._allow_suspend()
 
     def __source_changed_cb(self, widget):
         search_terms = self.get_search_terms()
@@ -660,6 +720,7 @@ class GetIABooksActivity(activity.Activity):
             self.listview.props.sensitive = True
             self._books_toolbar.search_entry.set_sensitive(True)
             _logger.debug('Download was canceled by the user.')
+            self._allow_suspend()
 
     def get_book(self):
         self.enable_button(False)
@@ -667,6 +728,7 @@ class GetIABooksActivity(activity.Activity):
         gobject.idle_add(self.download_book,  self.download_url)
 
     def download_book(self,  url):
+        self._inhibit_suspend()
         logging.error('DOWNLOAD BOOK %s', url)
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
@@ -676,7 +738,7 @@ class GetIABooksActivity(activity.Activity):
         self._getter.connect("finished", self._get_book_result_cb)
         self._getter.connect("progress", self._get_book_progress_cb)
         self._getter.connect("error", self._get_book_error_cb)
-        _logger.debug("Starting download to %s...", path)
+        _logger.debug("Starting download from %s to %s" % (url,path))
         try:
             self._getter.start(path)
         except:
@@ -716,7 +778,7 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_type = None
         self._getter = None
         if self.source == 'Internet Archive' and \
-           getter.url.endswith('_text.pdf'):
+           getter._url.endswith('_text.pdf'):
             # in the IA server there are files ending with _text.pdf
             # smaller and better than the .pdf files, but not for all
             # the books. We try to download them and if is not present
@@ -724,6 +786,7 @@ class GetIABooksActivity(activity.Activity):
             self.download_url = self.download_url.replace('_text.pdf', '.pdf')
             self.get_book()
         else:
+            self._allow_suspend()
             self._show_error_alert(_('Error: Could not download %s. ' +
                     'The path in the catalog seems to be incorrect') %
                     self.selected_title)
@@ -739,6 +802,7 @@ class GetIABooksActivity(activity.Activity):
         _logger.debug("Got document %s (%s)", tempfile, suggested_name)
         self.create_journal_entry(tempfile)
         self._getter = None
+        self._allow_suspend()
 
     def create_journal_entry(self,  tempfile):
         journal_entry = datastore.create()
