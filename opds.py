@@ -68,8 +68,6 @@ class DownloadThread(threading.Thread):
 
     def _download(self):
         logging.debug('feedparser version %s', feedparser.__version__)
-        if self.obj._win is not None:
-            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         if not self.obj.is_local() and self.midway == False:
             uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
             headers = {}
@@ -87,10 +85,7 @@ class DownloadThread(threading.Thread):
             self.obj._booklist.append(Book(self.obj._configuration, entry))
         self.obj._feedobj = feedobj
         self.obj._ready = True
-        if self.obj._win is not None:
-            self.obj._win.set_cursor(None)
         gobject.idle_add(self.obj.notify_updated, self.midway)
-        #self.obj.emit('updated', self.midway)
         return False
 
     def run(self):
@@ -205,13 +200,12 @@ class QueryResult(gobject.GObject):
                           ([gobject.TYPE_BOOLEAN])),
     }
 
-    def __init__(self, configuration, queryterm, language, win):
+    def __init__(self, configuration, queryterm, language):
         gobject.GObject.__init__(self)
         self._configuration = configuration
         self._uri = self._configuration['query_uri']
         self._queryterm = queryterm
         self._language = language
-        self._win = win
         self._feedobj = None
         self._next_uri = ''
         self._ready = False
@@ -290,9 +284,9 @@ class QueryResult(gobject.GObject):
 
 class LocalVolumeQueryResult(QueryResult):
 
-    def __init__(self, path, queryterm, language, win):
+    def __init__(self, path, queryterm, language):
         configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
-        QueryResult.__init__(self, configuration, queryterm, win)
+        QueryResult.__init__(self, configuration, queryterm)
 
     def is_local(self):
         return True
@@ -312,8 +306,8 @@ class LocalVolumeQueryResult(QueryResult):
 
 class RemoteQueryResult(QueryResult):
 
-    def __init__(self, configuration, queryterm, language, win):
-        QueryResult.__init__(self, configuration, queryterm, language, win)
+    def __init__(self, configuration, queryterm, language):
+        QueryResult.__init__(self, configuration, queryterm, language)
 
 
 class IABook(Book):
@@ -353,8 +347,6 @@ class DownloadIAThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
-        if self.obj._win is not None:
-            self.obj._win.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         gobject.idle_add(self.download_csv, self.search_url)
 
     def download_csv(self, url):
@@ -434,8 +426,6 @@ class DownloadIAThread(threading.Thread):
         os.remove(tempfile)
         self.obj.emit('updated', self.midway)
         self.obj._ready = True
-        if self.obj._win is not None:
-            self.obj._win.set_cursor(None)
         return False
 
     def run(self):
@@ -455,7 +445,6 @@ class InternetArchiveQueryResult(QueryResult):
         self._activity = activity
         self._queryterm = queryterm
         self._language = language
-        self._win = activity.window
         self._next_uri = ''
         self._ready = False
         self._booklist = []

@@ -299,8 +299,9 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults = None
 
         self.queryresults = opds.RemoteQueryResult(catalog_config,
-                '', query_language, self.window)
+                '', query_language)
         self.show_message(_('Performing lookup, please wait...'))
+        self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
         self.queryresults.connect('updated', self.__query_updated_cb)
 
@@ -654,13 +655,13 @@ class GetIABooksActivity(activity.Activity):
             #if self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
-                        search_text, query_language, self.window)
+                        search_text, query_language)
             else:
                 self.queryresults = opds.LocalVolumeQueryResult( \
-                            self.source, search_text, self.window)
+                            self.source, search_text)
 
             self.show_message(_('Performing lookup, please wait...'))
-
+            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
             self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
@@ -683,6 +684,7 @@ class GetIABooksActivity(activity.Activity):
                 if only_english:
                     self.show_message(
                             _('Sorry, we only found english books.'))
+        self.window.set_cursor(None)
         self._allow_suspend()
 
     def __source_changed_cb(self, widget):
