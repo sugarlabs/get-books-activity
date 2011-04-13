@@ -34,7 +34,6 @@ from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import iconentry
-from sugar.graphics.xocolor import XoColor
 from sugar import profile
 from sugar.activity import activity
 from sugar.bundle.activitybundle import ActivityBundle
@@ -101,7 +100,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             toolbar_box = ToolbarBox()
             activity_button = ToolButton()
-            color = XoColor(profile.get_color())
+            color = profile.get_color()
             bundle = ActivityBundle(activity.get_bundle_path())
             icon = Icon(file=bundle.get_icon(), xo_color=color)
             activity_button.set_icon_widget(icon)
