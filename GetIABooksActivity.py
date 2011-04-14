@@ -270,6 +270,7 @@ class GetIABooksActivity(activity.Activity):
                     self.__activate_catalog_cb, self.catalogs[key])
                 palette.menu.append(menu_item)
                 menu_item.show()
+            bt_catalogs.connect('clicked',self.__bt_catalogs_clicked_cb)
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -279,6 +280,10 @@ class GetIABooksActivity(activity.Activity):
 
         toolbar.search_entry.grab_focus()
         return toolbar
+
+    def __bt_catalogs_clicked_cb(self, button):
+        palette = button.get_palette()
+        palette.popup(immediate=True, state=palette.SECONDARY)
 
     def __activate_catalog_cb(self, menu, catalog_config):
         query_language = self.get_query_language()
