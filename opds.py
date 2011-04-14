@@ -424,7 +424,7 @@ class DownloadIAThread(threading.Thread):
             self.obj._booklist.append(IABook(None, entry, ''))
 
         os.remove(tempfile)
-        self.obj.emit('updated', self.midway)
+        gobject.idle_add(self.obj.notify_updated, self.midway)
         self.obj._ready = True
         return False
 
@@ -450,6 +450,9 @@ class InternetArchiveQueryResult(QueryResult):
         self._booklist = []
         self.threads = []
         self._start_download()
+
+    def notify_updated(self, midway):
+        self.emit('updated', midway)
 
     def _start_download(self, midway=False):
         d_thread = DownloadIAThread(self, midway)
@@ -478,7 +481,7 @@ class ImageDownloaderThread(threading.Thread):
             self._getter.start(path)
         except:
             _logger.debug("Connection timed out for")
-            self.obj.emit('updated', None)
+            gobject.idle_add(self.obj.notify_updated, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
@@ -487,7 +490,7 @@ class ImageDownloaderThread(threading.Thread):
     def _get_image_result_cb(self, getter, tempfile, suggested_name):
         _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
         self._getter = None
-        self.obj.emit('updated', tempfile)
+        gobject.idle_add(self.obj.notify_updated, tempfile)
 
     def _get_image_progress_cb(self, getter, bytes_downloaded):
         if self._download_content_length > 0:
@@ -504,7 +507,7 @@ class ImageDownloaderThread(threading.Thread):
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        self.obj.emit('updated', None)
+        gobject.idle_add(self.obj.notify_updated, None)
 
     def run(self):
         self._download_image()
@@ -532,3 +535,6 @@ class ImageDownloader(gobject.GObject):
         d_thread = ImageDownloaderThread(self)
         self.threads.append(d_thread)
         d_thread.start()
+
+    def notify_updated(self, temp_file):
+        self.emit('updated', temp_file)
