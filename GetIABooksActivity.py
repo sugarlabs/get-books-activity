@@ -158,7 +158,8 @@ class GetIABooksActivity(activity.Activity):
 
     def _allow_suspend(self):
         if self.using_powerd:
-            os.unlink(POWERD_INHIBIT_DIR + "/%u" % os.getpid())
+            if os.path.exists(POWERD_INHIBIT_DIR + "/%u" % os.getpid()):
+                os.unlink(POWERD_INHIBIT_DIR + "/%u" % os.getpid())
             logging.error("allow_suspend unlinking %s" % POWERD_INHIBIT_DIR \
                     + "/%u" % os.getpid())
             return True
