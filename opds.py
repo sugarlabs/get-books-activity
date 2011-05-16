@@ -172,6 +172,17 @@ class Book(object):
             ret = 'Unknown'
         return ret
 
+    def get_summary(self):
+
+	if self._configuration is not None and 'summary_field' in self._configuration:
+            try:
+                ret = self._entry[self._configuration['summary_field']]
+            except KeyError:
+                ret = 'Unknown'
+	else:
+            ret = 'Unknown'
+        return ret
+
     def get_object_id(self):
         try:
             ret = self._entry['object_id']

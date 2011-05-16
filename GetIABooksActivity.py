@@ -196,6 +196,10 @@ class GetIABooksActivity(activity.Activity):
                 repo_config = {}
                 repo_config['query_uri'] = config.get(section, 'query_uri')
                 repo_config['opds_cover'] = config.get(section, 'opds_cover')
+                if config.has_option(section, 'summary_field'):
+                        repo_config['summary_field'] = config.get(section, 'summary_field')
+                else:
+                        repo_config['summary_field'] = None
                 _SOURCES_CONFIG[section] = repo_config
 
         logging.error('_SOURCES %s', _SOURCES)
@@ -514,6 +518,9 @@ class GetIABooksActivity(activity.Activity):
         book_data += _('Author:\t\t') + self.selected_author + '\n\n'
         self.selected_publisher = self.selected_book.get_publisher()
         book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
+        self.selected_summary = self.selected_book.get_summary()
+        if (self.selected_summary is not 'Unknown'):
+            book_data += _('Summary:\t') + self.selected_summary + '\n\n'
         self.selected_language_code = self.selected_book.get_language()
         if self.selected_language_code != '':
             try:
@@ -841,8 +848,10 @@ class GetIABooksActivity(activity.Activity):
             journal_entry.metadata['cover_image'] = ""
 
         journal_entry.metadata['tags'] = self.source
+        journal_entry.metadata['source'] = self.source
         journal_entry.metadata['author'] = self.selected_author
         journal_entry.metadata['publisher'] = self.selected_publisher
+        journal_entry.metadata['summary'] = self.selected_summary
         journal_entry.metadata['language'] = self.selected_language_code
 
         journal_entry.file_path = tempfile
@@ -975,7 +984,22 @@ class GetIABooksActivity(activity.Activity):
             else:
                 entry['dcterms_language'] = ''
 
-            books.append(opds.Book(None, entry, ''))
+            if 'source' in ds_objects[i].metadata:
+                entry['source'] = \
+                    ds_objects[i].metadata['source']
+            else:
+                entry['source'] = ''
+
+            if entry['source'] in _SOURCES_CONFIG:
+                repo_configuration = _SOURCES_CONFIG[entry['source']]
+                summary_field = repo_configuration['summary_field']
+                if 'summary' in ds_objects[i].metadata:
+                    entry[summary_field] = ds_objects[i].metadata['summary']
+                else:
+                    entry[summary_field] = ''
+            else:
+                repo_configuration = None
+            books.append(opds.Book(repo_configuration, entry, ''))
         return books
 
     def close(self,  skip_save=False):
