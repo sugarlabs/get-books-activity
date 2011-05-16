@@ -534,8 +534,6 @@ class GetIABooksActivity(activity.Activity):
             try:
                 self.download_url = self.selected_book.get_download_links()[\
                         self.format_combo.props.value]
-                if len(self.download_url) > 0:
-                    book_data += _('Link:\t\t') + self.download_url
             except:
                 pass
         textbuffer = self.textview.get_buffer()
