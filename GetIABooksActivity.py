@@ -455,6 +455,7 @@ class GetIABooksActivity(activity.Activity):
         bottom_hbox = gtk.HBox()
 
         if self.show_images:
+            self.__image_downloader = None
             self.image = gtk.Image()
             self.add_default_image()
             bottom_hbox.pack_start(self.image, False, False, 10)
@@ -553,10 +554,9 @@ class GetIABooksActivity(activity.Activity):
                     self.add_default_image()
             else:
                 url_image = self.selected_book.get_image_url()
+                self.add_default_image()
                 if url_image:
                     self.download_image(url_image.values()[0])
-                else:
-                    self.add_default_image()
 
     def get_pixbuf_from_buffer(self, image_buffer):
         """Buffer To Pixbuf"""
@@ -578,8 +578,10 @@ class GetIABooksActivity(activity.Activity):
 
     def download_image(self,  url):
         self._inhibit_suspend()
-        image_downloader = opds.ImageDownloader(self, url)
-        image_downloader.connect('updated', self.__image_updated_cb)
+        if self.__image_downloader is not None:
+            self.__image_downloader.stop_download()
+        self.__image_downloader = opds.ImageDownloader(self, url)
+        self.__image_downloader.connect('updated', self.__image_updated_cb)
 
     def __image_updated_cb(self, downloader, file_name):
         if file_name is not None:
@@ -588,6 +590,7 @@ class GetIABooksActivity(activity.Activity):
             os.remove(file_name)
         else:
             self.add_default_image()
+        self.__image_downloader = None
         self._allow_suspend()
 
     def add_default_image(self):

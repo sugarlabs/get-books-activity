@@ -501,9 +501,17 @@ class ImageDownloaderThread(threading.Thread):
     def _get_image_result_cb(self, getter, tempfile, suggested_name):
         _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
         self._getter = None
-        gobject.idle_add(self.obj.notify_updated, tempfile)
+        if not self.stopthread.is_set():
+            gobject.idle_add(self.obj.notify_updated, tempfile)
 
     def _get_image_progress_cb(self, getter, bytes_downloaded):
+        if self.stopthread.is_set():
+            try:
+                _logger.debug('The download %s was cancelled' % getter._fname)
+                getter.cancel()
+            except:
+                _logger.debug('Got an exception while trying ' + \
+                        'to cancel download')
         if self._download_content_length > 0:
             _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
                         self._download_content_length)
@@ -549,3 +557,7 @@ class ImageDownloader(gobject.GObject):
 
     def notify_updated(self, temp_file):
         self.emit('updated', temp_file)
+
+    def stop_download(self):
+        for thread in self.threads:
+            thread.stop()
