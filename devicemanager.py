@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 import os
 import logging
 import gobject
@@ -28,6 +27,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 
 _logger = logging.getLogger('get-ia-books-activity')
 
+
 class DeviceManager(gobject.GObject):
     __gsignals__ = {
         'device-added': (gobject.SIGNAL_RUN_FIRST,
@@ -36,15 +36,18 @@ class DeviceManager(gobject.GObject):
         'device-removed': (gobject.SIGNAL_RUN_FIRST,
                           gobject.TYPE_NONE,
                           ([]))
-    }    
+    }
+
     def __init__(self):
         gobject.GObject.__init__(self)
 
         self._devices = []
-        self._bus = dbus.SystemBus ()
+        self._bus = dbus.SystemBus()
 
-        self._hal_obj = self._bus.get_object ('org.freedesktop.Hal', '/org/freedesktop/Hal/Manager')
-        self._hal_mgr = dbus.Interface (self._hal_obj, 'org.freedesktop.Hal.Manager')
+        self._hal_obj = self._bus.get_object('org.freedesktop.Hal',
+                '/org/freedesktop/Hal/Manager')
+        self._hal_mgr = dbus.Interface(self._hal_obj,
+                'org.freedesktop.Hal.Manager')
 
         self._populate_devices()
 
@@ -52,33 +55,34 @@ class DeviceManager(gobject.GObject):
         self._hal_mgr.connect_to_signal("DeviceRemoved", self.__device_removed)
 
     def _populate_devices(self):
-        udis = self._hal_mgr.FindDeviceByCapability ('volume')
+        udis = self._hal_mgr.FindDeviceByCapability('volume')
         for udi in udis:
             self.__device_added(udi)
 
     def _is_removable_volume(self, dev):
-        # Apart from determining if this is a removable volume, 
-        # this also tries to find if there is a catalog.xml in the 
+        # Apart from determining if this is a removable volume,
+        # this also tries to find if there is a catalog.xml in the
         # root
 
         if not dev.QueryCapability('volume'):
             return False
 
         parent_udi = dev.GetProperty('info.parent')
-        parent_dev_obj = self._bus.get_object('org.freedesktop.Hal', parent_udi)
+        parent_dev_obj = self._bus.get_object('org.freedesktop.Hal',
+                parent_udi)
         parent = dbus.Interface(parent_dev_obj, 'org.freedesktop.Hal.Device')
         if not parent.GetProperty('storage.removable'):
             return False
-        
-        time.sleep(1) #XXX: Ugly Hack, needed in some situations
+
+        time.sleep(1)  # XXX: Ugly Hack, needed in some situations
         mount_point = dev.GetProperty('volume.mount_point')
 
         return os.path.exists(os.path.join(mount_point, 'catalog.xml'))
 
     def __device_added(self, udi):
-        dev_obj = self._bus.get_object ('org.freedesktop.Hal', udi)
+        dev_obj = self._bus.get_object('org.freedesktop.Hal', udi)
         # get an interface to the device
-        dev = dbus.Interface (dev_obj, 'org.freedesktop.Hal.Device')
+        dev = dbus.Interface(dev_obj, 'org.freedesktop.Hal.Device')
         if self._is_removable_volume(dev):
             self._devices.append((udi, dev))
             self.emit('device-added')
@@ -89,7 +93,8 @@ class DeviceManager(gobject.GObject):
             if udi in device:
                 self._devices.remove(device)
                 self.emit('device-removed')
-                _logger.debug('DeviceManager: Device was removed %s' % str(udi))
+                _logger.debug('DeviceManager: Device was removed %s'
+                        % str(udi))
 
     def get_devices(self):
         return self._devices
@@ -97,8 +102,8 @@ class DeviceManager(gobject.GObject):
 if __name__ == '__main__':
     DBusGMainLoop(set_as_default=True)
     dm = DeviceManager()
-    #print dm.get_devices()[0][1].GetProperty('volume.mount_point'), dm.get_devices()[0][1].GetProperty('volume.label')
+    # print dm.get_devices()[0][1].GetProperty('volume.mount_point'),
+    # dm.get_devices()[0][1].GetProperty('volume.label')
 
     loop = gobject.MainLoop()
     loop.run()
-
