@@ -514,14 +514,13 @@ class GetIABooksActivity(activity.Activity):
 
     def show_book_data(self, load_image=True):
         self.selected_title = self.selected_book.get_title()
-        book_data = _('Title:\t\t') + self.selected_title + '\n\n'
+        book_data = _('Title:\t\t') + self.selected_title + '\n'
         self.selected_author = self.selected_book.get_author()
-        book_data += _('Author:\t\t') + self.selected_author + '\n\n'
+        book_data += _('Author:\t\t') + self.selected_author + '\n'
         self.selected_publisher = self.selected_book.get_publisher()
-        book_data += _('Publisher:\t') + self.selected_publisher + '\n\n'
         self.selected_summary = self.selected_book.get_summary()
         if (self.selected_summary is not 'Unknown'):
-            book_data += _('Summary:\t') + self.selected_summary + '\n\n'
+            book_data += _('Summary:\t') + self.selected_summary + '\n'
         self.selected_language_code = self.selected_book.get_language()
         if self.selected_language_code != '':
             try:
@@ -530,7 +529,8 @@ class GetIABooksActivity(activity.Activity):
                         self.selected_book.get_language())
             except:
                 self.selected_language = self.selected_book.get_language()
-            book_data += _('Language:\t') + self.selected_language + '\n\n'
+            book_data += _('Language:\t') + self.selected_language + '\n'
+        book_data += _('Publisher:\t') + self.selected_publisher + '\n'
         if self.source != 'local_books':
             try:
                 self.download_url = self.selected_book.get_download_links()[\
