@@ -1,6 +1,6 @@
 [Activity]
 name = Get Books
-service_name = org.laptop.sugar.GetBooksActivity
+bundle_id = org.laptop.sugar.GetBooksActivity
 icon = get-ia-books
 exec = sugar-activity GetIABooksActivity.GetIABooksActivity
 show_launcher = yes
