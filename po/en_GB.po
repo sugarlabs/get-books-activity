@@ -26,93 +26,120 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: 2010-08-08 19:55+0200\n"
-"Last-Translator: Robert <robert_readman@hotmail.com>\n"
+"POT-Creation-Date: 2011-04-29 00:31-0400\n"
+"PO-Revision-Date: 2011-06-03 08:16+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.3\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
 msgstr "Get Books"
 
-#: GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr "Get Book"
+#: GetIABooksActivity.py:96
+msgid "Books"
+msgstr "Books"
 
-#: GetIABooksActivity.py:159
+#: GetIABooksActivity.py:250
+msgid "Any language"
+msgstr "Any language"
+
+#: GetIABooksActivity.py:262
+msgid "Catalogs"
+msgstr "Catalogs"
+
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:668
+msgid "Performing lookup, please wait..."
+msgstr "Performing lookup, please wait..."
+
+#: GetIABooksActivity.py:348
+msgid "My books"
+msgstr "My books"
+
+#: GetIABooksActivity.py:363
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Volume"
 
-#: GetIABooksActivity.py:217
-msgid "Books"
-msgstr "Books"
+#: GetIABooksActivity.py:433
+msgid "Format:"
+msgstr "Format:"
 
-#: GetIABooksActivity.py:233
+#: GetIABooksActivity.py:446
+msgid "Get Book"
+msgstr "Get Book"
+
+#: GetIABooksActivity.py:472
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Enter words from the Author or Title to begin search."
 
-#: GetIABooksActivity.py:292
+#: GetIABooksActivity.py:493
+msgid "Selected book"
+msgstr "Selected book"
+
+#: GetIABooksActivity.py:512
 msgid "Title:\t\t"
 msgstr "Title:\t\t"
 
-#: GetIABooksActivity.py:294
+#: GetIABooksActivity.py:514
 msgid "Author:\t\t"
 msgstr "Author:\t\t"
 
-#: GetIABooksActivity.py:296
+#: GetIABooksActivity.py:516
 msgid "Publisher:\t"
 msgstr "Publisher:\t"
 
-#: GetIABooksActivity.py:297
+#: GetIABooksActivity.py:525
 msgid "Language:\t"
 msgstr "Language:\t"
 
-#: GetIABooksActivity.py:302
+#: GetIABooksActivity.py:531
 msgid "Link:\t\t"
 msgstr "Link:\t\t"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-#: GetIABooksActivity.py:403
-msgid "Error"
-msgstr "Error"
+#: GetIABooksActivity.py:652
+msgid "You must enter at least 3 letters."
+msgstr "You must enter at least 3 letters."
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-msgid "You must enter at least one search word."
-msgstr "You must enter at least one search word."
-
-#: GetIABooksActivity.py:340
-msgid "Performing lookup, please wait..."
-msgstr "Performing lookup, please wait..."
-
-#: GetIABooksActivity.py:349
+#: GetIABooksActivity.py:676
 msgid "Sorry, no books could be found."
 msgstr "Sorry, no books could be found."
 
-#: GetIABooksActivity.py:403
+#: GetIABooksActivity.py:691
+msgid "Sorry, we only found english books."
+msgstr "Sorry, we only found English books."
+
+#: GetIABooksActivity.py:752
+msgid "Error"
+msgstr "Error"
+
+#: GetIABooksActivity.py:752
 msgid "Connection timed out for "
 msgstr "Connection timed out for "
 
-#: GetIABooksActivity.py:440
+#: GetIABooksActivity.py:797
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
-"Error: Could not download %s . The path in the catalogue seems to be "
-"incorrect"
+msgid "Error: Could not download %s. "
+msgstr "Error: Could not download %s. "
 
-#: GetIABooksActivity.py:470
-#, python-format
-msgid "Success: %s was added to Journal."
-msgstr "Success: %s was added to Journal."
+#: GetIABooksActivity.py:853
+msgid "Download completed"
+msgstr "Download completed"
 
-#: listview.py:40
+#: GetIABooksActivity.py:861
+msgid "Show in Journal"
+msgstr "Show in Journal"
+
+#: GetIABooksActivity.py:864
+msgid "Ok"
+msgstr "Ok"
+
+#: listview.py:39
 msgid "Title"
 msgstr "Title"
 
@@ -120,14 +147,28 @@ msgstr "Title"
 msgid "Author"
 msgstr "Author"
 
-#: listview.py:42
+#: listview.py:43
 msgid "Publisher"
 msgstr "Publisher"
 
-#: listview.py:43
+#: listview.py:45
 msgid "Language"
 msgstr "Language"
 
-#: listview.py:44
+#: listview.py:47
 msgid "Publish Date"
 msgstr "Publish Date"
+
+#~ msgid "You must enter at least one search word."
+#~ msgstr "You must enter at least one search word."
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Error: Could not download %s . The path in the catalogue seems to be "
+#~ "incorrect"
+
+#, python-format
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Success: %s was added to Journal."
