@@ -197,7 +197,8 @@ class GetIABooksActivity(activity.Activity):
                 repo_config['query_uri'] = config.get(section, 'query_uri')
                 repo_config['opds_cover'] = config.get(section, 'opds_cover')
                 if config.has_option(section, 'summary_field'):
-                        repo_config['summary_field'] = config.get(section, 'summary_field')
+                        repo_config['summary_field'] = \
+                            config.get(section, 'summary_field')
                 else:
                         repo_config['summary_field'] = None
                 _SOURCES_CONFIG[section] = repo_config
@@ -219,6 +220,9 @@ class GetIABooksActivity(activity.Activity):
                     catalog_config['query_uri'] = config.get(section, catalog)
                     catalog_config['opds_cover'] = opds_cover
                     catalog_config['source'] = catalog_source
+                    catalog_config['name'] = catalog
+                    catalog_config['summary_field'] = \
+                        source_config['summary_field']
                     self.catalogs[catalog] = catalog_config
 
         logging.error('languages %s', self.languages)
@@ -262,20 +266,19 @@ class GetIABooksActivity(activity.Activity):
                 self.__language_changed_cb)
 
         if len(self.catalogs) > 0:
-            bt_catalogs = ToolButton('catalogs')
-            bt_catalogs.set_tooltip(_('Catalogs'))
+            self.bt_catalogs = ToolButton('catalogs')
+            self.bt_catalogs.set_tooltip(_('Catalogs'))
 
-            toolbar.insert(bt_catalogs, -1)
-            bt_catalogs.show()
-            palette = bt_catalogs.get_palette()
-
+            toolbar.insert(self.bt_catalogs, -1)
+            self.bt_catalogs.show()
+            palette = self.bt_catalogs.get_palette()
             for key in self.catalogs.keys():
                 menu_item = MenuItem(key)
                 menu_item.connect('activate',
                     self.__activate_catalog_cb, self.catalogs[key])
                 palette.menu.append(menu_item)
                 menu_item.show()
-            bt_catalogs.connect('clicked',self.__bt_catalogs_clicked_cb)
+            self.bt_catalogs.connect('clicked', self.__bt_catalogs_clicked_cb)
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -299,8 +302,8 @@ class GetIABooksActivity(activity.Activity):
         self.listview.clear()
         logging.error('SOURCE %s', catalog_config['source'])
         self._books_toolbar.search_entry.props.text = ''
-        source = catalog_config['source']
-        position = _SOURCES_CONFIG[source]['position']
+        self.source = catalog_config['source']
+        position = _SOURCES_CONFIG[self.source]['position']
         self._books_toolbar.source_combo.set_active(position)
 
         if self.queryresults is not None:
@@ -680,9 +683,13 @@ class GetIABooksActivity(activity.Activity):
     def __query_updated_cb(self, query, midway):
         logging.debug('__query_updated_cb midway %s', midway)
         self.listview.populate(self.queryresults)
-        if len(self.queryresults) == 0:
+        if (len(self.queryresults.get_catalog_list()) > 0):
+            self.show_message(_('New catalog list %s was found') \
+                % self.queryresults._configuration["name"])
+            self.catalogs_updated(query, midway)
+        elif len(self.queryresults) == 0:
             self.show_message(_('Sorry, no books could be found.'))
-        elif not midway:
+        if not midway and len(self.queryresults) > 0:
             self.hide_message()
             query_language = self.get_query_language()
             logging.error('LANGUAGE %s', query_language)
@@ -699,6 +706,35 @@ class GetIABooksActivity(activity.Activity):
                             _('Sorry, we only found english books.'))
         self.window.set_cursor(None)
         self._allow_suspend()
+
+    def catalogs_updated(self, query, midway):
+        self.catalogs = {}
+        for catalog_item in self.queryresults.get_catalog_list():
+            catalog_config = {}
+            download_link = ''
+            download_links = catalog_item.get_download_links()
+            for link in download_links.keys():
+                download_link = download_links[link]
+                break
+            catalog_config['query_uri'] = download_link
+            catalog_config['opds_cover'] = \
+                catalog_item._configuration['opds_cover']
+            catalog_config['source'] = catalog_item._configuration['source']
+            catalog_config['name'] = catalog_item.get_title()
+            catalog_config['summary_field'] = \
+                catalog_item._configuration['summary_field']
+            self.catalogs[catalog_item.get_title().strip()] = catalog_config
+
+        if len(self.catalogs) > 0:
+            palette = self.bt_catalogs.get_palette()
+            for menu_item in palette.menu.get_children():
+                palette.menu.remove(menu_item)
+            for key in self.catalogs.keys():
+                menu_item = MenuItem(key)
+                menu_item.connect('activate',
+                    self.__activate_catalog_cb, self.catalogs[key])
+                palette.menu.append(menu_item)
+                menu_item.show()
 
     def __source_changed_cb(self, widget):
         search_terms = self.get_search_terms()
@@ -753,7 +789,7 @@ class GetIABooksActivity(activity.Activity):
         self._getter.connect("finished", self._get_book_result_cb)
         self._getter.connect("progress", self._get_book_progress_cb)
         self._getter.connect("error", self._get_book_error_cb)
-        _logger.debug("Starting download from %s to %s" % (url,path))
+        _logger.debug("Starting download from %s to %s" % (url, path))
         try:
             self._getter.start(path)
         except:

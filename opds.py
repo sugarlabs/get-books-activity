@@ -35,6 +35,9 @@ import feedparser
 _logger = logging.getLogger('get-ia-books-activity')
 
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
+_REL_SUBSECTION = 'subsection'
+_REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
+_REL_OPDS_NEW = u'http://opds-spec.org/sort/new'
 
 gobject.threads_init()
 
@@ -67,6 +70,15 @@ class DownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
+
+        def entry_type(entry):
+            for link in entry['links']:
+                if link['rel'] in \
+                    [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
+                    return "CATALOG"
+                else:
+                    return 'BOOK'
+
         logging.debug('feedparser version %s', feedparser.__version__)
         if not self.obj.is_local() and self.midway == False:
             uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
@@ -79,10 +91,13 @@ class DownloadThread(threading.Thread):
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
-        logging.debug('despues de feedparser %d entries', len(feedobj['entries']))
         for entry in feedobj['entries']:
-            #logging.error('%s', entry)
-            self.obj._booklist.append(Book(self.obj._configuration, entry))
+            if entry_type(entry) == 'BOOK':
+                self.obj._booklist.append(Book(self.obj._configuration, entry))
+            elif entry_type(entry) == 'CATALOG':
+                self.obj._cataloglist.append( \
+                    Book(self.obj._configuration, entry))
+
         self.obj._feedobj = feedobj
         self.obj._ready = True
         gobject.idle_add(self.obj.notify_updated, self.midway)
@@ -129,7 +144,11 @@ class Book(object):
                         + os.path.join(self._basepath, link['href'])
                 else:
                     ret[link['type']] = link['href']
-
+            elif link['rel'] in \
+            [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
+                ret[link['type']] = link['href']
+            else:
+                pass
         return ret
 
     def get_publisher(self):
@@ -173,14 +192,14 @@ class Book(object):
         return ret
 
     def get_summary(self):
-
-	if self._configuration is not None and 'summary_field' in self._configuration:
-            try:
-                ret = self._entry[self._configuration['summary_field']]
-            except KeyError:
+        if self._configuration is not None \
+            and 'summary_field' in self._configuration:
+                try:
+                    ret = self._entry[self._configuration['summary_field']]
+                except KeyError:
+                    ret = 'Unknown'
+        else:
                 ret = 'Unknown'
-	else:
-            ret = 'Unknown'
         return ret
 
     def get_object_id(self):
@@ -221,6 +240,7 @@ class QueryResult(gobject.GObject):
         self._next_uri = ''
         self._ready = False
         self._booklist = []
+        self._cataloglist = []
         self.threads = []
         self._start_download()
 
@@ -277,6 +297,12 @@ class QueryResult(gobject.GObject):
         Gets the entire booklist
         '''
         return self._booklist
+
+    def get_catalog_list(self):
+        '''
+        Gets the entire catalog list
+        '''
+        return self._cataloglist
 
     def is_ready(self):
         '''
