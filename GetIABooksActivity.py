@@ -30,6 +30,7 @@ except ImportError:
 
 from sugar.graphics import style
 from sugar.graphics.toolbutton import ToolButton
+from sugar.graphics.toggletoolbutton import ToggleToolButton
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.menuitem import MenuItem
@@ -80,6 +81,7 @@ class GetIABooksActivity(activity.Activity):
         self.languages = {}
         self._lang_code_handler = languagenames.LanguageNames()
         self.catalogs = {}
+        self.catalog_history = []
 
         if os.path.exists('/etc/get-books.cfg'):
             self._read_configuration('/etc/get-books.cfg')
@@ -266,19 +268,11 @@ class GetIABooksActivity(activity.Activity):
                 self.__language_changed_cb)
 
         if len(self.catalogs) > 0:
-            self.bt_catalogs = ToolButton('catalogs')
+            self.bt_catalogs = ToggleToolButton('catalogs')
             self.bt_catalogs.set_tooltip(_('Catalogs'))
-
             toolbar.insert(self.bt_catalogs, -1)
             self.bt_catalogs.show()
-            palette = self.bt_catalogs.get_palette()
-            for key in self.catalogs.keys():
-                menu_item = MenuItem(key)
-                menu_item.connect('activate',
-                    self.__activate_catalog_cb, self.catalogs[key])
-                palette.menu.append(menu_item)
-                menu_item.show()
-            self.bt_catalogs.connect('clicked', self.__bt_catalogs_clicked_cb)
+            self.bt_catalogs.connect('toggled', self.__toggle_cats_cb)
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -292,6 +286,10 @@ class GetIABooksActivity(activity.Activity):
     def __bt_catalogs_clicked_cb(self, button):
         palette = button.get_palette()
         palette.popup(immediate=True, state=palette.SECONDARY)
+
+    def __switch_catalog_cb(self, catalog_name):
+        catalog_config = self.catalogs[catalog_name.decode('utf-8')]
+        self.__activate_catalog_cb(None, catalog_config)
 
     def __activate_catalog_cb(self, menu, catalog_config):
         query_language = self.get_query_language()
@@ -391,10 +389,67 @@ class GetIABooksActivity(activity.Activity):
         self._download.props.sensitive = state
         self.format_combo.props.sensitive = state
 
+    def move_up_catalog(self, treeview):
+        len_cat = len(self.catalog_history)
+        if self.treecol.get_title() == _('Catalogs'):
+            return
+        else:
+            # move a level up the tree
+            self.catalog_history.pop()
+            len_cat -= 1
+            if(len_cat == 1):
+                title = self.catalog_history[0]['title']
+            else:
+                title = self.catalog_history[len_cat - 2]['title'] + ' <- ' + \
+                    self.catalog_history[len_cat - 1]['title']
+            self.treecol.set_title(title)
+            self.catalogs = self.catalog_history[len_cat - 1]['catalogs']
+            if len(self.catalogs) > 0:
+                self.path_iter = {}
+                self.categories = []
+                for key in self.catalogs.keys():
+                    self.categories.append({'text': key, 'dentro': []})
+                self.treemodel.clear()
+                for p in self.categories:
+                    self.path_iter[p['text']] = \
+                            self.treemodel.append(None, [p['text']])
+
+    def move_down_catalog(self, treeview):
+        treestore, coldex = self.treeview.get_selection().get_selected()
+        len_cat = len(self.catalog_history)
+        if self.catalog_history[len_cat - 1]['catalogs'] == []:
+            self.catalog_history.pop()
+        self.treecol.set_title(self.catalog_history[len_cat - 1]['title'] \
+                + ' <- ' + treestore.get_value(coldex, 0))
+        self.catalog_history.append(\
+                {'title': treestore.get_value(coldex, 0),
+                'catalogs': []})
+        self.__switch_catalog_cb(treestore.get_value(coldex, 0))
+
+    def _sort_logfile(self, treemodel, itera, iterb):
+        a = treemodel.get_value(itera, 0)
+        b = treemodel.get_value(iterb, 0)
+        if a == None or b == None:
+            return 0
+        a = a.lower()
+        b = b.lower()
+        if a > b:
+            return 1
+        if a < b:
+            return -1
+        return 0
+
+    def __toggle_cats_cb(self, button):
+        if button.get_active():
+            self.tree_scroller.show_all()
+            self.separa.show()
+        else:
+            self.tree_scroller.hide_all()
+            self.separa.hide()
+
     def _create_controls(self):
         self._download_content_length = 0
         self._download_content_type = None
-
         self.progressbox = gtk.HBox(spacing=20)
         self.progressbar = gtk.ProgressBar()
         self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
@@ -408,6 +463,48 @@ class GetIABooksActivity(activity.Activity):
 
         self.msg_label = gtk.Label()
 
+        self.list_box = gtk.HBox()
+
+        # Catalogs treeview
+        self.treeview = gtk.TreeView()
+        self.treeview.headers_clickble = True
+        self.treeview.hover_expand = True
+        self.treeview.rules_hint = True
+        self.treeview.connect('cursor-changed', self.move_down_catalog)
+        self.treemodel = gtk.TreeStore(gobject.TYPE_STRING)
+        sorter = gtk.TreeModelSort(self.treemodel)
+        sorter.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        sorter.set_sort_func(0, self._sort_logfile)
+        self.treeview.set_model(sorter)
+        renderer = gtk.CellRendererText()
+        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
+        self.treecol = gtk.TreeViewColumn(_('Catalogs'), renderer, text=0)
+        self.treecol.set_min_width(200)
+        self.treecol.set_property('clickable', True)
+        self.treecol.connect('clicked', self.move_up_catalog)
+        self.treeview.append_column(self.treecol)
+        if len(self.catalogs) > 0:
+            self.catalog_history.append({'title': _('Catalogs'),
+                'catalogs': self.catalogs})
+            self.categories = []
+            self.path_iter = {}
+            for key in self.catalogs.keys():
+                self.categories.append({'text': key, 'dentro': []})
+            self.treemodel.clear()
+            for p in self.categories:
+                self.path_iter[p['text']] = self.treemodel.append(None,
+                        [p['text']])
+        self.tree_scroller = gtk.ScrolledWindow(hadjustment=None,
+                vadjustment=None)
+        self.tree_scroller.set_policy(gtk.POLICY_NEVER,
+                gtk.POLICY_AUTOMATIC)
+        self.tree_scroller.add(self.treeview)
+        self.tree_scroller.set_size_request(200, -1)
+        self.list_box.pack_start(self.tree_scroller, expand=False, fill=False)
+        self.separa = gtk.VSeparator()
+        self.list_box.pack_start(self.separa, expand=False, fill=False)
+
+        # books listview
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
 
@@ -419,6 +516,7 @@ class GetIABooksActivity(activity.Activity):
         vadjustment.connect('value-changed',
                 self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
+        self.list_box.pack_start(self.list_scroller, expand=True, fill=True)
 
         self.scrolled = gtk.ScrolledWindow()
         self.scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -431,8 +529,9 @@ class GetIABooksActivity(activity.Activity):
         self.textview.set_left_margin(20)
         self.textview.set_right_margin(20)
         self.scrolled.add(self.textview)
-        self.textview.show()
-        self.scrolled.show()
+        self.list_box.show_all()
+        self.separa.hide()
+        self.tree_scroller.hide()
 
         vbox_download = gtk.VBox()
 
@@ -469,7 +568,7 @@ class GetIABooksActivity(activity.Activity):
         vbox = gtk.VBox()
         vbox.pack_start(self.msg_label, False, False, 10)
         vbox.pack_start(self.progressbox, False, False, 10)
-        vbox.pack_start(self.list_scroller, True, True, 0)
+        vbox.pack_start(self.list_box, True, True, 0)
         vbox.pack_start(bottom_hbox, False, False, 10)
         self.set_canvas(vbox)
         self.listview.show()
@@ -681,7 +780,6 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
-        logging.debug('__query_updated_cb midway %s', midway)
         self.listview.populate(self.queryresults)
         if (len(self.queryresults.get_catalog_list()) > 0):
             self.show_message(_('New catalog list %s was found') \
@@ -689,10 +787,11 @@ class GetIABooksActivity(activity.Activity):
             self.catalogs_updated(query, midway)
         elif len(self.queryresults) == 0:
             self.show_message(_('Sorry, no books could be found.'))
+        else:
+            self.catalog_history.pop()
         if not midway and len(self.queryresults) > 0:
             self.hide_message()
             query_language = self.get_query_language()
-            logging.error('LANGUAGE %s', query_language)
             if query_language != 'all' and query_language != 'en':
                 # the bookserver send english books if there are not books in
                 # the requested language
@@ -726,15 +825,18 @@ class GetIABooksActivity(activity.Activity):
             self.catalogs[catalog_item.get_title().strip()] = catalog_config
 
         if len(self.catalogs) > 0:
-            palette = self.bt_catalogs.get_palette()
-            for menu_item in palette.menu.get_children():
-                palette.menu.remove(menu_item)
+            len_cat = len(self.catalog_history)
+            self.catalog_history[len_cat - 1]['catalogs'] = self.catalogs
+            self.path_iter = {}
+            self.categories = []
             for key in self.catalogs.keys():
-                menu_item = MenuItem(key)
-                menu_item.connect('activate',
-                    self.__activate_catalog_cb, self.catalogs[key])
-                palette.menu.append(menu_item)
-                menu_item.show()
+                self.categories.append({'text': key, 'dentro': []})
+            self.treemodel.clear()
+            for p in self.categories:
+                self.path_iter[p['text']] = \
+                        self.treemodel.append(None, [p['text']])
+        else:
+            self.catalog_history.pop()
 
     def __source_changed_cb(self, widget):
         search_terms = self.get_search_terms()
