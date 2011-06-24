@@ -412,10 +412,10 @@ class GetIABooksActivity(activity.Activity):
                 self.treemodel.clear()
                 for p in self.categories:
                     self.path_iter[p['text']] = \
-                            self.treemodel.append(None, [p['text']])
+                            self.treemodel.append([p['text']])
 
     def move_down_catalog(self, treeview):
-        treestore, coldex = self.treeview.get_selection().get_selected()
+        treestore, coldex = self.catalog_listview.get_selection().get_selected()
         len_cat = len(self.catalog_history)
         if self.catalog_history[len_cat - 1]['catalogs'] == []:
             self.catalog_history.pop()
@@ -466,23 +466,23 @@ class GetIABooksActivity(activity.Activity):
         self.list_box = gtk.HBox()
 
         # Catalogs treeview
-        self.treeview = gtk.TreeView()
-        self.treeview.headers_clickble = True
-        self.treeview.hover_expand = True
-        self.treeview.rules_hint = True
-        self.treeview.connect('cursor-changed', self.move_down_catalog)
-        self.treemodel = gtk.TreeStore(gobject.TYPE_STRING)
+        self.catalog_listview = gtk.TreeView()
+        self.catalog_listview.headers_clickble = True
+        self.catalog_listview.hover_expand = True
+        self.catalog_listview.rules_hint = True
+        self.catalog_listview.connect('cursor-changed', self.move_down_catalog)
+        self.treemodel = gtk.ListStore(gobject.TYPE_STRING)
         sorter = gtk.TreeModelSort(self.treemodel)
         sorter.set_sort_column_id(0, gtk.SORT_ASCENDING)
         sorter.set_sort_func(0, self._sort_logfile)
-        self.treeview.set_model(sorter)
+        self.catalog_listview.set_model(sorter)
         renderer = gtk.CellRendererText()
         renderer.set_property('wrap-mode', gtk.WRAP_WORD)
         self.treecol = gtk.TreeViewColumn(_('Catalogs'), renderer, text=0)
         self.treecol.set_min_width(200)
         self.treecol.set_property('clickable', True)
         self.treecol.connect('clicked', self.move_up_catalog)
-        self.treeview.append_column(self.treecol)
+        self.catalog_listview.append_column(self.treecol)
         if len(self.catalogs) > 0:
             self.catalog_history.append({'title': _('Catalogs'),
                 'catalogs': self.catalogs})
@@ -492,13 +492,12 @@ class GetIABooksActivity(activity.Activity):
                 self.categories.append({'text': key, 'dentro': []})
             self.treemodel.clear()
             for p in self.categories:
-                self.path_iter[p['text']] = self.treemodel.append(None,
-                        [p['text']])
+                self.path_iter[p['text']] = self.treemodel.append([p['text']])
         self.tree_scroller = gtk.ScrolledWindow(hadjustment=None,
                 vadjustment=None)
         self.tree_scroller.set_policy(gtk.POLICY_NEVER,
                 gtk.POLICY_AUTOMATIC)
-        self.tree_scroller.add(self.treeview)
+        self.tree_scroller.add(self.catalog_listview)
         self.tree_scroller.set_size_request(200, -1)
         self.list_box.pack_start(self.tree_scroller, expand=False, fill=False)
         self.separa = gtk.VSeparator()
@@ -834,7 +833,7 @@ class GetIABooksActivity(activity.Activity):
             self.treemodel.clear()
             for p in self.categories:
                 self.path_iter[p['text']] = \
-                        self.treemodel.append(None, [p['text']])
+                        self.treemodel.append([p['text']])
         else:
             self.catalog_history.pop()
 
