@@ -26,93 +26,121 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: 2011-01-10 16:42+0200\n"
-"Last-Translator: rubina <rubina@aua.am>\n"
+"POT-Creation-Date: 2011-04-29 00:31-0400\n"
+"PO-Revision-Date: 2011-07-29 19:38+0200\n"
+"Last-Translator:  <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
 msgstr "Գտնել Գրքեր"
 
-#: GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr "Գտնել Գիրք"
+#: GetIABooksActivity.py:96
+msgid "Books"
+msgstr "Գրքեր"
 
-#: GetIABooksActivity.py:159
+#: GetIABooksActivity.py:250
+msgid "Any language"
+msgstr "Ցանկացած լեզու"
+
+#: GetIABooksActivity.py:262
+msgid "Catalogs"
+msgstr "Կատալոգներ"
+
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:668
+msgid "Performing lookup, please wait..."
+msgstr "Կատարվում է որոնումը, խնդրվում է սպասել..."
+
+#: GetIABooksActivity.py:348
+msgid "My books"
+msgstr "Իմ գրքերը"
+
+#: GetIABooksActivity.py:363
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Ծավալ"
 
-#: GetIABooksActivity.py:217
-msgid "Books"
-msgstr "Գրքեր"
+#: GetIABooksActivity.py:433
+msgid "Format:"
+msgstr "Ձևաչափ`"
 
-#: GetIABooksActivity.py:233
+#: GetIABooksActivity.py:446
+msgid "Get Book"
+msgstr "Գտնել Գիրք"
+
+#: GetIABooksActivity.py:472
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Մուտքագրեք հեղինակի անունը կամ վերնագրի մասը գրքի որոնումը սկսելու համար:"
 
-#: GetIABooksActivity.py:292
+#: GetIABooksActivity.py:493
+msgid "Selected book"
+msgstr "ընտրված գիրք"
+
+#: GetIABooksActivity.py:512
 msgid "Title:\t\t"
 msgstr "Վերնագիր.\t\t"
 
-#: GetIABooksActivity.py:294
+#: GetIABooksActivity.py:514
 msgid "Author:\t\t"
 msgstr "Հեղինակ.\t\t"
 
-#: GetIABooksActivity.py:296
+#: GetIABooksActivity.py:516
 msgid "Publisher:\t"
 msgstr "Հրատարակիչ.\t"
 
-#: GetIABooksActivity.py:297
+#: GetIABooksActivity.py:525
 msgid "Language:\t"
 msgstr "Լեզու.\t"
 
-#: GetIABooksActivity.py:302
+#: GetIABooksActivity.py:531
 msgid "Link:\t\t"
 msgstr "Հղում.\t\t"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-#: GetIABooksActivity.py:403
-msgid "Error"
-msgstr "Վրիպում"
+#: GetIABooksActivity.py:652
+msgid "You must enter at least 3 letters."
+msgstr "Դուք պետք է մուտքագրեք առնվազն 3 տառ:"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-msgid "You must enter at least one search word."
-msgstr "Դուք պետք է մուտքագրեք նվազագույնը մեկ որոնման բառ:"
-
-#: GetIABooksActivity.py:340
-msgid "Performing lookup, please wait..."
-msgstr "Կատարվում է որոնումը, խնդրվում է սպասել..."
-
-#: GetIABooksActivity.py:349
+#: GetIABooksActivity.py:676
 msgid "Sorry, no books could be found."
 msgstr "Ներեցեք, ոչ մի գիրք չի գտնվել:"
 
-#: GetIABooksActivity.py:403
+#: GetIABooksActivity.py:691
+msgid "Sorry, we only found english books."
+msgstr "ներեցեք, մենք գտանք միայն անգլերեն գրքեր:"
+
+#: GetIABooksActivity.py:752
+msgid "Error"
+msgstr "Վրիպում"
+
+#: GetIABooksActivity.py:752
 msgid "Connection timed out for "
 msgstr "﻿Կապը ժամասպառվել է "
 
-#: GetIABooksActivity.py:440
+#: GetIABooksActivity.py:797
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
-"Վրիպում. Հնարավոր չէ բեռնել %s . Գրացուցակում հայտարարված ուղին ոչ ճշգրիտ է:"
+msgid "Error: Could not download %s. "
+msgstr "Սխալմունք: Չհաջողվեց բեռնել %s: "
 
-#: GetIABooksActivity.py:470
-#, python-format
-msgid "Success: %s was added to Journal."
-msgstr "Հաջողում.﻿ %s ավելացվեց մատյանում:"
+#: GetIABooksActivity.py:853
+msgid "Download completed"
+msgstr "բեռնումը ավարտված է"
 
-#: listview.py:40
+#: GetIABooksActivity.py:861
+msgid "Show in Journal"
+msgstr "Ցույց տալ ամսագրում"
+
+#: GetIABooksActivity.py:864
+msgid "Ok"
+msgstr "լավ"
+
+#: listview.py:39
 msgid "Title"
 msgstr "Վերնագիր"
 
@@ -120,14 +148,27 @@ msgstr "Վերնագիր"
 msgid "Author"
 msgstr "Հեղինակ"
 
-#: listview.py:42
+#: listview.py:43
 msgid "Publisher"
 msgstr "Հրատարակիչ"
 
-#: listview.py:43
+#: listview.py:45
 msgid "Language"
 msgstr "Լեզու"
 
-#: listview.py:44
+#: listview.py:47
 msgid "Publish Date"
 msgstr "Հրատարակման թիվը"
+
+#~ msgid "You must enter at least one search word."
+#~ msgstr "Դուք պետք է մուտքագրեք նվազագույնը մեկ որոնման բառ:"
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Վրիպում. Հնարավոր չէ բեռնել %s . Գրացուցակում հայտարարված ուղին ոչ ճշգրիտ է:"
+
+#, python-format
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Հաջողում.﻿ %s ավելացվեց մատյանում:"
