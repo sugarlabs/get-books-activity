@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+  <!ENTITY fill_color "#AAAAAA">
+  <!ENTITY stroke_color "#FFFFFF">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55">
+  <g
+     transform="translate(0,-997.36218)"
+     id="layer1">
+    <g
+       transform="translate(-0.57504564,-1.02237)"
+       id="g5130">
+      <path
+         d="m 10.265977,1016.4311 32.174926,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -32.174926,0 z"
+         id="path5116"
+         style="fill:&fill_color;;fill-opacity:1;stroke:none" />
+      <path
+         d="m 8.9529503,1016.4311 33.4879527,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -33.4879527,0"
+         id="rect4601"
+         style="fill:none;stroke:&stroke_color;;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       transform="matrix(-1,0,0,1,55.575046,14.38453)"
+       id="g5134">
+      <path
+         d="m 10.265977,1016.4311 32.174926,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -32.174926,0 z"
+         id="path5136"
+         style="fill:&fill_color;;fill-opacity:1;stroke:none" />
+      <path
+         d="m 8.9529503,1016.4311 33.4879527,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -33.4879527,0"
+         id="path5138"
+         style="fill:none;stroke:&stroke_color;;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       transform="matrix(-1,0,0,1,52.607946,29.79143)"
+       id="g5140">
+      <path
+         d="m 10.265977,1016.4311 32.174926,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -32.174926,0 z"
+         id="path5142"
+         style="fill:&fill_color;;fill-opacity:1;stroke:none" />
+      <path
+         d="m 8.9529503,1016.4311 33.4879527,0 c 3.030554,-5.2317 1.641363,-8.6218 0,-11.9069 l -33.4879527,0"
+         id="path5144"
+         style="fill:none;stroke:&stroke_color;;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+  </g>
+</svg>

@@ -268,7 +268,7 @@ class GetIABooksActivity(activity.Activity):
                 self.__language_changed_cb)
 
         if len(self.catalogs) > 0:
-            self.bt_catalogs = ToggleToolButton('catalogs')
+            self.bt_catalogs = ToggleToolButton('books')
             self.bt_catalogs.set_tooltip(_('Catalogs'))
             toolbar.insert(self.bt_catalogs, -1)
             self.bt_catalogs.show()
