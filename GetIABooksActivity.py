@@ -199,10 +199,17 @@ class GetIABooksActivity(activity.Activity):
                 repo_config['query_uri'] = config.get(section, 'query_uri')
                 repo_config['opds_cover'] = config.get(section, 'opds_cover')
                 if config.has_option(section, 'summary_field'):
-                        repo_config['summary_field'] = \
-                            config.get(section, 'summary_field')
+                    repo_config['summary_field'] = \
+                        config.get(section, 'summary_field')
                 else:
-                        repo_config['summary_field'] = None
+                    repo_config['summary_field'] = None
+                if config.has_option(section, 'blacklist'):
+                    blacklist = config.get(section, 'blacklist')
+                    repo_config['blacklist'] = blacklist.split(',')
+                    # TODO strip?
+                else:
+                    repo_config['blacklist'] = []
+
                 _SOURCES_CONFIG[section] = repo_config
 
         logging.error('_SOURCES %s', _SOURCES)
@@ -804,6 +811,7 @@ class GetIABooksActivity(activity.Activity):
     def catalogs_updated(self, query, midway):
         self.catalogs = {}
         for catalog_item in self.queryresults.get_catalog_list():
+            logging.debug('Add catalog %s', catalog_item.get_title())
             catalog_config = {}
             download_link = ''
             download_links = catalog_item.get_download_links()
@@ -814,10 +822,15 @@ class GetIABooksActivity(activity.Activity):
             catalog_config['opds_cover'] = \
                 catalog_item._configuration['opds_cover']
             catalog_config['source'] = catalog_item._configuration['source']
+            source_config = _SOURCES_CONFIG[catalog_config['source']]
             catalog_config['name'] = catalog_item.get_title()
             catalog_config['summary_field'] = \
                 catalog_item._configuration['summary_field']
-            self.catalogs[catalog_item.get_title().strip()] = catalog_config
+            if catalog_item.get_title() in source_config['blacklist']:
+                logging.debug('Catalog "%s" is in blacklist',
+                    catalog_item.get_title())
+            else:
+                self.catalogs[catalog_item.get_title().strip()] = catalog_config
 
         if len(self.catalogs) > 0:
             len_cat = len(self.catalog_history)
