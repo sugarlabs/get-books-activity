@@ -276,9 +276,8 @@ class GetIABooksActivity(activity.Activity):
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
-        self._device_manager.connect('device-added', self.__device_added_cb)
-        self._device_manager.connect('device-removed',
-                self.__device_removed_cb)
+        self._device_manager.connect('device-changed',
+                self.__device_changed_cb)
 
         toolbar.search_entry.grab_focus()
         return toolbar
@@ -327,12 +326,8 @@ class GetIABooksActivity(activity.Activity):
     def get_search_terms(self):
         return self._books_toolbar.search_entry.props.text
 
-    def __device_added_cb(self, mgr):
-        _logger.debug('Device was added')
-        self._refresh_sources(self._books_toolbar)
-
-    def __device_removed_cb(self, mgr):
-        _logger.debug('Device was removed')
+    def __device_changed_cb(self, mgr):
+        _logger.debug('Device was added/removed')
         self._refresh_sources(self._books_toolbar)
 
     def _refresh_sources(self, toolbar):
@@ -353,24 +348,25 @@ class GetIABooksActivity(activity.Activity):
         toolbar.source_combo.append_item('local_books', _('My books'),
                 icon_name='activity-journal')
 
-        # TODO: I don't know how work the devices section
         devices = self._device_manager.get_devices()
 
-        if len(devices):
-            toolbar.source_combo.append_separator()
-
-        for device in devices:
-            dev = device[1]
-            mount_point = dev.GetProperty('volume.mount_point')
-            label = dev.GetProperty('volume.label')
-            if label == '' or label is None:
-                capacity = int(dev.GetProperty('volume.partition.media_size'))
-                label = (_('%.2f GB Volume') % (capacity / (1024.0 ** 3)))
-            _logger.debug('Adding device %s' % (label))
-            toolbar.source_combo.append_item(mount_point, label)
+        first_device = True
+        for device_name in devices:
+            device = devices[device_name]
+            logging.debug('device %s', device)
+            if device['removable']:
+                mount_point = device['mount_path']
+                label = device['label']
+                if label == '' or label is None:
+                    capacity = device['size']
+                    label = (_('%.2f GB Volume') % (capacity / (1024.0 ** 3)))
+                _logger.debug('Adding device %s' % (label))
+                if first_device:
+                    toolbar.source_combo.append_separator()
+                    first_device = False
+                toolbar.source_combo.append_item(mount_point, label)
 
         toolbar.source_combo.set_active(0)
-
         toolbar.source_combo.handler_unblock(toolbar.source_changed_cb_id)
 
     def __format_changed_cb(self, combo):

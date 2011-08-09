@@ -21,89 +21,86 @@ import logging
 import gobject
 import dbus
 
-import time
-
-from dbus.mainloop.glib import DBusGMainLoop
-
-_logger = logging.getLogger('get-ia-books-activity')
+UDISK_DEVICE_PATH = 'org.freedesktop.UDisks.Device'
 
 
 class DeviceManager(gobject.GObject):
+
     __gsignals__ = {
-        'device-added': (gobject.SIGNAL_RUN_FIRST,
+        'device-changed': (gobject.SIGNAL_RUN_FIRST,
                           gobject.TYPE_NONE,
                           ([])),
-        'device-removed': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
-                          ([]))
     }
 
     def __init__(self):
         gobject.GObject.__init__(self)
 
-        self._devices = []
+        self._devices = {}
         self._bus = dbus.SystemBus()
 
-        self._hal_obj = self._bus.get_object('org.freedesktop.Hal',
-                '/org/freedesktop/Hal/Manager')
-        self._hal_mgr = dbus.Interface(self._hal_obj,
-                'org.freedesktop.Hal.Manager')
+        self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks',
+                       '/org/freedesktop/UDisks')
+        self._udisk_iface = dbus.Interface(self._udisk_proxy,
+                        'org.freedesktop.UDisks')
 
         self._populate_devices()
 
-        self._hal_mgr.connect_to_signal("DeviceAdded", self.__device_added)
-        self._hal_mgr.connect_to_signal("DeviceRemoved", self.__device_removed)
+        self._udisk_iface.connect_to_signal('DeviceChanged',
+                self.__device_changed_cb)
 
     def _populate_devices(self):
-        udis = self._hal_mgr.FindDeviceByCapability('volume')
-        for udi in udis:
-            self.__device_added(udi)
+        for device in self._udisk_proxy.EnumerateDevices():
+            props = self._get_props_from_device(device)
+            if props is not None:
+                logging.debug('Device mounted in %s', props['mount_path'])
+                props['have_catalog'] = self._have_catalog(props)
+                self._devices[device] = props
 
-    def _is_removable_volume(self, dev):
+    def _get_props_from_device(self, device):
+        # http://hal.freedesktop.org/docs/udisks/Device.html
+        device_obj = self._bus.get_object('org.freedesktop.UDisks', device)
+        device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
+        props = {}
+        props['mounted'] = bool(device_props.Get(UDISK_DEVICE_PATH,
+                'DeviceIsMounted'))
+        if props['mounted']:
+            props['mount_path'] = str(device_props.Get(UDISK_DEVICE_PATH,
+                    'DeviceMountPaths')[0])
+            props['removable'] = bool(device_props.Get(UDISK_DEVICE_PATH,
+                    'DriveCanDetach'))
+            props['label'] = str(device_props.Get(UDISK_DEVICE_PATH,
+                    'IdLabel'))
+            props['size'] = int(device_props.Get(UDISK_DEVICE_PATH,
+                    'DeviceSize'))
+            return props
+        return None
+
+    def _have_catalog(self, props):
         # Apart from determining if this is a removable volume,
         # this also tries to find if there is a catalog.xml in the
         # root
-
-        if not dev.QueryCapability('volume'):
+        if not props['removable']:
             return False
-
-        parent_udi = dev.GetProperty('info.parent')
-        parent_dev_obj = self._bus.get_object('org.freedesktop.Hal',
-                parent_udi)
-        parent = dbus.Interface(parent_dev_obj, 'org.freedesktop.Hal.Device')
-        if not parent.GetProperty('storage.removable'):
-            return False
-
-        time.sleep(1)  # XXX: Ugly Hack, needed in some situations
-        mount_point = dev.GetProperty('volume.mount_point')
-
+        mount_point = props['mount_path']
         return os.path.exists(os.path.join(mount_point, 'catalog.xml'))
 
-    def __device_added(self, udi):
-        dev_obj = self._bus.get_object('org.freedesktop.Hal', udi)
-        # get an interface to the device
-        dev = dbus.Interface(dev_obj, 'org.freedesktop.Hal.Device')
-        if self._is_removable_volume(dev):
-            self._devices.append((udi, dev))
-            self.emit('device-added')
-            _logger.debug('DeviceManager: Device was added %s' % str(udi))
-
-    def __device_removed(self, udi):
-        for device in self._devices:
-            if udi in device:
-                self._devices.remove(device)
-                self.emit('device-removed')
-                _logger.debug('DeviceManager: Device was removed %s'
-                        % str(udi))
+    def __device_changed_cb(self, device):
+        props = self._get_props_from_device(device)
+        if props is not None:
+            self._devices[device] = props
+            have_catalog = self._have_catalog(props)
+            props['have_catalog'] = have_catalog
+            if have_catalog:
+                self.emit('device-changed')
+            logging.debug('Device was added %s' % props)
+        else:
+            if device in self._devices:
+                props = self._devices[device]
+                need_notify = props['have_catalog']
+                logging.debug('Device was removed %s', props)
+                del self._devices[device]
+                if need_notify:
+                    self.emit('device-changed')
 
     def get_devices(self):
         return self._devices
-
-if __name__ == '__main__':
-    DBusGMainLoop(set_as_default=True)
-    dm = DeviceManager()
-    # print dm.get_devices()[0][1].GetProperty('volume.mount_point'),
-    # dm.get_devices()[0][1].GetProperty('volume.label')
-
-    loop = gobject.MainLoop()
-    loop.run()
