@@ -790,7 +790,8 @@ class GetIABooksActivity(activity.Activity):
         elif len(self.queryresults) == 0:
             self.show_message(_('Sorry, no books could be found.'))
         else:
-            self.catalog_history.pop()
+            if len(self.catalog_history) > 0:
+                self.catalog_history.pop()
         if not midway and len(self.queryresults) > 0:
             self.hide_message()
             query_language = self.get_query_language()

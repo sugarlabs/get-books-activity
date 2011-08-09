@@ -87,6 +87,7 @@ class ListView(ExtListView):
             except:
                 _logger.debug(sys.exc_info())
 
+        self.clear()
         self.insertRows(rows)
 
     def get_selected_book(self):
