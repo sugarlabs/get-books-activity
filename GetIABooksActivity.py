@@ -33,7 +33,6 @@ from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.toggletoolbutton import ToggleToolButton
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.combobox import ComboBox
-from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import iconentry
 from sugar import profile
 from sugar.activity import activity
@@ -57,8 +56,6 @@ _MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw',
                 'EPUB': u'application/epub+zip', 'DJVU': u'image/x.djvu'}
 _SOURCES = {}
 _SOURCES_CONFIG = {}
-
-_logger = logging.getLogger('get-ia-books-activity')
 
 READ_STREAM_SERVICE = 'read-activity-http'
 
@@ -132,19 +129,19 @@ class GetIABooksActivity(activity.Activity):
                 self.ohm_keystore = dbus.Interface(proxy,
                                  'org.freedesktop.ohm.Keystore')
             except dbus.DBusException, e:
-                logging.warning("Error setting OHM inhibit: %s" % e)
+                logging.warning("Error setting OHM inhibit: %s", e)
                 self.ohm_keystore = None
 
     def powerd_running(self):
         self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
-        logging.error("using_powerd: %d" % self.using_powerd)
+        logging.error("using_powerd: %d", self.using_powerd)
         return self.using_powerd
 
     def _inhibit_suspend(self):
         if self.using_powerd:
             fd = open(POWERD_INHIBIT_DIR + "/%u" % os.getpid(), 'w')
-            logging.error("inhibit_suspend file is %s" % POWERD_INHIBIT_DIR \
-                    + "/%u" % os.getpid())
+            logging.error("inhibit_suspend file is %s", (POWERD_INHIBIT_DIR \
+                    + "/%u" % os.getpid()))
             fd.close()
             return True
 
@@ -162,8 +159,8 @@ class GetIABooksActivity(activity.Activity):
         if self.using_powerd:
             if os.path.exists(POWERD_INHIBIT_DIR + "/%u" % os.getpid()):
                 os.unlink(POWERD_INHIBIT_DIR + "/%u" % os.getpid())
-            logging.error("allow_suspend unlinking %s" % POWERD_INHIBIT_DIR \
-                    + "/%u" % os.getpid())
+            logging.error("allow_suspend unlinking %s", (POWERD_INHIBIT_DIR \
+                    + "/%u" % os.getpid()))
             return True
 
         if self.ohm_keystore is not None:
@@ -334,7 +331,7 @@ class GetIABooksActivity(activity.Activity):
         return self._books_toolbar.search_entry.props.text
 
     def __device_changed_cb(self, mgr):
-        _logger.debug('Device was added/removed')
+        logging.debug('Device was added/removed')
         self._refresh_sources(self._books_toolbar)
 
     def _refresh_sources(self, toolbar):
@@ -367,7 +364,7 @@ class GetIABooksActivity(activity.Activity):
                 if label == '' or label is None:
                     capacity = device['size']
                     label = (_('%.2f GB Volume') % (capacity / (1024.0 ** 3)))
-                _logger.debug('Adding device %s' % (label))
+                logging.debug('Adding device %s', (label))
                 if first_device:
                     toolbar.source_combo.append_separator()
                     first_device = False
@@ -418,7 +415,8 @@ class GetIABooksActivity(activity.Activity):
                             self.treemodel.append([p['text']])
 
     def move_down_catalog(self, treeview):
-        treestore, coldex = self.catalog_listview.get_selection().get_selected()
+        treestore, coldex = \
+                self.catalog_listview.get_selection().get_selected()
         len_cat = len(self.catalog_history)
         if self.catalog_history[len_cat - 1]['catalogs'] == []:
             self.catalog_history.pop()
@@ -829,7 +827,8 @@ class GetIABooksActivity(activity.Activity):
                 logging.debug('Catalog "%s" is in blacklist',
                     catalog_item.get_title())
             else:
-                self.catalogs[catalog_item.get_title().strip()] = catalog_config
+                self.catalogs[catalog_item.get_title().strip()] = \
+                        catalog_config
 
         if len(self.catalogs) > 0:
             len_cat = len(self.catalog_history)
@@ -887,12 +886,12 @@ class GetIABooksActivity(activity.Activity):
             try:
                 self._getter.cancel()
             except:
-                _logger.debug('Got an exception while trying' + \
+                logging.debug('Got an exception while trying' + \
                         'to cancel download')
             self.progressbox.hide()
             self.listview.props.sensitive = True
             self._books_toolbar.search_entry.set_sensitive(True)
-            _logger.debug('Download was canceled by the user.')
+            logging.debug('Download was canceled by the user.')
             self._allow_suspend()
 
     def get_book(self):
@@ -911,7 +910,7 @@ class GetIABooksActivity(activity.Activity):
         self._getter.connect("finished", self._get_book_result_cb)
         self._getter.connect("progress", self._get_book_progress_cb)
         self._getter.connect("error", self._get_book_error_cb)
-        _logger.debug("Starting download from %s to %s" % (url, path))
+        logging.debug("Starting download from %s to %s", url, path)
         try:
             self._getter.start(path)
         except:
@@ -932,10 +931,10 @@ class GetIABooksActivity(activity.Activity):
 
     def _get_book_progress_cb(self, getter, bytes_downloaded):
         if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...",
+            logging.debug("Downloaded %u of %u bytes...",
                           bytes_downloaded, self._download_content_length)
         else:
-            _logger.debug("Downloaded %u bytes...",
+            logging.debug("Downloaded %u bytes...",
                           bytes_downloaded)
         total = self._download_content_length
         self.set_downloaded_bytes(bytes_downloaded,  total)
@@ -946,7 +945,7 @@ class GetIABooksActivity(activity.Activity):
         self.listview.props.sensitive = True
         self.enable_button(True)
         self.progressbox.hide()
-        _logger.debug("Error getting document: %s", err)
+        logging.debug("Error getting document: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
@@ -972,7 +971,7 @@ class GetIABooksActivity(activity.Activity):
         self.progressbar.set_fraction(0.0)
 
     def process_downloaded_book(self,  tempfile,  suggested_name):
-        _logger.debug("Got document %s (%s)", tempfile, suggested_name)
+        logging.debug("Got document %s (%s)", tempfile, suggested_name)
         self.create_journal_entry(tempfile)
         self._getter = None
         self._allow_suspend()
@@ -1108,18 +1107,18 @@ class GetIABooksActivity(activity.Activity):
             books.extend(self.get_entry_info_format(query, _MIMETYPES[key]))
         return books
 
-    def get_entry_info_format(self, query, format):
+    def get_entry_info_format(self, query, mime):
         books = []
         if query is not None and len(query) > 0:
             ds_objects, num_objects = datastore.find(
-                    {'mime_type': '%s' % format,
+                    {'mime_type': '%s' % mime,
                     'query': '*%s*' % query})
         else:
             ds_objects, num_objects = datastore.find(
-                    {'mime_type': '%s' % format})
+                    {'mime_type': '%s' % mime})
 
         logging.error('Local search %d books found %s format', num_objects,
-                    format)
+                    mime)
         for i in range(0, num_objects):
             entry = {}
             entry['title'] = ds_objects[i].metadata['title']
