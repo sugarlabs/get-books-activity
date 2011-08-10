@@ -485,6 +485,7 @@ class InternetArchiveQueryResult(QueryResult):
         self._next_uri = ''
         self._ready = False
         self._booklist = []
+        self._cataloglist = []
         self.threads = []
         self._start_download()
 
