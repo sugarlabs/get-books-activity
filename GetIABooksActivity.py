@@ -274,12 +274,12 @@ class GetIABooksActivity(activity.Activity):
                 toolbar.language_combo.connect('changed',
                 self.__language_changed_cb)
 
+        self.bt_catalogs = ToggleToolButton('books')
+        self.bt_catalogs.set_tooltip(_('Catalogs'))
+        toolbar.insert(self.bt_catalogs, -1)
+        self.bt_catalogs.connect('toggled', self.__toggle_cats_cb)
         if len(self.catalogs) > 0:
-            self.bt_catalogs = ToggleToolButton('books')
-            self.bt_catalogs.set_tooltip(_('Catalogs'))
-            toolbar.insert(self.bt_catalogs, -1)
             self.bt_catalogs.show()
-            self.bt_catalogs.connect('toggled', self.__toggle_cats_cb)
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -851,6 +851,19 @@ class GetIABooksActivity(activity.Activity):
             self.find_books(None)
         else:
             self.find_books(search_terms)
+        # enable/disable catalogs button if configuration is available
+        self.source = self._books_toolbar.source_combo.props.value
+        have_catalogs = False
+        for catalog_name in self.catalogs.keys():
+            catalog_config = self.catalogs[catalog_name]
+            if catalog_config['source'] == self.source:
+                have_catalogs = True
+                break
+        if have_catalogs:
+            self.bt_catalogs.show()
+        else:
+            self.bt_catalogs.set_active(False)
+            self.bt_catalogs.hide()
 
     def __vadjustment_value_changed_cb(self, vadjustment):
 
