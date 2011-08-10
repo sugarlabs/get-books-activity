@@ -422,6 +422,7 @@ class GetIABooksActivity(activity.Activity):
         len_cat = len(self.catalog_history)
         if self.catalog_history[len_cat - 1]['catalogs'] == []:
             self.catalog_history.pop()
+            len_cat = len(self.catalog_history)
         self.treecol.set_title(self.catalog_history[len_cat - 1]['title'] \
                 + ' <- ' + treestore.get_value(coldex, 0))
         self.catalog_history.append(\
@@ -789,9 +790,6 @@ class GetIABooksActivity(activity.Activity):
             self.catalogs_updated(query, midway)
         elif len(self.queryresults) == 0:
             self.show_message(_('Sorry, no books could be found.'))
-        else:
-            if len(self.catalog_history) > 0:
-                self.catalog_history.pop()
         if not midway and len(self.queryresults) > 0:
             self.hide_message()
             query_language = self.get_query_language()
