@@ -42,11 +42,13 @@ class DeviceManager(gobject.GObject):
                        '/org/freedesktop/UDisks')
         self._udisk_iface = dbus.Interface(self._udisk_proxy,
                         'org.freedesktop.UDisks')
+        try:
+            self._populate_devices()
 
-        self._populate_devices()
-
-        self._udisk_iface.connect_to_signal('DeviceChanged',
-                self.__device_changed_cb)
+            self._udisk_iface.connect_to_signal('DeviceChanged',
+                    self.__device_changed_cb)
+        except dbus.exceptions.DBusException, e:
+            logging.error('Exception initializing UDisks: %s', e)
 
     def _populate_devices(self):
         for device in self._udisk_proxy.EnumerateDevices():
