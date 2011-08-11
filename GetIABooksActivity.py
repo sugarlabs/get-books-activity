@@ -482,7 +482,6 @@ class GetIABooksActivity(activity.Activity):
         renderer = gtk.CellRendererText()
         renderer.set_property('wrap-mode', gtk.WRAP_WORD)
         self.treecol = gtk.TreeViewColumn(_('Catalogs'), renderer, text=0)
-        self.treecol.set_min_width(200)
         self.treecol.set_property('clickable', True)
         self.treecol.connect('clicked', self.move_up_catalog)
         self.catalog_listview.append_column(self.treecol)
@@ -505,7 +504,6 @@ class GetIABooksActivity(activity.Activity):
         self.tree_scroller.set_policy(gtk.POLICY_NEVER,
                 gtk.POLICY_AUTOMATIC)
         self.tree_scroller.add(self.catalog_listview)
-        self.tree_scroller.set_size_request(200, -1)
         self.list_box.pack_start(self.tree_scroller, expand=False, fill=False)
         self.separa = gtk.VSeparator()
         self.list_box.pack_start(self.separa, expand=False, fill=False)
