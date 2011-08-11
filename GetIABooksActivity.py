@@ -391,7 +391,7 @@ class GetIABooksActivity(activity.Activity):
 
     def move_up_catalog(self, treeview):
         len_cat = len(self.catalog_history)
-        if self.treecol.get_title() == _('Catalogs'):
+        if len_cat == 1:
             return
         else:
             # move a level up the tree
@@ -399,10 +399,12 @@ class GetIABooksActivity(activity.Activity):
             len_cat -= 1
             if(len_cat == 1):
                 title = self.catalog_history[0]['title']
+                self.bt_move_up_catalog.set_label(title)
+                self.bt_move_up_catalog.hide_image()
             else:
-                title = self.catalog_history[len_cat - 2]['title'] + ' <- ' + \
-                    self.catalog_history[len_cat - 1]['title']
-            self.treecol.set_title(title)
+                title = self.catalog_history[len_cat - 1]['title']
+                self.bt_move_up_catalog.set_label(title)
+                self.bt_move_up_catalog.show_image()
             self.catalogs = self.catalog_history[len_cat - 1]['catalogs']
             if len(self.catalogs) > 0:
                 self.path_iter = {}
@@ -421,8 +423,7 @@ class GetIABooksActivity(activity.Activity):
         if self.catalog_history[len_cat - 1]['catalogs'] == []:
             self.catalog_history.pop()
             len_cat = len(self.catalog_history)
-        self.treecol.set_title(self.catalog_history[len_cat - 1]['title'] \
-                + ' <- ' + treestore.get_value(coldex, 0))
+
         self.catalog_history.append(\
                 {'title': treestore.get_value(coldex, 0),
                 'catalogs': []})
@@ -485,6 +486,10 @@ class GetIABooksActivity(activity.Activity):
         self.treecol.set_property('clickable', True)
         self.treecol.connect('clicked', self.move_up_catalog)
         self.catalog_listview.append_column(self.treecol)
+        self.bt_move_up_catalog = ButtonWithImage(_('Catalogs'))
+        self.bt_move_up_catalog.hide_image()
+        self.treecol.set_widget(self.bt_move_up_catalog)
+
         if len(self.catalogs) > 0:
             self.catalog_history.append({'title': _('Catalogs'),
                 'catalogs': self.catalogs})
@@ -841,6 +846,11 @@ class GetIABooksActivity(activity.Activity):
             for p in self.categories:
                 self.path_iter[p['text']] = \
                         self.treemodel.append([p['text']])
+
+            title = self.catalog_history[len_cat - 1]['title']
+            self.bt_move_up_catalog.set_label(title)
+            self.bt_move_up_catalog.show_image()
+
         else:
             self.catalog_history.pop()
 
@@ -1166,3 +1176,26 @@ class GetIABooksActivity(activity.Activity):
 
     def save(self):
         pass
+
+
+class ButtonWithImage(gtk.Button):
+
+    def __init__(self, label_text):
+        gtk.Button.__init__(self, _('Catalogs'))
+        self.icon_move_up = Icon(icon_name='go-up')
+        self.remove(self.get_children()[0])
+        self.hbox = gtk.HBox()
+        self.add(self.hbox)
+        self.hbox.add(self.icon_move_up)
+        self.label = gtk.Label(label_text)
+        self.hbox.add(self.label)
+        self.show_all()
+
+    def hide_image(self):
+        self.icon_move_up.hide()
+
+    def show_image(self):
+        self.icon_move_up.show()
+
+    def set_label(self, text):
+        self.label.set_text(text)
