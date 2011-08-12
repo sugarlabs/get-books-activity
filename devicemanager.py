@@ -38,13 +38,12 @@ class DeviceManager(gobject.GObject):
         self._devices = {}
         self._bus = dbus.SystemBus()
 
-        self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks',
-                       '/org/freedesktop/UDisks')
-        self._udisk_iface = dbus.Interface(self._udisk_proxy,
-                        'org.freedesktop.UDisks')
         try:
+            self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks',
+                       '/org/freedesktop/UDisks')
+            self._udisk_iface = dbus.Interface(self._udisk_proxy,
+                        'org.freedesktop.UDisks')
             self._populate_devices()
-
             self._udisk_iface.connect_to_signal('DeviceChanged',
                     self.__device_changed_cb)
         except dbus.exceptions.DBusException, e:
