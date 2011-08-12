@@ -4,5 +4,5 @@ bundle_id = org.laptop.sugar.GetBooksActivity
 icon = get-ia-books
 exec = sugar-activity GetIABooksActivity.GetIABooksActivity
 show_launcher = yes
-activity_version = 8
+activity_version = 9
 license = GPLv2+
