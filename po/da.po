@@ -2,109 +2,162 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"PO-Revision-Date: 2011-08-08 19:11+0200\n"
+"Last-Translator: Aputsiaq Niels <aj@isit.gl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.7.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
-msgstr ""
+msgstr "Hent bøger"
 
-#: GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr ""
+#: GetIABooksActivity.py:98
+msgid "Books"
+msgstr "Bøger"
 
-#: GetIABooksActivity.py:159
+#: GetIABooksActivity.py:260
+msgid "Any language"
+msgstr "Ethvert sprog"
+
+#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+msgid "Catalogs"
+msgstr "Kataloger"
+
+#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+msgid "Performing lookup, please wait..."
+msgstr "Udfører opslag, vent venligst..."
+
+#: GetIABooksActivity.py:353
+msgid "My books"
+msgstr "Mine bøger"
+
+#: GetIABooksActivity.py:368
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB plads"
 
-#: GetIABooksActivity.py:217
-msgid "Books"
-msgstr ""
+#: GetIABooksActivity.py:538
+msgid "Format:"
+msgstr "Format:"
 
-#: GetIABooksActivity.py:233
+#: GetIABooksActivity.py:551
+msgid "Get Book"
+msgstr "Hent bog"
+
+#: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
-msgstr ""
+msgstr "Indtast ord fra Forfatter eller Titel for at starte søgning."
 
-#: GetIABooksActivity.py:292
+#: GetIABooksActivity.py:599
+msgid "Selected book"
+msgstr "Valgt bog"
+
+#: GetIABooksActivity.py:618
 msgid "Title:\t\t"
-msgstr ""
+msgstr "Titel:\t\t"
 
-#: GetIABooksActivity.py:294
+#: GetIABooksActivity.py:620
 msgid "Author:\t\t"
-msgstr ""
+msgstr "Forfatter:\t\t"
 
-#: GetIABooksActivity.py:296
-msgid "Publisher:\t"
-msgstr ""
+#: GetIABooksActivity.py:624
+msgid "Summary:\t"
+msgstr "Resumé:\t"
 
-#: GetIABooksActivity.py:297
+#: GetIABooksActivity.py:633
 msgid "Language:\t"
-msgstr ""
+msgstr "Sprog:\t"
 
-#: GetIABooksActivity.py:302
-msgid "Link:\t\t"
-msgstr ""
+#: GetIABooksActivity.py:634
+msgid "Publisher:\t"
+msgstr "Forlag:\t"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-#: GetIABooksActivity.py:403
-msgid "Error"
-msgstr ""
+#: GetIABooksActivity.py:761
+msgid "You must enter at least 3 letters."
+msgstr "Du skal indtaste mindst 3 bogstaver."
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-msgid "You must enter at least one search word."
-msgstr ""
+#: GetIABooksActivity.py:784
+#, python-format
+msgid "New catalog list %s was found"
+msgstr "Ny katalogliste %s blev fundet"
 
-#: GetIABooksActivity.py:340
-msgid "Performing lookup, please wait..."
-msgstr ""
-
-#: GetIABooksActivity.py:349
+#: GetIABooksActivity.py:788
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "Beklager, der kunne ikke findes nogen bøger."
 
-#: GetIABooksActivity.py:403
+#: GetIABooksActivity.py:804
+msgid "Sorry, we only found english books."
+msgstr "Beklager, vi fandt kun engelske bøger."
+
+#: GetIABooksActivity.py:897
+msgid "Error"
+msgstr "Fejl"
+
+#: GetIABooksActivity.py:897
 msgid "Connection timed out for "
-msgstr ""
+msgstr "Tidsudløb på forbindelsen for "
 
-#: GetIABooksActivity.py:440
+#: GetIABooksActivity.py:942
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
+msgid "Error: Could not download %s. "
+msgstr "Fejl: Kunne ikke hente %s. "
 
-#: GetIABooksActivity.py:470
-#, python-format
-msgid "Success: %s was added to Journal."
-msgstr ""
+#: GetIABooksActivity.py:1000
+msgid "Download completed"
+msgstr "Hentning afsluttet"
 
-#: listview.py:40
+#: GetIABooksActivity.py:1008
+msgid "Show in Journal"
+msgstr "Vis i Journal"
+
+#: GetIABooksActivity.py:1011
+msgid "Ok"
+msgstr "Ok"
+
+#: listview.py:39
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: listview.py:41
 msgid "Author"
-msgstr ""
-
-#: listview.py:42
-msgid "Publisher"
-msgstr ""
+msgstr "Forfatter"
 
 #: listview.py:43
-msgid "Language"
-msgstr ""
+msgid "Publisher"
+msgstr "Forlag"
 
-#: listview.py:44
+#: listview.py:45
+msgid "Language"
+msgstr "Sprog"
+
+#: listview.py:47
 msgid "Publish Date"
-msgstr ""
+msgstr "Udgivelsesdato"
+
+#~ msgid "Link:\t\t"
+#~ msgstr "Henvisning:\t\t"
+
+#~ msgid "You must enter at least one search word."
+#~ msgstr "Du skal mindst indtaste ét søgeord."
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Fejl: Kunne ikke hente %s . Stien i kataloget ser ikke ud til at være "
+#~ "korrekt"
+
+#, python-format
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Succes: %s blev føjet til Journal."
