@@ -22,15 +22,31 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: 2010-02-24 23:37+0200\n"
+"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"PO-Revision-Date: 2011-08-09 18:35+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: fr\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,78 +57,111 @@ msgstr ""
 msgid "Get Books"
 msgstr "Livres à moi"
 
-#: GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr "Obtenir un livre"
+#: GetIABooksActivity.py:98
+msgid "Books"
+msgstr "Livres"
 
-#: GetIABooksActivity.py:159
+#: GetIABooksActivity.py:260
+msgid "Any language"
+msgstr "N'importe quelle langue"
+
+#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+msgid "Catalogs"
+msgstr "Catalogues"
+
+#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+msgid "Performing lookup, please wait..."
+msgstr "Recherche en cours, patientez..."
+
+#: GetIABooksActivity.py:353
+msgid "My books"
+msgstr "Mes livres"
+
+#: GetIABooksActivity.py:368
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "Volume %.2f Go"
 
-#: GetIABooksActivity.py:217
-msgid "Books"
-msgstr "Livres"
+#: GetIABooksActivity.py:538
+msgid "Format:"
+msgstr "Format :"
 
-#: GetIABooksActivity.py:233
+#: GetIABooksActivity.py:551
+msgid "Get Book"
+msgstr "Obtenir un livre"
+
+#: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Entrer les mots de l'auteur ou du titre pour commencer la recherche."
 
-#: GetIABooksActivity.py:292
+#: GetIABooksActivity.py:599
+msgid "Selected book"
+msgstr "Livre sélectionné"
+
+#: GetIABooksActivity.py:618
 msgid "Title:\t\t"
 msgstr "Titre :\t\t"
 
-#: GetIABooksActivity.py:294
+#: GetIABooksActivity.py:620
 msgid "Author:\t\t"
 msgstr "Auteur :\t\t"
 
-#: GetIABooksActivity.py:296
-msgid "Publisher:\t"
-msgstr "Éditeur :\t"
+#: GetIABooksActivity.py:624
+msgid "Summary:\t"
+msgstr "Résumé :\t"
 
-#: GetIABooksActivity.py:297
+#: GetIABooksActivity.py:633
 msgid "Language:\t"
 msgstr "Langue :\t"
 
-#: GetIABooksActivity.py:302
-msgid "Link:\t\t"
-msgstr "Lien :\t\t"
+#: GetIABooksActivity.py:634
+msgid "Publisher:\t"
+msgstr "Éditeur :\t"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-#: GetIABooksActivity.py:403
-msgid "Error"
-msgstr "Erreur"
+#: GetIABooksActivity.py:761
+msgid "You must enter at least 3 letters."
+msgstr "Vous devez entrer au moins 3 lettres."
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-msgid "You must enter at least one search word."
-msgstr "Entrez au moins un mot pour la recherche."
+#: GetIABooksActivity.py:784
+#, python-format
+msgid "New catalog list %s was found"
+msgstr "Une nouvelle liste de catalogue %s a été trouvée"
 
-#: GetIABooksActivity.py:340
-msgid "Performing lookup, please wait..."
-msgstr "Recherche en cours, patientez..."
-
-#: GetIABooksActivity.py:349
+#: GetIABooksActivity.py:788
 msgid "Sorry, no books could be found."
 msgstr "Désolé, aucun livre n'a été trouvé."
 
-#: GetIABooksActivity.py:403
+#: GetIABooksActivity.py:804
+msgid "Sorry, we only found english books."
+msgstr "Malheureusement, les livres trouvés sont uniquement en anglais."
+
+#: GetIABooksActivity.py:897
+msgid "Error"
+msgstr "Erreur"
+
+#: GetIABooksActivity.py:897
 msgid "Connection timed out for "
 msgstr "Délai de connexion écoulé pour "
 
-#: GetIABooksActivity.py:440
+#: GetIABooksActivity.py:942
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
-"Erreur : Téléchargement de %s impossible. Le chemin indiqué dans le "
-"catalogue est incorrect"
+msgid "Error: Could not download %s. "
+msgstr "Erreur : téléchargement de %s impossible."
 
-#: GetIABooksActivity.py:470
-#, python-format
-msgid "Success: %s was added to Journal."
-msgstr "Opération réussie : %s a été ajouté au Journal."
+#: GetIABooksActivity.py:1000
+msgid "Download completed"
+msgstr "Téléchargement terminé"
 
-#: listview.py:40
+#: GetIABooksActivity.py:1008
+msgid "Show in Journal"
+msgstr "Montrer le Journal"
+
+#: GetIABooksActivity.py:1011
+msgid "Ok"
+msgstr "Ok"
+
+#: listview.py:39
 msgid "Title"
 msgstr "Titre"
 
@@ -120,14 +169,31 @@ msgstr "Titre"
 msgid "Author"
 msgstr "Auteur"
 
-#: listview.py:42
+#: listview.py:43
 msgid "Publisher"
 msgstr "Éditeur"
 
-#: listview.py:43
+#: listview.py:45
 msgid "Language"
 msgstr "Langue"
 
-#: listview.py:44
+#: listview.py:47
 msgid "Publish Date"
 msgstr "Date de publication"
+
+#~ msgid "Link:\t\t"
+#~ msgstr "Lien :\t\t"
+
+#~ msgid "You must enter at least one search word."
+#~ msgstr "Entrez au moins un mot pour la recherche."
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Erreur : Téléchargement de %s impossible. Le chemin indiqué dans le "
+#~ "catalogue est incorrect"
+
+#, python-format
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Opération réussie : %s a été ajouté au Journal."
