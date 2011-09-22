@@ -583,6 +583,9 @@ class GetIABooksActivity(activity.Activity):
                 _('Enter words from the Author or Title to begin search.'))
 
         self._books_toolbar.search_entry.grab_focus()
+        if len(self.catalogs) > 0:
+            self.bt_catalogs.set_active(True)
+
 
     def can_close(self):
         self._lang_code_handler.close()
@@ -868,6 +871,7 @@ class GetIABooksActivity(activity.Activity):
                 break
         if have_catalogs:
             self.bt_catalogs.show()
+            self.bt_catalogs.set_active(True)
         else:
             self.bt_catalogs.set_active(False)
             self.bt_catalogs.hide()
