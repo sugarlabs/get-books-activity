@@ -158,93 +158,127 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-20 00:33-0500\n"
-"PO-Revision-Date: 2010-12-23 18:06+0200\n"
+"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"PO-Revision-Date: 2011-08-19 16:56+0200\n"
 "Last-Translator: Gonzalo <godiard@sugarlabs.org>\n"
 "Language-Team: Spanish <LL@li.org>\n"
-"Language: es\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.3\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
 msgstr "Obtener libros"
 
-#: GetIABooksActivity.py:94
-msgid "Get Book"
-msgstr "Obtener libro"
+#: GetIABooksActivity.py:98
+msgid "Books"
+msgstr "Libros"
 
-#: GetIABooksActivity.py:159
+#: GetIABooksActivity.py:260
+msgid "Any language"
+msgstr "Cualquier idioma"
+
+#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+msgid "Catalogs"
+msgstr "Catálogos"
+
+#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+msgid "Performing lookup, please wait..."
+msgstr "Realizando busqueda, por favor espere..."
+
+#: GetIABooksActivity.py:353
+msgid "My books"
+msgstr "Mis libros"
+
+#: GetIABooksActivity.py:368
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Volumen"
 
-#: GetIABooksActivity.py:217
-msgid "Books"
-msgstr "Libros"
+#: GetIABooksActivity.py:538
+msgid "Format:"
+msgstr "Formato:"
 
-#: GetIABooksActivity.py:233
+#: GetIABooksActivity.py:551
+msgid "Get Book"
+msgstr "Obtener libro"
+
+#: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Introduzca palabras que describan el autor o título para empezar búsqueda."
 
-#: GetIABooksActivity.py:292
+#: GetIABooksActivity.py:599
+msgid "Selected book"
+msgstr "Libro seleccionado"
+
+#: GetIABooksActivity.py:618
 msgid "Title:\t\t"
 msgstr "Título:\t\t"
 
-#: GetIABooksActivity.py:294
+#: GetIABooksActivity.py:620
 msgid "Author:\t\t"
 msgstr "Autor:\t\t"
 
-#: GetIABooksActivity.py:296
-msgid "Publisher:\t"
-msgstr "Editor:\t"
+#: GetIABooksActivity.py:624
+msgid "Summary:\t"
+msgstr "Sumario:\t"
 
-#: GetIABooksActivity.py:297
+#: GetIABooksActivity.py:633
 msgid "Language:\t"
 msgstr "Lenguaje:\t"
 
-#: GetIABooksActivity.py:302
-msgid "Link:\t\t"
-msgstr "Link:\t\t"
+#: GetIABooksActivity.py:634
+msgid "Publisher:\t"
+msgstr "Editor:\t"
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-#: GetIABooksActivity.py:403
-msgid "Error"
-msgstr "Error"
+#: GetIABooksActivity.py:761
+msgid "You must enter at least 3 letters."
+msgstr "Debes ingresar por lo menos 3 letras."
 
-#: GetIABooksActivity.py:323 GetIABooksActivity.py:331
-msgid "You must enter at least one search word."
-msgstr "Debes indroducir al menos una palabra para buscar."
+#: GetIABooksActivity.py:784
+#, python-format
+msgid "New catalog list %s was found"
+msgstr "Nueva lista de calogos %s encontrada"
 
-#: GetIABooksActivity.py:340
-msgid "Performing lookup, please wait..."
-msgstr "Realizando busqueda, por favor espere..."
-
-#: GetIABooksActivity.py:349
+#: GetIABooksActivity.py:788
 msgid "Sorry, no books could be found."
 msgstr "Lo sentimos, no se pudieron encontrar libros."
 
-#: GetIABooksActivity.py:403
+#: GetIABooksActivity.py:804
+msgid "Sorry, we only found english books."
+msgstr "Lo siento, solo pudimos encontrar libros en Inglés."
+
+#: GetIABooksActivity.py:897
+msgid "Error"
+msgstr "Error"
+
+#: GetIABooksActivity.py:897
 msgid "Connection timed out for "
 msgstr "Se perdio la conexión para "
 
-#: GetIABooksActivity.py:440
+#: GetIABooksActivity.py:942
 #, python-format
-msgid ""
-"Error: Could not download %s . The path in the catalog seems to be incorrect"
-msgstr ""
-"Error: No se pudo descargar %s . La ruta en el catalogo parece incorrecta"
+msgid "Error: Could not download %s. "
+msgstr "Error: No se pudo descargar %s. "
 
-#: GetIABooksActivity.py:470
-#, python-format
-msgid "Success: %s was added to Journal."
-msgstr "Éxito: %s se añadio al diario."
+#: GetIABooksActivity.py:1000
+msgid "Download completed"
+msgstr "Descarga completa"
 
-#: listview.py:40
+#: GetIABooksActivity.py:1008
+msgid "Show in Journal"
+msgstr "Mostrar en diario"
+
+#: GetIABooksActivity.py:1011
+msgid "Ok"
+msgstr "Ok"
+
+#: listview.py:39
 msgid "Title"
 msgstr "Título"
 
@@ -252,14 +286,30 @@ msgstr "Título"
 msgid "Author"
 msgstr "Autor"
 
-#: listview.py:42
+#: listview.py:43
 msgid "Publisher"
 msgstr "Editor"
 
-#: listview.py:43
+#: listview.py:45
 msgid "Language"
 msgstr "Lenguaje"
 
-#: listview.py:44
+#: listview.py:47
 msgid "Publish Date"
 msgstr "Fecha de publicación"
+
+#~ msgid "Link:\t\t"
+#~ msgstr "Enlace:\t\t"
+
+#~ msgid "You must enter at least one search word."
+#~ msgstr "Debes indroducir al menos una palabra para buscar."
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s . The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Error: No se pudo descargar %s . La ruta en el catalogo parece incorrecta"
+
+#, python-format
+#~ msgid "Success: %s was added to Journal."
+#~ msgstr "Éxito: %s se añadio al diario."
