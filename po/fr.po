@@ -43,15 +43,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2011-08-09 18:35+0200\n"
+"PO-Revision-Date: 2011-10-02 10:34+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
@@ -89,7 +89,7 @@ msgstr "Format :"
 
 #: GetIABooksActivity.py:551
 msgid "Get Book"
-msgstr "Obtenir un livre"
+msgstr "Récupérer le livre"
 
 #: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
@@ -147,7 +147,7 @@ msgstr "Délai de connexion écoulé pour "
 #: GetIABooksActivity.py:942
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr "Erreur : téléchargement de %s impossible."
+msgstr "Erreur : téléchargement de %s impossible. "
 
 #: GetIABooksActivity.py:1000
 msgid "Download completed"
