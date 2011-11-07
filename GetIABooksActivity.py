@@ -474,6 +474,7 @@ class GetIABooksActivity(activity.Activity):
         self.catalog_listview.hover_expand = True
         self.catalog_listview.rules_hint = True
         self.catalog_listview.connect('cursor-changed', self.move_down_catalog)
+        self.catalog_listview.set_enable_search(False)
         self.treemodel = gtk.ListStore(gobject.TYPE_STRING)
         sorter = gtk.TreeModelSort(self.treemodel)
         sorter.set_sort_column_id(0, gtk.SORT_ASCENDING)
@@ -511,6 +512,7 @@ class GetIABooksActivity(activity.Activity):
         # books listview
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
+        self.listview.set_enable_search(False)
 
         self.list_scroller = gtk.ScrolledWindow(hadjustment=None,
                 vadjustment=None)
