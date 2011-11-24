@@ -36,6 +36,7 @@ from sugar.graphics.combobox import ComboBox
 from sugar.graphics import iconentry
 from sugar import profile
 from sugar.activity import activity
+from sugar.activity.widgets import ToolbarButton
 from sugar.bundle.activitybundle import ActivityBundle
 from sugar.datastore import datastore
 from sugar.graphics.alert import NotifyAlert
@@ -242,7 +243,7 @@ class GetIABooksActivity(activity.Activity):
         toolbar.search_entry.add_clear_button()
         toolbar.search_entry.connect('activate',
                 self.__search_entry_activate_cb)
-        width = int(gtk.gdk.screen_width() / 5)
+        width = int(gtk.gdk.screen_width() / 4)
         toolbar.search_entry.set_size_request(width, -1)
         book_search_item.add(toolbar.search_entry)
         toolbar.search_entry.show()
@@ -257,7 +258,18 @@ class GetIABooksActivity(activity.Activity):
         toolbar.insert(combotool, -1)
         combotool.show()
 
+        self.bt_catalogs = ToggleToolButton('books')
+        self.bt_catalogs.set_tooltip(_('Catalogs'))
+        toolbar.insert(self.bt_catalogs, -1)
+        self.bt_catalogs.connect('toggled', self.__toggle_cats_cb)
+        if len(self.catalogs) > 0:
+            self.bt_catalogs.show()
+
         if len(self.languages) > 0:
+            toolbar.config_toolbarbutton = ToolbarButton()
+            toolbar.config_toolbarbutton.props.icon_name = 'preferences-system'
+            toolbar.config_toolbarbox = gtk.Toolbar()
+            toolbar.config_toolbarbutton.props.page = toolbar.config_toolbarbox
             toolbar.language_combo = ComboBox()
             toolbar.language_combo.props.sensitive = True
             combotool = ToolComboBox(toolbar.language_combo)
@@ -265,18 +277,13 @@ class GetIABooksActivity(activity.Activity):
             for key in self.languages.keys():
                 toolbar.language_combo.append_item(key, self.languages[key])
             toolbar.language_combo.set_active(0)
-            toolbar.insert(combotool, -1)
+            toolbar.config_toolbarbutton.props.page.insert(combotool, -1)
+            toolbar.insert(toolbar.config_toolbarbutton, -1)
+            toolbar.config_toolbarbutton.show()
             combotool.show()
             toolbar.language_changed_cb_id = \
                 toolbar.language_combo.connect('changed',
                 self.__language_changed_cb)
-
-        self.bt_catalogs = ToggleToolButton('books')
-        self.bt_catalogs.set_tooltip(_('Catalogs'))
-        toolbar.insert(self.bt_catalogs, -1)
-        self.bt_catalogs.connect('toggled', self.__toggle_cats_cb)
-        if len(self.catalogs) > 0:
-            self.bt_catalogs.show()
 
         self._device_manager = devicemanager.DeviceManager()
         self._refresh_sources(toolbar)
@@ -342,7 +349,8 @@ class GetIABooksActivity(activity.Activity):
 
         position = 0
         for key in _SOURCES.keys():
-            toolbar.source_combo.append_item(_SOURCES[key], key)
+            toolbar.source_combo.append_item(_SOURCES[key], key,
+                icon_name='internet-icon')
             _SOURCES_CONFIG[key]['position'] = position
             position = position + 1
 
