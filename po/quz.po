@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2011-11-12 18:12+0200\n"
+"PO-Revision-Date: 2011-11-26 08:41+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: quz\n"
@@ -88,7 +88,7 @@ msgstr ""
 #  "Lenguaje:\t"
 #: GetIABooksActivity.py:633
 msgid "Language:\t"
-msgstr ""
+msgstr "Simi:\t\t"
 
 #  "Editor:\t"
 #: GetIABooksActivity.py:634
@@ -165,7 +165,7 @@ msgstr ""
 #  "Lenguaje"
 #: listview.py:45
 msgid "Language"
-msgstr ""
+msgstr "Simi"
 
 #  "Fecha de publicación"
 #: listview.py:47
