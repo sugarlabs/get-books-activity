@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2011-12-05 20:29+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2011-12-21 22:53+0200\n"
+"Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
@@ -67,9 +67,10 @@ msgstr "Իմ գրքերը"
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Ծավալ"
 
+# Ֆորմատ
 #: GetIABooksActivity.py:538
 msgid "Format:"
-msgstr "Ձևաչափ`"
+msgstr "Ձևաչափ."
 
 #: GetIABooksActivity.py:551
 msgid "Get Book"
@@ -78,11 +79,11 @@ msgstr "Ստանալ գիրք"
 #: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
-"Մուտքագրեք հեղինակի անունը կամ վերնագրի մասը գրքի որոնումը սկսելու համար:"
+"Մուտքագրեք հեղինակի անվան կամ գրքի վերնագրի մի մասը` որոնումն սկսելու համար:"
 
 #: GetIABooksActivity.py:599
 msgid "Selected book"
-msgstr "ընտրված գիրք"
+msgstr "Ընտրված գիրք"
 
 #: GetIABooksActivity.py:618
 msgid "Title:\t\t"
@@ -119,11 +120,11 @@ msgstr "Ներեցեք, ոչ մի գիրք չի գտնվել:"
 
 #: GetIABooksActivity.py:804
 msgid "Sorry, we only found english books."
-msgstr "ներեցեք, մենք գտանք միայն անգլերեն գրքեր:"
+msgstr "Ներեցե'ք, մենք գտանք միայն անգլերեն գրքեր:"
 
 #: GetIABooksActivity.py:897
 msgid "Error"
-msgstr "Վրիպում"
+msgstr "Ձախողում"
 
 #: GetIABooksActivity.py:897
 msgid "Connection timed out for "
@@ -132,19 +133,19 @@ msgstr "Կապի ժամանակը սպառվեց "
 #: GetIABooksActivity.py:942
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr "Սխալմունք: Չհաջողվեց բեռնել %s: "
+msgstr "Ձախողում. Չհաջողվեց բեռնել %s: "
 
 #: GetIABooksActivity.py:1000
 msgid "Download completed"
-msgstr "բեռնումը ավարտված է"
+msgstr "Բեռնումն ավարտված է"
 
 #: GetIABooksActivity.py:1008
 msgid "Show in Journal"
-msgstr "Ցույց տալ ամսագրում"
+msgstr "Ցույց տալ Մատյանում"
 
 #: GetIABooksActivity.py:1011
 msgid "Ok"
-msgstr "լավ"
+msgstr "Ok"
 
 #: listview.py:39
 msgid "Title"
@@ -164,7 +165,7 @@ msgstr "Լեզու"
 
 #: listview.py:47
 msgid "Publish Date"
-msgstr "Հրատարակման թիվը"
+msgstr "Հրատարակման ամսաթիվը"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "Հղում.\t\t"
