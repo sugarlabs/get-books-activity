@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2012-02-27 03:08+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2012-03-15 11:40+0200\n"
+"Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Get Books"
-msgstr ""
+msgstr "Get Books"
 
 #: GetIABooksActivity.py:98
 msgid "Books"
@@ -60,11 +60,11 @@ msgstr "ภาษาใดก็ได้"
 #: GetIABooksActivity.py:272 GetIABooksActivity.py:394
 #: GetIABooksActivity.py:481 GetIABooksActivity.py:487
 msgid "Catalogs"
-msgstr ""
+msgstr "แคตตาล็อก"
 
 #: GetIABooksActivity.py:313 GetIABooksActivity.py:777
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "กำลังค้นหากรุณารอสักครู่..."
 
 #: GetIABooksActivity.py:353
 msgid "My books"
@@ -72,8 +72,9 @@ msgstr "หนังสือของฉัน"
 
 #: GetIABooksActivity.py:368
 #, python-format
+#, python-format, 
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB Volume"
 
 #: GetIABooksActivity.py:538
 msgid "Format:"
@@ -81,19 +82,19 @@ msgstr "รูปแบบ:"
 
 #: GetIABooksActivity.py:551
 msgid "Get Book"
-msgstr ""
+msgstr "รับหนังสือ"
 
 #: GetIABooksActivity.py:578
 msgid "Enter words from the Author or Title to begin search."
-msgstr ""
+msgstr "ป้อนชื่อผู้เขียนหรือชื่อเรื้องในการค้นหา"
 
 #: GetIABooksActivity.py:599
 msgid "Selected book"
-msgstr "เลือกหนังเสือ"
+msgstr "หนังเสือที่เลือก"
 
 #: GetIABooksActivity.py:618
 msgid "Title:\t\t"
-msgstr "ชื่อแทร็ก:\t\t"
+msgstr "ชื่อเรื่อง:\t\t"
 
 #: GetIABooksActivity.py:620
 msgid "Author:\t\t"
@@ -108,9 +109,8 @@ msgid "Language:\t"
 msgstr "ภาษา:\t"
 
 #: GetIABooksActivity.py:634
-#, fuzzy
 msgid "Publisher:\t"
-msgstr "ผู้จัดพิมพ์:\t"
+msgstr "สำนักพิมพ์:\t"
 
 #: GetIABooksActivity.py:761
 msgid "You must enter at least 3 letters."
@@ -118,8 +118,9 @@ msgstr "คุณต้องใส่อย่างน้อย 3 ตัวอ
 
 #: GetIABooksActivity.py:784
 #, python-format
+#, python-format, ,
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "รายการแคตตาล็อกใหม่ %s ถูกพบ"
 
 #: GetIABooksActivity.py:788
 msgid "Sorry, no books could be found."
@@ -140,7 +141,7 @@ msgstr "หมดเวลาการเชื่อมต่อ "
 #: GetIABooksActivity.py:942
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr ""
+msgstr "ข้อผิดพลาด: ไม่สามารถดาวน์โหลด %s "
 
 #: GetIABooksActivity.py:1000
 msgid "Download completed"
@@ -148,7 +149,7 @@ msgstr "ดาวน์โหลดเสร็จสิ้นแล้ว"
 
 #: GetIABooksActivity.py:1008
 msgid "Show in Journal"
-msgstr "แสดงบันทึกประจำวัน"
+msgstr "แสดงในบันทึกประจำวัน"
 
 #: GetIABooksActivity.py:1011
 msgid "Ok"
@@ -156,7 +157,7 @@ msgstr "ตกลง"
 
 #: listview.py:39
 msgid "Title"
-msgstr "ตำแหน่ง"
+msgstr "ชื่อเรื่อง"
 
 #: listview.py:41
 msgid "Author"
@@ -164,7 +165,7 @@ msgstr "ผู้เขียน"
 
 #: listview.py:43
 msgid "Publisher"
-msgstr "ผู้จัดพิมพ์"
+msgstr "สำนักพิมพ์"
 
 #: listview.py:45
 msgid "Language"
