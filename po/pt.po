@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2012-01-16 14:33+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2012-03-16 01:40+0200\n"
+"Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -89,7 +89,7 @@ msgstr "Escreve palavras do nome do Autor ou do Título para começar a busca."
 
 #: GetIABooksActivity.py:599
 msgid "Selected book"
-msgstr "Livro seleccionado"
+msgstr "Livro selecionado"
 
 #: GetIABooksActivity.py:618
 msgid "Title:\t\t"
@@ -134,7 +134,7 @@ msgstr "Erro"
 
 #: GetIABooksActivity.py:897
 msgid "Connection timed out for "
-msgstr "A ligação expirou o tempo para "
+msgstr "A ligação expirou o limite de tempo para "
 
 #: GetIABooksActivity.py:942
 #, python-format
@@ -143,7 +143,7 @@ msgstr "Erro: Não foi possível transferir %s. "
 
 #: GetIABooksActivity.py:1000
 msgid "Download completed"
-msgstr "Transferência completada"
+msgstr "Transferência completa"
 
 #: GetIABooksActivity.py:1008
 msgid "Show in Journal"
