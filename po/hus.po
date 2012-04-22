@@ -8,9 +8,9 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-08 10:43-0300\n"
 "PO-Revision-Date: 2011-08-19 16:54+0200\n"
-"Last-Translator:  <ieliiptenek@gmail.com>\n"
+"Last-Translator: <ieliiptenek@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: hus\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -44,7 +44,8 @@ msgstr "U T'i'adhuchlabil"
 
 # volume as in book volume, not sound
 #: GetIABooksActivity.py:368
-#, python-format, , 
+#, python-format
+#, python-format, ,
 msgid "%.2f GB Volume"
 msgstr "%.2f GB in kawídh"
 
@@ -91,7 +92,8 @@ msgid "You must enter at least 3 letters."
 msgstr "Xi lej we' ne'ets ka punuw jats ox i dhuche'."
 
 #: GetIABooksActivity.py:784
-#, python-format, 
+#, python-format
+#, python-format,
 msgid "New catalog list %s was found"
 msgstr "Elan %s juni ít k'elab kwenéltakudh"
 
