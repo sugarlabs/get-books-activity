@@ -16,17 +16,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import logging
+from gi.repository import GObject
+from gi.repository import Gtk
 
+from sugar3 import network
+
+import logging
 import threading
 import os
 import urllib
-import gobject
-import gtk
 import time
 import csv
-
-from sugar import network
 
 import sys
 sys.path.insert(0, './')
@@ -39,7 +39,7 @@ _REL_SUBSECTION = 'subsection'
 _REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
 _REL_OPDS_NEW = u'http://opds-spec.org/sort/new'
 
-gobject.threads_init()
+GObject.threads_init()
 
 
 class ReadURLDownloader(network.GlibURLDownloader):
@@ -100,7 +100,7 @@ class DownloadThread(threading.Thread):
 
         self.obj._feedobj = feedobj
         self.obj._ready = True
-        gobject.idle_add(self.obj.notify_updated, self.midway)
+        GObject.idle_add(self.obj.notify_updated, self.midway)
         return False
 
     def run(self):
@@ -222,16 +222,16 @@ class Book(object):
         return False
 
 
-class QueryResult(gobject.GObject):
+class QueryResult(GObject.GObject):
 
     __gsignals__ = {
-        'updated': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
-                          ([gobject.TYPE_BOOLEAN])),
+        'updated': (GObject.SignalFlags.RUN_FIRST,
+                          None,
+                          ([bool])),
     }
 
     def __init__(self, configuration, queryterm, language):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self._configuration = configuration
         self._uri = self._configuration['query_uri']
         self._queryterm = queryterm
@@ -369,7 +369,7 @@ class DownloadIAThread(threading.Thread):
         self._download_content_type = None
         self._booklist = []
         queryterm = self.obj._queryterm
-        search_tuple = queryterm.lower().split()
+        # search_tuple = queryterm.lower().split()
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
         self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
@@ -384,7 +384,7 @@ class DownloadIAThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def _download(self):
-        gobject.idle_add(self.download_csv, self.search_url)
+        GObject.idle_add(self.download_csv, self.search_url)
 
     def download_csv(self, url):
         logging.error('get csv from %s', url)
@@ -428,7 +428,7 @@ class DownloadIAThread(threading.Thread):
         reader.next()  # skip the first header row.
         for row in reader:
             if len(row) < 7:
-                _logger.debug("Server Error",  self.search_url)
+                _logger.debug("Server Error: %s",  self.search_url)
                 return
             entry = {}
             entry['author'] = row[0]
@@ -461,7 +461,7 @@ class DownloadIAThread(threading.Thread):
             self.obj._booklist.append(IABook(None, entry, ''))
 
         os.remove(tempfile)
-        gobject.idle_add(self.obj.notify_updated, self.midway)
+        GObject.idle_add(self.obj.notify_updated, self.midway)
         self.obj._ready = True
         return False
 
@@ -478,7 +478,7 @@ class InternetArchiveQueryResult(QueryResult):
     # because the server implementation is not working very well
 
     def __init__(self, queryterm, language, activity):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self._activity = activity
         self._queryterm = queryterm
         self._language = language
@@ -519,7 +519,7 @@ class ImageDownloaderThread(threading.Thread):
             self._getter.start(path)
         except:
             _logger.debug("Connection timed out for")
-            gobject.idle_add(self.obj.notify_updated, None)
+            GObject.idle_add(self.obj.notify_updated, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
@@ -529,7 +529,7 @@ class ImageDownloaderThread(threading.Thread):
         _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
-            gobject.idle_add(self.obj.notify_updated, tempfile)
+            GObject.idle_add(self.obj.notify_updated, tempfile)
 
     def _get_image_progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
@@ -545,15 +545,15 @@ class ImageDownloaderThread(threading.Thread):
         else:
             _logger.debug("Downloaded %u bytes...",
                           bytes_downloaded)
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def _get_image_error_cb(self, getter, err):
         _logger.debug("Error getting image: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        gobject.idle_add(self.obj.notify_updated, None)
+        GObject.idle_add(self.obj.notify_updated, None)
 
     def run(self):
         self._download_image()
@@ -562,16 +562,16 @@ class ImageDownloaderThread(threading.Thread):
         self.stopthread.set()
 
 
-class ImageDownloader(gobject.GObject):
+class ImageDownloader(GObject.GObject):
 
     __gsignals__ = {
-        'updated': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
-                          ([gobject.TYPE_STRING])),
+        'updated': (GObject.SignalFlags.RUN_FIRST,
+                          None,
+                          ([GObject.TYPE_STRING])),
     }
 
     def __init__(self, activity, url):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.threads = []
         self._activity = activity
         self._url = url

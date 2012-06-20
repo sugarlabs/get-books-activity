@@ -18,31 +18,32 @@
 
 import os
 import logging
-import gobject
 import dbus
 
-UDISK_DEVICE_PATH = 'org.freedesktop.UDisks.Device'
+from gi.repository import GObject
+
+UDISK_DEVICE_PATH = 'org.freedesktop.UDisks2.Device'
 
 
-class DeviceManager(gobject.GObject):
+class DeviceManager(GObject.GObject):
 
     __gsignals__ = {
-        'device-changed': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
+        'device-changed': (GObject.SignalFlags.RUN_FIRST,
+                          None,
                           ([])),
     }
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self._devices = {}
         self._bus = dbus.SystemBus()
 
         try:
-            self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks',
-                       '/org/freedesktop/UDisks')
+            self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks2',
+                       '/org/freedesktop/UDisks2')
             self._udisk_iface = dbus.Interface(self._udisk_proxy,
-                        'org.freedesktop.UDisks')
+                        'org.freedesktop.UDisks2')
             self._populate_devices()
             self._udisk_iface.connect_to_signal('DeviceChanged',
                     self.__device_changed_cb)
@@ -59,22 +60,21 @@ class DeviceManager(gobject.GObject):
 
     def _get_props_from_device(self, device):
         # http://hal.freedesktop.org/docs/udisks/Device.html
-        device_obj = self._bus.get_object('org.freedesktop.UDisks', device)
+        device_obj = self._bus.get_object('org.freedesktop.UDisks2', device)
         device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
         props = {}
         props['mounted'] = bool(device_props.Get(UDISK_DEVICE_PATH,
                 'DeviceIsMounted'))
         if props['mounted']:
             props['mount_path'] = str(device_props.Get(UDISK_DEVICE_PATH,
-                    'DeviceMountPaths')[0])
+                'DeviceMountPaths')[0])
             props['removable'] = bool(device_props.Get(UDISK_DEVICE_PATH,
-                    'DriveCanDetach'))
+                'DriveCanDetach'))
             props['label'] = str(device_props.Get(UDISK_DEVICE_PATH,
-                    'IdLabel'))
+                'IdLabel'))
             props['size'] = int(device_props.Get(UDISK_DEVICE_PATH,
-                    'DeviceSize'))
-            return props
-        return None
+                'DeviceSize'))
+        return props
 
     def _have_catalog(self, props):
         # Apart from determining if this is a removable volume,
@@ -93,12 +93,12 @@ class DeviceManager(gobject.GObject):
             props['have_catalog'] = have_catalog
             if have_catalog:
                 self.emit('device-changed')
-            logging.debug('Device was added %s' % props)
+            logging.error('Device was added %s' % props)
         else:
             if device in self._devices:
                 props = self._devices[device]
                 need_notify = props['have_catalog']
-                logging.debug('Device was removed %s', props)
+                logging.error('Device was removed %s', props)
                 del self._devices[device]
                 if need_notify:
                     self.emit('device-changed')

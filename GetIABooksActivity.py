@@ -19,32 +19,32 @@
 import os
 import logging
 import time
-import gtk
 
-OLD_TOOLBAR = False
-try:
-    from sugar.graphics.toolbarbox import ToolbarBox
-    from sugar.activity.widgets import StopButton
-except ImportError:
-    OLD_TOOLBAR = True
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
+from gi.repository import GObject
+from gi.repository import Pango
 
-from sugar.graphics import style
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.toggletoolbutton import ToggleToolButton
-from sugar.graphics.toolcombobox import ToolComboBox
-from sugar.graphics.combobox import ComboBox
-from sugar.graphics import iconentry
-from sugar import profile
-from sugar.activity import activity
-from sugar.activity.widgets import ToolbarButton
-from sugar.bundle.activitybundle import ActivityBundle
-from sugar.datastore import datastore
-from sugar.graphics.alert import NotifyAlert
-from sugar.graphics.alert import Alert
-from sugar.graphics.icon import Icon
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import StopButton
+from sugar3.graphics import style
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.graphics.toggletoolbutton import ToggleToolButton
+from sugar3.graphics.toolcombobox import ToolComboBox
+from sugar3.graphics.combobox import ComboBox
+from sugar3.graphics import iconentry
+from sugar3 import profile
+from sugar3.activity import activity
+from sugar3.activity.widgets import ToolbarButton
+from sugar3.bundle.activitybundle import ActivityBundle
+from sugar3.datastore import datastore
+from sugar3.graphics.alert import NotifyAlert
+from sugar3.graphics.alert import Alert
+from sugar3.graphics.icon import Icon
 from gettext import gettext as _
+
 import dbus
-import gobject
 import ConfigParser
 import base64
 
@@ -86,39 +86,27 @@ class GetIABooksActivity(activity.Activity):
         else:
             self._read_configuration()
 
-        if OLD_TOOLBAR:
-            toolbox = activity.ActivityToolbox(self)
-            activity_toolbar = toolbox.get_activity_toolbar()
+        toolbar_box = ToolbarBox()
+        activity_button = ToolButton()
+        color = profile.get_color()
+        bundle = ActivityBundle(activity.get_bundle_path())
+        icon = Icon(file=bundle.get_icon(), xo_color=color)
+        activity_button.set_icon_widget(icon)
+        activity_button.show()
 
-            self.set_toolbox(toolbox)
-            self._books_toolbar = gtk.Toolbar()
-            self._add_search_controls(self._books_toolbar)
-            self.toolbox.add_toolbar(_('Books'), self._books_toolbar)
-            self._books_toolbar.show()
-            toolbox.show()
-            toolbox.set_current_toolbar(1)
-        else:
-            toolbar_box = ToolbarBox()
-            activity_button = ToolButton()
-            color = profile.get_color()
-            bundle = ActivityBundle(activity.get_bundle_path())
-            icon = Icon(file=bundle.get_icon(), xo_color=color)
-            activity_button.set_icon_widget(icon)
-            activity_button.show()
+        toolbar_box.toolbar.insert(activity_button, 0)
+        self._add_search_controls(toolbar_box.toolbar)
 
-            toolbar_box.toolbar.insert(activity_button, 0)
-            self._add_search_controls(toolbar_box.toolbar)
+        separator = Gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbar_box.toolbar.insert(separator, -1)
 
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = False
-            separator.set_expand(True)
-            toolbar_box.toolbar.insert(separator, -1)
+        toolbar_box.toolbar.insert(StopButton(self), -1)
 
-            toolbar_box.toolbar.insert(StopButton(self), -1)
-
-            self.set_toolbar_box(toolbar_box)
-            toolbar_box.show_all()
-            self._books_toolbar = toolbar_box.toolbar
+        self.set_toolbar_box(toolbar_box)
+        toolbar_box.show_all()
+        self._books_toolbar = toolbar_box.toolbar
 
         self._create_controls()
 
@@ -218,7 +206,7 @@ class GetIABooksActivity(activity.Activity):
                 catalog_source = section.split('_')[1]
                 if not catalog_source in _SOURCES_CONFIG:
                     logging.error('There are not a source for the catalog ' +
-                                    'section  %s', section)
+                            'section  %s', section)
                     break
                 source_config = _SOURCES_CONFIG[catalog_source]
                 opds_cover = source_config['opds_cover']
@@ -236,14 +224,14 @@ class GetIABooksActivity(activity.Activity):
         logging.error('catalogs %s', self.catalogs)
 
     def _add_search_controls(self, toolbar):
-        book_search_item = gtk.ToolItem()
+        book_search_item = Gtk.ToolItem()
         toolbar.search_entry = iconentry.IconEntry()
         toolbar.search_entry.set_icon_from_name(iconentry.ICON_ENTRY_PRIMARY,
-                                                'system-search')
+                'system-search')
         toolbar.search_entry.add_clear_button()
         toolbar.search_entry.connect('activate',
                 self.__search_entry_activate_cb)
-        width = int(gtk.gdk.screen_width() / 4)
+        width = int(Gdk.Screen.width() / 4)
         toolbar.search_entry.set_size_request(width, -1)
         book_search_item.add(toolbar.search_entry)
         toolbar.search_entry.show()
@@ -268,7 +256,7 @@ class GetIABooksActivity(activity.Activity):
         if len(self.languages) > 0:
             toolbar.config_toolbarbutton = ToolbarButton()
             toolbar.config_toolbarbutton.props.icon_name = 'preferences-system'
-            toolbar.config_toolbarbox = gtk.Toolbar()
+            toolbar.config_toolbarbox = Gtk.Toolbar()
             toolbar.config_toolbarbutton.props.page = toolbar.config_toolbarbox
             toolbar.language_combo = ComboBox()
             toolbar.language_combo.props.sensitive = True
@@ -321,7 +309,10 @@ class GetIABooksActivity(activity.Activity):
         self.queryresults = opds.RemoteQueryResult(catalog_config,
                 '', query_language)
         self.show_message(_('Performing lookup, please wait...'))
-        self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        # README: I think we should create some global variables for
+        # each cursor that we are using to avoid the creation of them
+        # every time that we want to change it
+        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
 
         self.queryresults.connect('updated', self.__query_updated_cb)
 
@@ -428,14 +419,17 @@ class GetIABooksActivity(activity.Activity):
         treestore, coldex = \
                 self.catalog_listview.get_selection().get_selected()
         len_cat = len(self.catalog_history)
-        if self.catalog_history[len_cat - 1]['catalogs'] == []:
+        if len_cat > 0 and self.catalog_history[len_cat - 1]['catalogs'] == []:
             self.catalog_history.pop()
             len_cat = len(self.catalog_history)
 
-        self.catalog_history.append(\
-                {'title': treestore.get_value(coldex, 0),
-                'catalogs': []})
-        self.__switch_catalog_cb(treestore.get_value(coldex, 0))
+        # README: when the Activity starts by default there is nothing
+        # selected and this signal is called, so we have to avoid this
+        # 'append' because it fails
+        if coldex is not None:
+            self.catalog_history.append(
+                    {'title': treestore.get_value(coldex, 0), 'catalogs': []})
+            self.__switch_catalog_cb(treestore.get_value(coldex, 0))
 
     def _sort_logfile(self, treemodel, itera, iterb):
         a = treemodel.get_value(itera, 0)
@@ -455,42 +449,42 @@ class GetIABooksActivity(activity.Activity):
             self.tree_scroller.show_all()
             self.separa.show()
         else:
-            self.tree_scroller.hide_all()
+            self.tree_scroller.hide()
             self.separa.hide()
 
     def _create_controls(self):
         self._download_content_length = 0
         self._download_content_type = None
-        self.progressbox = gtk.HBox(spacing=20)
-        self.progressbar = gtk.ProgressBar()
-        self.progressbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
+        self.progressbox = Gtk.Box(spacing=20,
+                orientation=Gtk.Orientation.HORIZONTAL)
+        self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_fraction(0.0)
-        self.progressbox.pack_start(self.progressbar, expand=True,
-                fill=True)
-        self.cancel_btn = gtk.Button(stock=gtk.STOCK_CANCEL)
+        self.progressbox.pack_start(self.progressbar, expand=True, fill=True,
+                padding=0)
+        self.cancel_btn = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
         self.progressbox.pack_start(self.cancel_btn, expand=False,
-                fill=False)
+                fill=False, padding=0)
 
-        self.msg_label = gtk.Label()
+        self.msg_label = Gtk.Label()
 
-        self.list_box = gtk.HBox()
+        self.list_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
         # Catalogs treeview
-        self.catalog_listview = gtk.TreeView()
+        self.catalog_listview = Gtk.TreeView()
         self.catalog_listview.headers_clickble = True
         self.catalog_listview.hover_expand = True
         self.catalog_listview.rules_hint = True
         self.catalog_listview.connect('cursor-changed', self.move_down_catalog)
         self.catalog_listview.set_enable_search(False)
-        self.treemodel = gtk.ListStore(gobject.TYPE_STRING)
-        sorter = gtk.TreeModelSort(self.treemodel)
-        sorter.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        sorter.set_sort_func(0, self._sort_logfile)
-        self.catalog_listview.set_model(sorter)
-        renderer = gtk.CellRendererText()
-        renderer.set_property('wrap-mode', gtk.WRAP_WORD)
-        self.treecol = gtk.TreeViewColumn(_('Catalogs'), renderer, text=0)
+
+        self.treemodel = Gtk.ListStore(str)
+        self.treemodel.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.catalog_listview.set_model(self.treemodel)
+
+        renderer = Gtk.CellRendererText()
+        renderer.set_property('wrap-mode', Pango.WrapMode.WORD)
+        self.treecol = Gtk.TreeViewColumn(_('Catalogs'), renderer, text=0)
         self.treecol.set_property('clickable', True)
         self.treecol.connect('clicked', self.move_up_catalog)
         self.catalog_listview.append_column(self.treecol)
@@ -500,7 +494,7 @@ class GetIABooksActivity(activity.Activity):
 
         if len(self.catalogs) > 0:
             self.catalog_history.append({'title': _('Catalogs'),
-                'catalogs': self.catalogs})
+                    'catalogs': self.catalogs})
             self.categories = []
             self.path_iter = {}
             for key in self.catalogs.keys():
@@ -508,38 +502,42 @@ class GetIABooksActivity(activity.Activity):
             self.treemodel.clear()
             for p in self.categories:
                 self.path_iter[p['text']] = self.treemodel.append([p['text']])
-        self.tree_scroller = gtk.ScrolledWindow(hadjustment=None,
+        self.tree_scroller = Gtk.ScrolledWindow(hadjustment=None,
                 vadjustment=None)
-        self.tree_scroller.set_policy(gtk.POLICY_NEVER,
-                gtk.POLICY_AUTOMATIC)
+        self.tree_scroller.set_policy(Gtk.PolicyType.NEVER,
+                Gtk.PolicyType.AUTOMATIC)
         self.tree_scroller.add(self.catalog_listview)
-        self.list_box.pack_start(self.tree_scroller, expand=False, fill=False)
-        self.separa = gtk.VSeparator()
-        self.list_box.pack_start(self.separa, expand=False, fill=False)
+        self.list_box.pack_start(self.tree_scroller, expand=False,
+                fill=False, padding=0)
+        self.separa = Gtk.VSeparator()
+        self.list_box.pack_start(self.separa, expand=False,
+                fill=False, padding=0)
 
         # books listview
         self.listview = ListView(self._lang_code_handler)
         self.listview.connect('selection-changed', self.selection_cb)
         self.listview.set_enable_search(False)
 
-        self.list_scroller = gtk.ScrolledWindow(hadjustment=None,
+        self.list_scroller = Gtk.ScrolledWindow(hadjustment=None,
                 vadjustment=None)
-        self.list_scroller.set_policy(gtk.POLICY_AUTOMATIC,
-                gtk.POLICY_AUTOMATIC)
+        self.list_scroller.set_policy(Gtk.PolicyType.AUTOMATIC,
+                Gtk.PolicyType.AUTOMATIC)
         vadjustment = self.list_scroller.get_vadjustment()
         vadjustment.connect('value-changed',
                 self.__vadjustment_value_changed_cb)
         self.list_scroller.add(self.listview)
-        self.list_box.pack_start(self.list_scroller, expand=True, fill=True)
+        self.list_box.pack_start(self.list_scroller, expand=True,
+                fill=True, padding=0)
 
-        self.scrolled = gtk.ScrolledWindow()
-        self.scrolled.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.scrolled.props.shadow_type = gtk.SHADOW_NONE
-        self.textview = gtk.TextView()
+        self.scrolled = Gtk.ScrolledWindow()
+        self.scrolled.set_policy(Gtk.PolicyType.NEVER,
+                Gtk.PolicyType.AUTOMATIC)
+        self.scrolled.props.shadow_type = Gtk.ShadowType.NONE
+        self.textview = Gtk.TextView()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
-        self.textview.set_wrap_mode(gtk.WRAP_WORD)
-        self.textview.set_justification(gtk.JUSTIFY_LEFT)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.textview.set_justification(Gtk.Justification.LEFT)
         self.textview.set_left_margin(20)
         self.textview.set_right_margin(20)
         self.scrolled.add(self.textview)
@@ -547,10 +545,10 @@ class GetIABooksActivity(activity.Activity):
         self.separa.hide()
         self.tree_scroller.hide()
 
-        vbox_download = gtk.VBox()
+        vbox_download = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        hbox_format = gtk.HBox()
-        format_label = gtk.Label(_('Format:'))
+        hbox_format = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        format_label = Gtk.Label(label=_('Format:'))
         self.format_combo = ComboBox()
         for key in _MIMETYPES.keys():
             self.format_combo.append_item(_MIMETYPES[key], key)
@@ -563,23 +561,23 @@ class GetIABooksActivity(activity.Activity):
         hbox_format.pack_start(self.format_combo, False, False, 10)
         vbox_download.pack_start(hbox_format, False, False, 10)
 
-        self._download = gtk.Button(_('Get Book'))
+        self._download = Gtk.Button(_('Get Book'))
         self._download.props.sensitive = False
         self._download.connect('clicked', self.__get_book_cb)
         vbox_download.pack_start(self._download, False, False, 10)
 
-        bottom_hbox = gtk.HBox()
+        bottom_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
         if self.show_images:
             self.__image_downloader = None
-            self.image = gtk.Image()
+            self.image = Gtk.Image()
             self.add_default_image()
             bottom_hbox.pack_start(self.image, False, False, 10)
         bottom_hbox.pack_start(self.scrolled, True, True, 10)
         bottom_hbox.pack_start(vbox_download, False, False, 10)
         bottom_hbox.show_all()
 
-        vbox = gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.pack_start(self.msg_label, False, False, 10)
         vbox.pack_start(self.progressbox, False, False, 10)
         vbox.pack_start(self.list_box, True, True, 0)
@@ -595,7 +593,6 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.grab_focus()
         if len(self.catalogs) > 0:
             self.bt_catalogs.set_active(True)
-
 
     def can_close(self):
         self._lang_code_handler.close()
@@ -679,7 +676,7 @@ class GetIABooksActivity(activity.Activity):
 
     def get_pixbuf_from_buffer(self, image_buffer):
         """Buffer To Pixbuf"""
-        pixbuf_loader = gtk.gdk.PixbufLoader()
+        pixbuf_loader = GdkPixbuf.PixbufLoader()
         pixbuf_loader.write(image_buffer)
         pixbuf_loader.close()
         pixbuf = pixbuf_loader.get_pixbuf()
@@ -718,11 +715,11 @@ class GetIABooksActivity(activity.Activity):
         self.add_image(file_path)
 
     def add_image(self, file_path):
-        pixbuf = gtk.gdk.pixbuf_new_from_file(file_path)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(file_path)
         self.add_image_buffer(pixbuf)
 
     def add_image_buffer(self, pixbuf):
-        image_height = int(gtk.gdk.screen_height() / 4)
+        image_height = int(Gdk.Screen.height() / 4)
         image_width = image_height / 3 * 2
         width, height = pixbuf.get_width(), pixbuf.get_height()
         scale = 1
@@ -731,20 +728,24 @@ class GetIABooksActivity(activity.Activity):
             scale_y = image_height / float(height)
             scale = min(scale_x, scale_y)
 
-        pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
-                            pixbuf.get_has_alpha(), \
-                            pixbuf.get_bits_per_sample(), \
-                            image_width, image_height)
-        pixbuf2.fill(style.COLOR_PANEL_GREY.get_int())
+        pixbuf2 = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
+                image_width, image_height)
+
+        # FIXME: I used this darker color instead of
+        # style.COLOR_PANEL_GREY because there is a big difference on
+        # the image. We should find the way to use the same color on
+        # the .png loaded than in the rest of the square and remove
+        # the 1px border
+        pixbuf2.fill(style.COLOR_BUTTON_GREY.get_int())
 
         margin_x = int((image_width - (width * scale)) / 2)
         margin_y = int((image_height - (height * scale)) / 2)
 
-        pixbuf.scale(pixbuf2, margin_x, margin_y, \
-                            image_width - (margin_x * 2), \
-                            image_height - (margin_y * 2), \
-                            margin_x, margin_y, scale, scale, \
-                            gtk.gdk.INTERP_BILINEAR)
+        pixbuf.scale(pixbuf2, margin_x, margin_y,
+                image_width - (margin_x * 2), image_height - (margin_y * 2),
+                margin_x, margin_y, scale, scale,
+                GdkPixbuf.InterpType.BILINEAR)
 
         self.image.set_from_pixbuf(pixbuf2)
 
@@ -789,11 +790,11 @@ class GetIABooksActivity(activity.Activity):
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language)
             else:
-                self.queryresults = opds.LocalVolumeQueryResult( \
-                            self.source, search_text)
+                self.queryresults = opds.LocalVolumeQueryResult(self.source,
+                        search_text)
 
             self.show_message(_('Performing lookup, please wait...'))
-            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
             self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
@@ -818,7 +819,7 @@ class GetIABooksActivity(activity.Activity):
                 if only_english:
                     self.show_message(
                             _('Sorry, we only found english books.'))
-        self.window.set_cursor(None)
+        self.get_window().set_cursor(None)
         self._allow_suspend()
 
     def catalogs_updated(self, query, midway):
@@ -919,7 +920,7 @@ class GetIABooksActivity(activity.Activity):
     def get_book(self):
         self.enable_button(False)
         self.progressbox.show_all()
-        gobject.idle_add(self.download_book,  self.download_url)
+        GObject.idle_add(self.download_book, self.download_url)
 
     def download_book(self,  url):
         self._inhibit_suspend()
@@ -960,8 +961,8 @@ class GetIABooksActivity(activity.Activity):
                           bytes_downloaded)
         total = self._download_content_length
         self.set_downloaded_bytes(bytes_downloaded,  total)
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def _get_book_error_cb(self, getter, err):
         self.listview.props.sensitive = True
@@ -1017,7 +1018,7 @@ class GetIABooksActivity(activity.Activity):
         textbuffer = self.textview.get_buffer()
         journal_entry.metadata['description'] = \
             textbuffer.get_text(textbuffer.get_start_iter(),
-                textbuffer.get_end_iter())
+                                textbuffer.get_end_iter(), True)
         if self.exist_cover_image:
             image_buffer = self._get_preview_image_buffer()
             journal_entry.metadata['preview'] = dbus.ByteArray(image_buffer)
@@ -1046,11 +1047,11 @@ class GetIABooksActivity(activity.Activity):
         _stop_alert.props.title = title
         _stop_alert.props.msg = msg
         open_icon = Icon(icon_name='zoom-activity')
-        _stop_alert.add_button(gtk.RESPONSE_APPLY,
+        _stop_alert.add_button(Gtk.ResponseType.APPLY,
                                     _('Show in Journal'), open_icon)
         open_icon.show()
         ok_icon = Icon(icon_name='dialog-ok')
-        _stop_alert.add_button(gtk.RESPONSE_OK, _('Ok'), ok_icon)
+        _stop_alert.add_button(Gtk.ResponseType.OK, _('Ok'), ok_icon)
         ok_icon.show()
         # Remove other alerts
         for alert in self._alerts:
@@ -1061,7 +1062,7 @@ class GetIABooksActivity(activity.Activity):
         _stop_alert.show()
 
     def __stop_response_cb(self, alert, response_id):
-        if response_id is gtk.RESPONSE_APPLY:
+        if response_id is Gtk.ResponseType.APPLY:
             activity.show_object_in_journal(self._object_id)
         self.remove_alert(alert)
 
@@ -1077,39 +1078,27 @@ class GetIABooksActivity(activity.Activity):
             scale_y = preview_height / float(height)
             scale = min(scale_x, scale_y)
 
-        pixbuf2 = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, \
-                            pixbuf.get_has_alpha(), \
-                            pixbuf.get_bits_per_sample(), \
-                            preview_width, preview_height)
+        pixbuf2 = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
+                preview_width, preview_height)
         pixbuf2.fill(style.COLOR_WHITE.get_int())
 
         margin_x = int((preview_width - (width * scale)) / 2)
         margin_y = int((preview_height - (height * scale)) / 2)
 
-        pixbuf.scale(pixbuf2, margin_x, margin_y, \
-                            preview_width - (margin_x * 2), \
-                            preview_height - (margin_y * 2), \
-                            margin_x, margin_y, scale, scale, \
-                            gtk.gdk.INTERP_BILINEAR)
-        preview_data = []
+        pixbuf.scale(pixbuf2, margin_x, margin_y,
+                preview_width - (margin_x * 2),
+                preview_height - (margin_y * 2),
+                margin_x, margin_y, scale, scale,
+                GdkPixbuf.InterpType.BILINEAR)
 
-        def save_func(buf, data):
-            data.append(buf)
-
-        pixbuf2.save_to_callback(save_func, 'png', user_data=preview_data)
-        preview_data = ''.join(preview_data)
-        return preview_data
+        succes, data = pixbuf2.save_to_bufferv('png', [], [])
+        return data
 
     def _get_cover_image_buffer(self):
         pixbuf = self.image.get_pixbuf()
-        cover_data = []
-
-        def save_func(buf, data):
-            data.append(buf)
-
-        pixbuf.save_to_callback(save_func, 'png', user_data=cover_data)
-        cover_data = ''.join(cover_data)
-        return cover_data
+        succes, data = pixbuf.save_to_bufferv('png', [], [])
+        return data
 
     def _show_error_alert(self, title, text=None):
         alert = NotifyAlert(timeout=20)
@@ -1190,16 +1179,16 @@ class GetIABooksActivity(activity.Activity):
         pass
 
 
-class ButtonWithImage(gtk.Button):
+class ButtonWithImage(Gtk.Button):
 
     def __init__(self, label_text):
-        gtk.Button.__init__(self, _('Catalogs'))
+        GObject.GObject.__init__(self,)
         self.icon_move_up = Icon(icon_name='go-up')
-        self.remove(self.get_children()[0])
-        self.hbox = gtk.HBox()
+        # self.remove(self.get_children()[0])
+        self.hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.add(self.hbox)
         self.hbox.add(self.icon_move_up)
-        self.label = gtk.Label(label_text)
+        self.label = Gtk.Label(label=label_text)
         self.hbox.add(self.label)
         self.show_all()
 

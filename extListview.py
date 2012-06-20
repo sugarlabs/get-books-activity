@@ -34,12 +34,12 @@
 #
 # v1.3:
 #   * Greatly improved speed when sorting a lot of rows
-#   * Added support for gtk.CellRendererToggle
+#   * Added support for Gtk.CellRendererToggle
 #   * Improved replaceContent() method
 #   * Added a call to set_cursor() when removing selected row(s)
 #   * Added getFirstSelectedRow(), appendRows(), addColumnAttribute(),
 #   unselectAll() and selectAll() methods
-#   * Set expand to False when calling pack_start()
+#   * Set expand to False when calling pack_start(, True, True, 0)
 #
 # v1.2:
 #   * Fixed D'n'D reordering bugs
@@ -52,35 +52,21 @@
 #     the empty area
 #   * Sort indicators are now displayed whenever needed
 
-import gtk
 import random
+import logging
 
-from gtk import gdk
-from gobject import signal_new, TYPE_INT, TYPE_STRING, TYPE_BOOLEAN, \
-TYPE_PYOBJECT, TYPE_NONE, SIGNAL_RUN_LAST
+from gi.repository import Gtk
+from gi.repository import GObject
+from gi.repository import Gdk
 
 
 # Internal d'n'd (reordering)
 DND_REORDERING_ID = 1024
 DND_INTERNAL_TARGET = ('extListview-internal',
-                        gtk.TARGET_SAME_WIDGET, DND_REORDERING_ID)
+                        Gtk.TargetFlags.SAME_WIDGET, DND_REORDERING_ID)
 
 
-# Custom signals
-signal_new('extlistview-dnd', gtk.TreeView, SIGNAL_RUN_LAST, TYPE_NONE,
-            (gdk.DragContext, TYPE_INT, TYPE_INT, gtk.SelectionData, TYPE_INT,
-            TYPE_PYOBJECT))
-signal_new('extlistview-modified', gtk.TreeView, SIGNAL_RUN_LAST, TYPE_NONE,
-            ())
-signal_new('extlistview-button-pressed', gtk.TreeView, SIGNAL_RUN_LAST,
-            TYPE_NONE, (gdk.Event, TYPE_PYOBJECT))
-signal_new('extlistview-column-visibility-changed', gtk.TreeView,
-            SIGNAL_RUN_LAST, TYPE_NONE, (TYPE_STRING, TYPE_BOOLEAN))
-signal_new('button-press-event', gtk.TreeViewColumn, SIGNAL_RUN_LAST,
-            TYPE_NONE, (gdk.Event, ))
-
-
-class ExtListViewColumn(gtk.TreeViewColumn):
+class ExtListViewColumn(Gtk.TreeViewColumn):
     """
         TreeViewColumn does not signal right-click events, and we need them
         This subclass is equivalent to TreeViewColumn, but it signals these
@@ -90,10 +76,15 @@ class ExtListViewColumn(gtk.TreeViewColumn):
         (http://www.sacredchao.net/quodlibet)
     """
 
+    __gsignals__ = {
+        'button-press-event': (GObject.SignalFlags.RUN_LAST, None,
+                               (object,)),
+        }
+
     def __init__(self, title=None, cell_renderer=None, **args):
-        """ Constructor, see gtk.TreeViewColumn """
-        gtk.TreeViewColumn.__init__(self, title, cell_renderer, **args)
-        label = gtk.Label(title)
+        """ Constructor, see Gtk.TreeViewColumn """
+        GObject.GObject.__init__(self)
+        label = Gtk.Label(label=title)
         self.set_widget(label)
         label.show()
         label.__realize = label.connect('realize', self.onRealize)
@@ -101,7 +92,7 @@ class ExtListViewColumn(gtk.TreeViewColumn):
     def onRealize(self, widget):
         widget.disconnect(widget.__realize)
         del widget.__realize
-        button = widget.get_ancestor(gtk.Button)
+        button = widget.get_ancestor(Gtk.Button)
         if button is not None:
             button.connect('button-press-event', self.onButtonPressed)
 
@@ -109,7 +100,17 @@ class ExtListViewColumn(gtk.TreeViewColumn):
         self.emit('button-press-event', event)
 
 
-class ExtListView(gtk.TreeView):
+class ExtListView(Gtk.TreeView):
+
+    __gsignals__ = {
+        'extlistview-modified': (GObject.SignalFlags.RUN_LAST, None,
+                                 ()),
+
+        # README: I had to change gdk.Event to object on the arguments
+        # sent to the callback because with Gdk.Event it didn't work
+        # 'extlistview-button-pressed': (GObject.SignalFlags.RUN_LAST, None,
+        #                                (object, bool)),
+        }
 
     def __init__(self, columns, sortable=True, dndTargets=[], useMarkup=False,
             canShowHideColumns=True):
@@ -125,7 +126,7 @@ class ExtListView(gtk.TreeView):
             If useMarkup is True, the 'markup' attributes is used instead of
             'text' for CellRendererTexts
         """
-        gtk.TreeView.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.selection = self.get_selection()
 
@@ -140,7 +141,7 @@ class ExtListView(gtk.TreeView):
         self.set_rules_hint(True)
         self.set_headers_visible(True)
 
-        self.selection.set_mode(gtk.SELECTION_MULTIPLE)
+        self.selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         # Create the columns
         nbEntries = 0
@@ -152,7 +153,7 @@ class ExtListView(gtk.TreeView):
             else:
                 column = ExtListViewColumn(title)
                 column.set_resizable(True)
-                #column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+                # column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
                 column.set_expand(expandable)
                 column.set_visible(visible)
                 if canShowHideColumns:
@@ -169,11 +170,11 @@ class ExtListView(gtk.TreeView):
                     nbEntries += 1
                     dataTypes.append(type)
                     column.pack_start(renderer, False)
-                    if isinstance(renderer, gtk.CellRendererToggle):
+                    if isinstance(renderer, Gtk.CellRendererToggle):
                         column.add_attribute(renderer, 'active', nbEntries - 1)
-                    elif isinstance(renderer, gtk.CellRendererPixbuf):
+                    elif isinstance(renderer, Gtk.CellRendererPixbuf):
                         column.add_attribute(renderer, 'pixbuf', nbEntries - 1)
-                    elif isinstance(renderer, gtk.CellRendererText):
+                    elif isinstance(renderer, Gtk.CellRendererText):
                         if useMarkup:
                             column.add_attribute(renderer, 'markup',
                                 nbEntries - 1)
@@ -184,12 +185,12 @@ class ExtListView(gtk.TreeView):
         # Mark management
         self.markedRow = None
         self.markColumn = len(dataTypes)
-        dataTypes.append(TYPE_BOOLEAN)  # When there's no other solution,
-                                        # this additional entry helps in
-                                        # finding the marked row
+        dataTypes.append(bool)  # When there's no other solution,
+                                # this additional entry helps in
+                                # finding the marked row
 
         # Create the ListStore associated with this tree
-        self.store = gtk.ListStore(*dataTypes)
+        self.store = Gtk.ListStore(*dataTypes)
         self.set_model(self.store)
 
         # Drag'n'drop management
@@ -200,13 +201,17 @@ class ExtListView(gtk.TreeView):
         self.dndReordering = False
 
         if len(dndTargets) != 0:
-            self.enable_model_drag_dest(dndTargets, gdk.ACTION_DEFAULT)
+            self.enable_model_drag_dest(dndTargets, Gdk.DragAction.DEFAULT)
 
-        self.connect('drag-begin', self.onDragBegin)
-        self.connect('drag-motion', self.onDragMotion)
-        self.connect('button-press-event', self.onButtonPressed)
-        self.connect('drag-data-received', self.onDragDataReceived)
-        self.connect('button-release-event', self.onButtonReleased)
+        # self.connect('drag-begin', self.onDragBegin)
+        # self.connect('drag-motion', self.onDragMotion)
+
+        # README: this function is disconnected because it emit twice
+        # 'selection-changed'
+        # self.connect('button-press-event', self.onButtonPressed)
+
+        # self.connect('drag-data-received', self.onDragDataReceived)
+        # self.connect('button-release-event', self.onButtonReleased)
 
         # Show the list
         self.show()
@@ -314,7 +319,10 @@ class ExtListView(gtk.TreeView):
         criteria = self.sortColCriteria[column]
         rows.sort(lambda r1, r2: \
                 self.__cmpRows(r1, r2, criteria, self.sortAscending))
-        self.store.reorder([r[-1] for r in rows])
+        # FIXME: AttributeError: 'ListStore' object has no attribute 'reorder'
+        # Bug filled upstream:
+        #   - https://bugzilla.gnome.org/show_bug.cgi?id=677941
+        # self.store.reorder([r[-1] for r in rows])
 
         # Move the mark if needed
         if self.markedRow is not None:
@@ -322,9 +330,9 @@ class ExtListView(gtk.TreeView):
 
         column.set_sort_indicator(True)
         if self.sortAscending:
-            column.set_sort_order(gtk.SORT_ASCENDING)
+            column.set_sort_order(Gtk.SortType.ASCENDING)
         else:
-            column.set_sort_order(gtk.SORT_DESCENDING)
+            column.set_sort_order(Gtk.SortType.DESCENDING)
 
         self.emit('extlistview-modified')
 
@@ -349,6 +357,7 @@ class ExtListView(gtk.TreeView):
 
     def getFirstSelectedRow(self):
         """ Return only the first selected row """
+        # TODO: check if this fail on gtk2 version after click on the ListView
         return tuple(self.store[self.selection.get_selected_rows()[1][0]])[:-1]
 
     def getFirstSelectedRowIndex(self):
@@ -502,13 +511,13 @@ class ExtListView(gtk.TreeView):
         """ Enable the use of Drag'n'Drop to reorder the list """
         self.dndReordering = True
         self.dndTargets.append(DND_INTERNAL_TARGET)
-        self.enable_model_drag_dest(self.dndTargets, gdk.ACTION_DEFAULT)
+        self.enable_model_drag_dest(self.dndTargets, Gdk.DragAction.DEFAULT)
 
     def __isDropAfter(self, pos):
-        """ Helper function, True if pos is gtk.TREE_VIEW_DROP_AFTER or
-            gtk.TREE_VIEW_DROP_INTO_OR_AFTER """
-        return pos == gtk.TREE_VIEW_DROP_AFTER or \
-                pos == gtk.TREE_VIEW_DROP_INTO_OR_AFTER
+        """ Helper function, True if pos is Gtk.TreeViewDropPosition.AFTER or
+            Gtk.TreeViewDropPosition.INTO_OR_AFTER """
+        return pos == Gtk.TreeViewDropPosition.AFTER or \
+                pos == Gtk.TreeViewDropPosition.INTO_OR_AFTER
 
     def __moveSelectedRows(self, x, y):
         """ Internal function used for drag'n'drop """
@@ -516,11 +525,12 @@ class ExtListView(gtk.TreeView):
         dropInfo = self.get_dest_row_at_pos(int(x), int(y))
 
         if dropInfo is None:
-            pos, path = gtk.TREE_VIEW_DROP_INTO_OR_AFTER, len(self.store) - 1
+            pos, path = (Gtk.TreeViewDropPosition.INTO_OR_AFTER,
+                         len(self.store) - 1)
         else:
-            pos, path = dropInfo[1], dropInfo[0][0]
+            pos, path = (dropInfo[1], dropInfo[0][0])
             if self.__isDropAfter(pos) and path < len(self.store) - 1:
-                pos = gtk.TREE_VIEW_DROP_INTO_OR_BEFORE
+                pos = Gtk.TreeViewDropPosition.INTO_OR_BEFORE
                 path += 1
 
         self.freeze_child_notify()
@@ -567,17 +577,20 @@ class ExtListView(gtk.TreeView):
 
         if event.button == 1 or event.button == 3:
             if path is None:
+                # README: this emit the signal: selection-changed and
+                # there is nothing selected so we get an IndexError
                 self.selection.unselect_all()
                 tree.set_cursor(len(self.store))
             else:
                 if self.dndReordering and self.motionEvtId is None \
                     and event.button == 1:
                     self.dndStartPos = (int(event.x), int(event.y))
-                    self.motionEvtId = gtk.TreeView.connect(self, \
+                    self.motionEvtId = Gtk.TreeView.connect(self, \
                             'motion-notify-event', self.onMouseMotion)
 
-                stateClear = not (event.state & \
-                            (gdk.SHIFT_MASK | gdk.CONTROL_MASK))
+                stateClear = not (event.get_state() & \
+                                      (Gdk.ModifierType.SHIFT_MASK |
+                                       Gdk.ModifierType.CONTROL_MASK))
 
                 if stateClear and not self.selection.path_is_selected(path):
                     self.selection.unselect_all()
@@ -586,7 +599,7 @@ class ExtListView(gtk.TreeView):
                     retVal = (stateClear and self.getSelectedRowsCount() > 1 \
                             and self.selection.path_is_selected(path))
 
-        self.emit('extlistview-button-pressed', event, path)
+        # self.emit('extlistview-button-pressed', event, path)
 
         return retVal
 
@@ -599,11 +612,13 @@ class ExtListView(gtk.TreeView):
 
             if len(self.dndTargets) != 0:
                 self.enable_model_drag_dest(self.dndTargets,
-                    gdk.ACTION_DEFAULT)
+                    Gdk.DragAction.DEFAULT)
 
-        stateClear = not (event.state & (gdk.SHIFT_MASK | gdk.CONTROL_MASK))
+        stateClear = not (event.get_state() & \
+                              (Gdk.ModifierType.SHIFT_MASK |
+                               Gdk.ModifierType.CONTROL_MASK))
 
-        if stateClear and event.state & gdk.BUTTON1_MASK \
+        if stateClear and event.get_state() & Gdk.ModifierType.BUTTON1_MASK \
             and self.getSelectedRowsCount() > 1:
             pathInfo = self.get_path_at_pos(int(event.x), int(event.y))
             if pathInfo is not None:
@@ -616,14 +631,14 @@ class ExtListView(gtk.TreeView):
             self.drag_check_threshold(self.dndStartPos[0], self.dndStartPos[1],
             int(event.x), int(event.y)):
             self.dndContext = self.drag_begin([DND_INTERNAL_TARGET],
-                    gdk.ACTION_COPY, 1, event)
+                    Gdk.DragAction.COPY, 1, event)
 
     def onDragBegin(self, tree, context):
         """ A drag'n'drop operation has begun """
         if self.getSelectedRowsCount() == 1:
-            context.set_icon_stock(gtk.STOCK_DND, 0, 0)
+            context.set_icon_stock(Gtk.STOCK_DND, 0, 0)
         else:
-            context.set_icon_stock(gtk.STOCK_DND_MULTIPLE, 0, 0)
+            context.set_icon_stock(Gtk.STOCK_DND_MULTIPLE, 0, 0)
 
     def onDragDataReceived(self, tree, context, x, y, selection, dndId, time):
         """ Some data has been dropped into the list """
@@ -639,22 +654,29 @@ class ExtListView(gtk.TreeView):
         drop = self.get_dest_row_at_pos(int(x), int(y))
 
         if drop is not None and \
-            (drop[1] == gtk.TREE_VIEW_DROP_INTO_OR_AFTER or \
-            drop[1] == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+            (drop[1] == Gtk.TreeViewDropPosition.INTO_OR_AFTER or \
+            drop[1] == Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
             self.enable_model_drag_dest([('invalid-position', 0, -1)],
-                    gdk.ACTION_DEFAULT)
+                    Gdk.DragAction.DEFAULT)
         else:
-            self.enable_model_drag_dest(self.dndTargets, gdk.ACTION_DEFAULT)
+            self.enable_model_drag_dest(self.dndTargets,
+                                        Gdk.DragAction.DEFAULT)
 
     def onColumnHeaderClicked(self, column, event):
         """ A column header has been clicked """
+
         if event.button == 3:
             # Create a menu with a CheckMenuItem per column
-            menu = gtk.Menu()
+            menu = Gtk.Menu()
+
+            # README: it seems like we should use a Palette here
+            # from sugar3.graphics.palette import Palette
+            # menu = Palette('Humitos', text_maxlen=50)
+
             nbVisibleItems = 0
             lastVisibleItem = None
             for column in self.get_columns():
-                item = gtk.CheckMenuItem(column.get_title())
+                item = Gtk.CheckMenuItem(column.get_title())
                 item.set_active(column.get_visible())
                 item.connect('toggled', self.onShowHideColumn, column)
                 item.show()
@@ -669,7 +691,12 @@ class ExtListView(gtk.TreeView):
             if nbVisibleItems == 1:
                 lastVisibleItem.set_sensitive(False)
 
-            menu.popup(None, None, None, event.button, event.get_time())
+            # README: a new argument is needed. Although this is not working
+            # http://developer.gnome.org/gtk3/3.5/GtkMenu.html#gtk-menu-popup
+            menu.popup(None, None, None, None, event.button, event.get_time())
+
+            # FIXME: for some reason this menu.popup call is not
+            # showing the popup
 
     def onShowHideColumn(self, menuItem, column):
         """ Switch the visibility of the given column """

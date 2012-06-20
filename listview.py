@@ -16,42 +16,39 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gobject
-import gtk
-import pango
-import sys
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import Pango
+
 from gettext import gettext as _
-import logging
-
 from extListview import ExtListView
-
-_logger = logging.getLogger('get-ia-books-activity')
 
 
 class ListView(ExtListView):
-    __txtRdr = gtk.CellRendererText()
-    __txtRdr.props.wrap_mode = pango.WRAP_WORD
+    __txtRdr = Gtk.CellRendererText()
+    __txtRdr.props.wrap_mode = Pango.WrapMode.WORD
     __txtRdr.props.wrap_width = 500
     __txtRdr.props.width = 500
     (ROW_TITLE, ROW_AUTHOR, ROW_PUBLISHER,
     ROW_LANGUAGE, ROW_PUB_DATE, ROW_BOOK) = range(6)
 
-    columns = ((_('Title'), [(__txtRdr, gobject.TYPE_STRING)],
+    columns = ((_('Title'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_TITLE,), False, True),
-               (_('Author'), [(__txtRdr, gobject.TYPE_STRING)],
+               (_('Author'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_AUTHOR, ROW_TITLE), False,  True),
-               (_('Publisher'), [(__txtRdr, gobject.TYPE_STRING)],
+               (_('Publisher'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_AUTHOR, ROW_TITLE), False,  False),
-               (_('Language'), [(__txtRdr, gobject.TYPE_STRING)],
+               (_('Language'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_AUTHOR, ROW_TITLE), False,  False),
-               (_('Publish Date'), [(__txtRdr, gobject.TYPE_STRING)],
+               (_('Publish Date'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_AUTHOR, ROW_TITLE), False,  False),
-               (None, [(None, gobject.TYPE_PYOBJECT)], (None,), False, False))
+               (None, [(None, GObject.TYPE_PYOBJECT)], (None,), False, False))
+
     __gsignals__ = {
-        'selection-changed': (gobject.SIGNAL_RUN_FIRST,
-                          gobject.TYPE_NONE,
-                          ([])),
-    }
+        'selection-changed': (GObject.SignalFlags.RUN_LAST,
+                              None,
+                              ([])),
+        }
 
     def __init__(self, lang_code_handler):
         ExtListView.__init__(self, self.columns, sortable=True,
@@ -61,8 +58,8 @@ class ListView(ExtListView):
         self._lang_code_handler = lang_code_handler
 
         selection = self.get_selection()
-        selection.set_mode(gtk.SELECTION_SINGLE)
-        selection.connect("changed", self.__selection_changed_cb)
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+        selection.connect('changed', self.__selection_changed_cb)
 
     def __selection_changed_cb(self, selection):
         self.emit('selection-changed')
@@ -78,16 +75,16 @@ class ListView(ExtListView):
             try:
                 lang = self._lang_code_handler.get_full_language_name(
                                                         book.get_language())
-            except:
+            except KeyError:
                 pass
-            try:
-                rows.append([book.get_title(), book.get_author(), \
-                    book.get_publisher(), lang, \
-                    book.get_published_year(), book])
-            except:
-                _logger.debug(sys.exc_info())
 
-        self.clear()
+            rows.append([book.get_title(), book.get_author(),
+                         book.get_publisher(), lang,
+                         book.get_published_year(), book])
+
+        # README: I had to remove the self.clear() here because it
+        # made the listview to scroll to the top on Gtk3
+
         self.insertRows(rows)
 
     def get_selected_book(self):
