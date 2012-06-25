@@ -732,12 +732,7 @@ class GetIABooksActivity(activity.Activity):
                 pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
                 image_width, image_height)
 
-        # FIXME: I used this darker color instead of
-        # style.COLOR_PANEL_GREY because there is a big difference on
-        # the image. We should find the way to use the same color on
-        # the .png loaded than in the rest of the square and remove
-        # the 1px border
-        pixbuf2.fill(style.COLOR_BUTTON_GREY.get_int())
+        pixbuf2.fill(style.COLOR_PANEL_GREY.get_int())
 
         margin_x = int((image_width - (width * scale)) / 2)
         margin_y = int((image_height - (height * scale)) / 2)
