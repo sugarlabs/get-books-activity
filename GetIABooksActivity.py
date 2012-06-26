@@ -786,7 +786,7 @@ class GetIABooksActivity(activity.Activity):
                         search_text, query_language)
             else:
                 self.queryresults = opds.LocalVolumeQueryResult(self.source,
-                        search_text)
+                        search_text, query_language)
 
             self.show_message(_('Performing lookup, please wait...'))
             self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))

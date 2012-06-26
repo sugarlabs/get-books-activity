@@ -323,7 +323,7 @@ class LocalVolumeQueryResult(QueryResult):
 
     def __init__(self, path, queryterm, language):
         configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
-        QueryResult.__init__(self, configuration, queryterm)
+        QueryResult.__init__(self, configuration, queryterm, language)
 
     def is_local(self):
         return True

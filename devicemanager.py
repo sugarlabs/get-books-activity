@@ -18,11 +18,9 @@
 
 import os
 import logging
-import dbus
 
 from gi.repository import GObject
-
-UDISK_DEVICE_PATH = 'org.freedesktop.UDisks2.Device'
+from gi.repository import Gio
 
 
 class DeviceManager(GObject.GObject):
@@ -37,71 +35,41 @@ class DeviceManager(GObject.GObject):
         GObject.GObject.__init__(self)
 
         self._devices = {}
-        self._bus = dbus.SystemBus()
 
-        try:
-            self._udisk_proxy = self._bus.get_object('org.freedesktop.UDisks2',
-                       '/org/freedesktop/UDisks2')
-            self._udisk_iface = dbus.Interface(self._udisk_proxy,
-                        'org.freedesktop.UDisks2')
-            self._populate_devices()
-            self._udisk_iface.connect_to_signal('DeviceChanged',
-                    self.__device_changed_cb)
-        except dbus.exceptions.DBusException, e:
-            logging.error('Exception initializing UDisks: %s', e)
+        self.volume_monitor = Gio.VolumeMonitor.get()
+        self.volume_monitor.connect('mount-added', self._mount_added_cb)
+        self.volume_monitor.connect('mount-removed', self._mount_removed_cb)
+
+        self._populate_devices()
 
     def _populate_devices(self):
-        for device in self._udisk_proxy.EnumerateDevices():
-            props = self._get_props_from_device(device)
-            if props is not None:
-                logging.debug('Device mounted in %s', props['mount_path'])
-                props['have_catalog'] = self._have_catalog(props)
-                self._devices[device] = props
+        for mount in self.volume_monitor.get_mounts():
+            props = self._get_props_from_device(mount)
+            if mount.can_eject() and props['have_catalog']:
+                self._devices[mount] = props
 
-    def _get_props_from_device(self, device):
-        # http://hal.freedesktop.org/docs/udisks/Device.html
-        device_obj = self._bus.get_object('org.freedesktop.UDisks2', device)
-        device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
+    def _get_props_from_device(self, mount):
         props = {}
-        props['mounted'] = bool(device_props.Get(UDISK_DEVICE_PATH,
-                'DeviceIsMounted'))
-        if props['mounted']:
-            props['mount_path'] = str(device_props.Get(UDISK_DEVICE_PATH,
-                'DeviceMountPaths')[0])
-            props['removable'] = bool(device_props.Get(UDISK_DEVICE_PATH,
-                'DriveCanDetach'))
-            props['label'] = str(device_props.Get(UDISK_DEVICE_PATH,
-                'IdLabel'))
-            props['size'] = int(device_props.Get(UDISK_DEVICE_PATH,
-                'DeviceSize'))
+        props['removable'] = True
+        props['mounted'] = True
+        props['mount_path'] = mount.get_default_location().get_path()
+        props['label'] = mount.get_name()
+        # FIXME: get the proper size here
+        props['size'] = 0
+        props['have_catalog'] = os.path.exists(\
+            os.path.join(props['mount_path'], 'catalog.xml'))
         return props
 
-    def _have_catalog(self, props):
-        # Apart from determining if this is a removable volume,
-        # this also tries to find if there is a catalog.xml in the
-        # root
-        if not props['removable']:
-            return False
-        mount_point = props['mount_path']
-        return os.path.exists(os.path.join(mount_point, 'catalog.xml'))
-
-    def __device_changed_cb(self, device):
+    def _mount_added_cb(self, volume_monitor, device):
         props = self._get_props_from_device(device)
-        if props is not None:
-            self._devices[device] = props
-            have_catalog = self._have_catalog(props)
-            props['have_catalog'] = have_catalog
-            if have_catalog:
-                self.emit('device-changed')
-            logging.error('Device was added %s' % props)
-        else:
-            if device in self._devices:
-                props = self._devices[device]
-                need_notify = props['have_catalog']
-                logging.error('Device was removed %s', props)
-                del self._devices[device]
-                if need_notify:
-                    self.emit('device-changed')
+        self._devices[device] = props
+        logging.debug('Device added: %s', props)
+        if props['have_catalog']:
+            self.emit('device-changed')
+
+    def _mount_removed_cb(self, volume_monitor, device):
+        del self._devices[device]
+        self.emit('device-changed')
 
     def get_devices(self):
         return self._devices
