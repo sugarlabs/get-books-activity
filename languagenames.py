@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import libxml2
+from xml.etree import ElementTree
 import logging
 
 _ISO_639_XML_PATH = '/usr/share/xml/iso-codes/iso_639.xml'
@@ -31,37 +31,23 @@ def singleton(object, instantiated=[]):
 
 
 class LanguageNames(object):
+
     def __init__(self):
         singleton(self)
-        try:
-            self._xmldoc = libxml2.parseFile(_ISO_639_XML_PATH)
-            self._cache = None
-        except libxml2.parserError:
-            self._xmldoc = None
-            return
-
-        self._eroot = self._xmldoc.getRootElement()
-
-    def close(self):
-        if self._xmldoc is not None:
-            self._xmldoc.freeDoc()
+        self._cache = None
 
     def get_full_language_name(self, code):
         if self._cache == None:
             self._cache = {}
-            for child in self._eroot.children:
-                if child.properties is not None:
-                    lang_code = None
-                    lang_name = None
-                    for property in child.properties:
-                        if property.get_name() == 'name':
-                            lang_name = property.get_content()
-                        elif property.get_name() == 'iso_639_1_code':
-                            lang_code = property.get_content()
+            _xmldoc = ElementTree.parse(_ISO_639_XML_PATH)
+            _eroot = _xmldoc.getroot()
+            for child in _eroot.getchildren():
+                if child.attrib is not None:
+                    lang_name = child.attrib.get('name', None)
+                    lang_code = child.attrib.get('iso_639_1_code', None)
 
                     if lang_code is not None and lang_name is not None:
                         self._cache[lang_code] = lang_name
-            self._xmldoc.freeDoc()
-            self._xmldoc = None
+            _xmldoc = None
 
         return self._cache[code]

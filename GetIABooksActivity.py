@@ -595,7 +595,6 @@ class GetIABooksActivity(activity.Activity):
             self.bt_catalogs.set_active(True)
 
     def can_close(self):
-        self._lang_code_handler.close()
         if self.queryresults is not None:
             self.queryresults.cancel()
             self.queryresults = None
