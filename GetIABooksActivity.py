@@ -47,6 +47,9 @@ from gettext import gettext as _
 import dbus
 import ConfigParser
 import base64
+import urllib2
+import socket
+
 
 from listview import ListView
 import opds
@@ -793,7 +796,18 @@ class GetIABooksActivity(activity.Activity):
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
-        if (len(self.queryresults.get_catalog_list()) > 0):
+        if 'bozo_exception' in self.queryresults._feedobj:
+            # something went wrong and we have to inform about this
+            bozo_exception = self.queryresults._feedobj.bozo_exception
+            if isinstance(bozo_exception, urllib2.URLError):
+                if isinstance(bozo_exception.reason, socket.gaierror):
+                    if bozo_exception.reason.errno == -2:
+                        self.show_message(_('Could not reach the server. '
+                            'Maybe you are not connected to the network'))
+                        self.window.set_cursor(None)
+                        return
+            self.show_message(_('There was an error downloading the list.'))
+        elif (len(self.queryresults.get_catalog_list()) > 0):
             self.show_message(_('New catalog list %s was found') \
                 % self.queryresults._configuration["name"])
             self.catalogs_updated(query, midway)
