@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-06-22 00:31-0400\n"
 "PO-Revision-Date: 2011-12-21 22:53+0200\n"
 "Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,131 +41,130 @@ msgstr ""
 msgid "Get Books"
 msgstr "Գտնել Գրքեր"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "Գրքեր"
-
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "Ցանկացած լեզու"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:250 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:491 GetIABooksActivity.py:496
 msgid "Catalogs"
 msgstr "Կատալոգներ"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:264
+msgid "Any language"
+msgstr "Ցանկացած լեզու"
+
+#: GetIABooksActivity.py:311 GetIABooksActivity.py:796
 msgid "Performing lookup, please wait..."
 msgstr "Կատարվում է որոնումը, խնդրվում է սպասել..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:351
 msgid "My books"
 msgstr "Իմ գրքերը"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:365
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Ծավալ"
 
 # Ֆորմատ
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:551
 msgid "Format:"
 msgstr "Ձևաչափ."
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:564
 msgid "Get Book"
 msgstr "Ստանալ գիրք"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:591
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Մուտքագրեք հեղինակի անվան կամ գրքի վերնագրի մի մասը` որոնումն սկսելու համար:"
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:614
 msgid "Selected book"
 msgstr "Ընտրված գիրք"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:633
 msgid "Title:\t\t"
 msgstr "Վերնագիր.\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:635
 msgid "Author:\t\t"
 msgstr "Հեղինակ.\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:639
 msgid "Summary:\t"
 msgstr "Համառոտագիր`\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:648
 msgid "Language:\t"
 msgstr "Լեզու.\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:649
 msgid "Publisher:\t"
 msgstr "Հրատարակիչ.\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:780
 msgid "You must enter at least 3 letters."
 msgstr "Դուք պետք է մուտքագրեք առնվազն 3 տառ:"
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:803
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Նոր կատալոգի ցանկը %s գտնվել է"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:807
 msgid "Sorry, no books could be found."
 msgstr "Ներեցեք, ոչ մի գիրք չի գտնվել:"
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:821
 msgid "Sorry, we only found english books."
 msgstr "Ներեցե'ք, մենք գտանք միայն անգլերեն գրքեր:"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:940
 msgid "Error"
 msgstr "Ձախողում"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:940
 msgid "Connection timed out for "
 msgstr "Կապի ժամանակը սպառվեց "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:985
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "Ձախողում. Չհաջողվեց բեռնել %s: "
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1043
 msgid "Download completed"
 msgstr "Բեռնումն ավարտված է"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1051
 msgid "Show in Journal"
 msgstr "Ցույց տալ Մատյանում"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1054
 msgid "Ok"
 msgstr "Ok"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "Վերնագիր"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "Հեղինակ"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "Հրատարակիչ"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "Լեզու"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Հրատարակման ամսաթիվը"
+
+#~ msgid "Books"
+#~ msgstr "Գրքեր"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "Հղում.\t\t"
