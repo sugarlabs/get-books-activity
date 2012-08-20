@@ -38,11 +38,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-22 00:31-0400\n"
-"PO-Revision-Date: 2011-12-16 05:47+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"POT-Creation-Date: 2012-08-08 00:31-0400\n"
+"PO-Revision-Date: 2012-08-10 16:26+0200\n"
+"Last-Translator: lite <litekok@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -53,103 +53,111 @@ msgstr ""
 msgid "Get Books"
 msgstr "书库"
 
-#: GetIABooksActivity.py:250 GetIABooksActivity.py:487
-#: GetIABooksActivity.py:491 GetIABooksActivity.py:496
+#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
+#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
 msgid "Catalogs"
 msgstr "目录"
 
-#: GetIABooksActivity.py:264
+#: GetIABooksActivity.py:267
 msgid "Any language"
 msgstr "任何语言"
 
-#: GetIABooksActivity.py:311 GetIABooksActivity.py:796
+#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
 msgid "Performing lookup, please wait..."
 msgstr "查询中，请稍候..."
 
-#: GetIABooksActivity.py:351
+#: GetIABooksActivity.py:354
 msgid "My books"
 msgstr "我的图书"
 
-#: GetIABooksActivity.py:365
+#: GetIABooksActivity.py:368
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "容量%.2f GB"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:554
 msgid "Format:"
 msgstr "格式："
 
-#: GetIABooksActivity.py:564
+#: GetIABooksActivity.py:567
 msgid "Get Book"
 msgstr "获取图书"
 
-#: GetIABooksActivity.py:591
+#: GetIABooksActivity.py:594
 msgid "Enter words from the Author or Title to begin search."
 msgstr "输入作者或标题开始搜索"
 
-#: GetIABooksActivity.py:614
+#: GetIABooksActivity.py:616
 msgid "Selected book"
 msgstr "选择的图书"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:635
 msgid "Title:\t\t"
 msgstr "标题：\t\t"
 
-#: GetIABooksActivity.py:635
+#: GetIABooksActivity.py:637
 msgid "Author:\t\t"
 msgstr "作者：\t\t"
 
-#: GetIABooksActivity.py:639
+#: GetIABooksActivity.py:641
 msgid "Summary:\t"
 msgstr "简介：\t"
 
-#: GetIABooksActivity.py:648
+#: GetIABooksActivity.py:650
 msgid "Language:\t"
 msgstr "语言：\t"
 
-#: GetIABooksActivity.py:649
+#: GetIABooksActivity.py:651
 msgid "Publisher:\t"
 msgstr "出版商：\t"
 
-#: GetIABooksActivity.py:780
+#: GetIABooksActivity.py:777
 msgid "You must enter at least 3 letters."
 msgstr "请输入3个或以上的字。"
 
-#: GetIABooksActivity.py:803
+#: GetIABooksActivity.py:805
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr "无法到达服务器。也许你没有连接到网络"
+
+#: GetIABooksActivity.py:809
+msgid "There was an error downloading the list."
+msgstr "下载列表时有错误。"
+
+#: GetIABooksActivity.py:811
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "发现新的目录列表%s"
 
-#: GetIABooksActivity.py:807
+#: GetIABooksActivity.py:815
 msgid "Sorry, no books could be found."
 msgstr "很抱歉，没有找到书。"
 
-#: GetIABooksActivity.py:821
+#: GetIABooksActivity.py:829
 msgid "Sorry, we only found english books."
 msgstr "很抱歉，我们只找到英文书籍。"
 
-#: GetIABooksActivity.py:940
+#: GetIABooksActivity.py:948
 msgid "Error"
 msgstr "错误"
 
-#: GetIABooksActivity.py:940
+#: GetIABooksActivity.py:948
 msgid "Connection timed out for "
 msgstr "连接超时 "
 
-#: GetIABooksActivity.py:985
+#: GetIABooksActivity.py:993
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "错误：无法下载%s"
 
-#: GetIABooksActivity.py:1043
+#: GetIABooksActivity.py:1051
 msgid "Download completed"
 msgstr "下载完成"
 
-#: GetIABooksActivity.py:1051
+#: GetIABooksActivity.py:1059
 msgid "Show in Journal"
 msgstr "日志中显示"
 
-#: GetIABooksActivity.py:1054
+#: GetIABooksActivity.py:1062
 msgid "Ok"
 msgstr "确定"
 
