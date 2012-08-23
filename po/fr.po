@@ -42,7 +42,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-08-08 00:31-0400\n"
 "PO-Revision-Date: 2011-10-02 10:34+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,24 +57,20 @@ msgstr ""
 msgid "Get Books"
 msgstr "Livres à moi"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "Livres"
-
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "N'importe quelle langue"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
+#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
 msgid "Catalogs"
 msgstr "Catalogues"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:267
+msgid "Any language"
+msgstr "N'importe quelle langue"
+
+#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
 msgid "Performing lookup, please wait..."
 msgstr "Recherche en cours, patientez..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:354
 msgid "My books"
 msgstr "Mes livres"
 
@@ -83,103 +79,114 @@ msgstr "Mes livres"
 msgid "%.2f GB Volume"
 msgstr "Volume %.2f Go"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:554
 msgid "Format:"
 msgstr "Format :"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:567
 msgid "Get Book"
 msgstr "Récupérer le livre"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:594
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Entrer les mots de l'auteur ou du titre pour commencer la recherche."
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:616
 msgid "Selected book"
 msgstr "Livre sélectionné"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:635
 msgid "Title:\t\t"
 msgstr "Titre :\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:637
 msgid "Author:\t\t"
 msgstr "Auteur :\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:641
 msgid "Summary:\t"
 msgstr "Résumé :\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:650
 msgid "Language:\t"
 msgstr "Langue :\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:651
 msgid "Publisher:\t"
 msgstr "Éditeur :\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:777
 msgid "You must enter at least 3 letters."
 msgstr "Vous devez entrer au moins 3 lettres."
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:805
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:809
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:811
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Une nouvelle liste de catalogue %s a été trouvée"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:815
 msgid "Sorry, no books could be found."
 msgstr "Désolé, aucun livre n'a été trouvé."
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:829
 msgid "Sorry, we only found english books."
 msgstr "Malheureusement, les livres trouvés sont uniquement en anglais."
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:948
 msgid "Error"
 msgstr "Erreur"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:948
 msgid "Connection timed out for "
 msgstr "Délai de connexion écoulé pour "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:993
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "Erreur : téléchargement de %s impossible. "
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1051
 msgid "Download completed"
 msgstr "Téléchargement terminé"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1059
 msgid "Show in Journal"
 msgstr "Montrer le Journal"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1062
 msgid "Ok"
 msgstr "Ok"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "Titre"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "Auteur"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "Éditeur"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "Langue"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Date de publication"
+
+#~ msgid "Books"
+#~ msgstr "Livres"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "Lien :\t\t"
