@@ -26,11 +26,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-22 00:31-0400\n"
-"PO-Revision-Date: 2011-12-21 22:53+0200\n"
-"Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
+"POT-Creation-Date: 2012-08-08 00:31-0400\n"
+"PO-Revision-Date: 2012-08-27 21:28+0200\n"
+"Last-Translator: anush.mkrtchyan <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,105 +41,113 @@ msgstr ""
 msgid "Get Books"
 msgstr "Գտնել Գրքեր"
 
-#: GetIABooksActivity.py:250 GetIABooksActivity.py:487
-#: GetIABooksActivity.py:491 GetIABooksActivity.py:496
+#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
+#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
 msgid "Catalogs"
 msgstr "Կատալոգներ"
 
-#: GetIABooksActivity.py:264
+#: GetIABooksActivity.py:267
 msgid "Any language"
 msgstr "Ցանկացած լեզու"
 
-#: GetIABooksActivity.py:311 GetIABooksActivity.py:796
+#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
 msgid "Performing lookup, please wait..."
 msgstr "Կատարվում է որոնումը, խնդրվում է սպասել..."
 
-#: GetIABooksActivity.py:351
+#: GetIABooksActivity.py:354
 msgid "My books"
 msgstr "Իմ գրքերը"
 
-#: GetIABooksActivity.py:365
+#: GetIABooksActivity.py:368
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Ծավալ"
 
 # Ֆորմատ
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:554
 msgid "Format:"
 msgstr "Ձևաչափ."
 
-#: GetIABooksActivity.py:564
+#: GetIABooksActivity.py:567
 msgid "Get Book"
 msgstr "Ստանալ գիրք"
 
-#: GetIABooksActivity.py:591
+#: GetIABooksActivity.py:594
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Մուտքագրեք հեղինակի անվան կամ գրքի վերնագրի մի մասը` որոնումն սկսելու համար:"
 
-#: GetIABooksActivity.py:614
+#: GetIABooksActivity.py:616
 msgid "Selected book"
 msgstr "Ընտրված գիրք"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:635
 msgid "Title:\t\t"
 msgstr "Վերնագիր.\t\t"
 
-#: GetIABooksActivity.py:635
+#: GetIABooksActivity.py:637
 msgid "Author:\t\t"
 msgstr "Հեղինակ.\t\t"
 
-#: GetIABooksActivity.py:639
+#: GetIABooksActivity.py:641
 msgid "Summary:\t"
 msgstr "Համառոտագիր`\t"
 
-#: GetIABooksActivity.py:648
+#: GetIABooksActivity.py:650
 msgid "Language:\t"
 msgstr "Լեզու.\t"
 
-#: GetIABooksActivity.py:649
+#: GetIABooksActivity.py:651
 msgid "Publisher:\t"
 msgstr "Հրատարակիչ.\t"
 
-#: GetIABooksActivity.py:780
+#: GetIABooksActivity.py:777
 msgid "You must enter at least 3 letters."
 msgstr "Դուք պետք է մուտքագրեք առնվազն 3 տառ:"
 
-#: GetIABooksActivity.py:803
+#: GetIABooksActivity.py:805
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr "Չկարողացար միանալ սերվերին: Միգուցե միացված չես ցանցից"
+
+#: GetIABooksActivity.py:809
+msgid "There was an error downloading the list."
+msgstr "Ցուցակը ներբեռնելիս սխալմունք եղավ:"
+
+#: GetIABooksActivity.py:811
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Նոր կատալոգի ցանկը %s գտնվել է"
 
-#: GetIABooksActivity.py:807
+#: GetIABooksActivity.py:815
 msgid "Sorry, no books could be found."
 msgstr "Ներեցեք, ոչ մի գիրք չի գտնվել:"
 
-#: GetIABooksActivity.py:821
+#: GetIABooksActivity.py:829
 msgid "Sorry, we only found english books."
 msgstr "Ներեցե'ք, մենք գտանք միայն անգլերեն գրքեր:"
 
-#: GetIABooksActivity.py:940
+#: GetIABooksActivity.py:948
 msgid "Error"
 msgstr "Ձախողում"
 
-#: GetIABooksActivity.py:940
+#: GetIABooksActivity.py:948
 msgid "Connection timed out for "
 msgstr "Կապի ժամանակը սպառվեց "
 
-#: GetIABooksActivity.py:985
+#: GetIABooksActivity.py:993
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "Ձախողում. Չհաջողվեց բեռնել %s: "
 
-#: GetIABooksActivity.py:1043
+#: GetIABooksActivity.py:1051
 msgid "Download completed"
 msgstr "Բեռնումն ավարտված է"
 
-#: GetIABooksActivity.py:1051
+#: GetIABooksActivity.py:1059
 msgid "Show in Journal"
 msgstr "Ցույց տալ Մատյանում"
 
-#: GetIABooksActivity.py:1054
+#: GetIABooksActivity.py:1062
 msgid "Ok"
 msgstr "Ok"
 
