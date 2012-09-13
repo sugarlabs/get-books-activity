@@ -38,6 +38,8 @@ _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
 _REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
 _REL_OPDS_NEW = u'http://opds-spec.org/sort/new'
+_REL_ALTERNATE = 'alternate'
+_REL_CRAWLABLE = 'http://opds-spec.org/crawlable'
 
 GObject.threads_init()
 
@@ -91,10 +93,18 @@ class DownloadThread(threading.Thread):
         else:
             feedobj = feedparser.parse(self.obj._uri)
 
+        # Get catalog Type
+        CATALOG_TYPE = 'COMMON'
+        if 'links' in feedobj['feed']:
+            for link in feedobj['feed']['links']:
+                if link['rel'] == _REL_CRAWLABLE:
+                    CATALOG_TYPE = 'CRAWLABLE'
+                    break
+
         for entry in feedobj['entries']:
-            if entry_type(entry) == 'BOOK':
+            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
                 self.obj._booklist.append(Book(self.obj._configuration, entry))
-            elif entry_type(entry) == 'CATALOG':
+            elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
                 self.obj._cataloglist.append( \
                     Book(self.obj._configuration, entry))
 
@@ -146,6 +156,8 @@ class Book(object):
                     ret[link['type']] = link['href']
             elif link['rel'] in \
             [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
+                ret[link['type']] = link['href']
+            elif link['rel'] == _REL_ALTERNATE:
                 ret[link['type']] = link['href']
             else:
                 pass

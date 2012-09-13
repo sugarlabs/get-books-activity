@@ -81,7 +81,7 @@ class GetIABooksActivity(activity.Activity):
         self.show_images = True
         self.languages = {}
         self._lang_code_handler = languagenames.LanguageNames()
-        self.catalogs = {}
+        self.catalogs_configuration = {}
         self.catalog_history = []
 
         if os.path.exists('/etc/get-books.cfg'):
@@ -221,7 +221,11 @@ class GetIABooksActivity(activity.Activity):
                     catalog_config['name'] = catalog
                     catalog_config['summary_field'] = \
                         source_config['summary_field']
-                    self.catalogs[catalog] = catalog_config
+                    self.catalogs_configuration[catalog] = catalog_config
+
+        self.source = _SOURCES_CONFIG.keys()[0]
+
+        self.filter_catalogs_by_source()
 
         logging.error('languages %s', self.languages)
         logging.error('catalogs %s', self.catalogs)
@@ -495,16 +499,8 @@ class GetIABooksActivity(activity.Activity):
         self.bt_move_up_catalog.hide_image()
         self.treecol.set_widget(self.bt_move_up_catalog)
 
-        if len(self.catalogs) > 0:
-            self.catalog_history.append({'title': _('Catalogs'),
-                    'catalogs': self.catalogs})
-            self.categories = []
-            self.path_iter = {}
-            for key in self.catalogs.keys():
-                self.categories.append({'text': key, 'dentro': []})
-            self.treemodel.clear()
-            for p in self.categories:
-                self.path_iter[p['text']] = self.treemodel.append([p['text']])
+        self.load_source_catalogs()
+
         self.tree_scroller = Gtk.ScrolledWindow(hadjustment=None,
                 vadjustment=None)
         self.tree_scroller.set_policy(Gtk.PolicyType.NEVER,
@@ -596,6 +592,29 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.grab_focus()
         if len(self.catalogs) > 0:
             self.bt_catalogs.set_active(True)
+
+    def filter_catalogs_by_source(self):
+        self.catalogs = {}
+        for catalog_key in self.catalogs_configuration:
+            catalog = self.catalogs_configuration[catalog_key]
+            if catalog['source'] == self.source:
+                self.catalogs[catalog_key] = catalog
+
+    def load_source_catalogs(self):
+        self.filter_catalogs_by_source()
+
+        if len(self.catalogs) > 0:
+            self.categories = []
+            self.path_iter = {}
+            self.catalog_history = []
+            self.catalog_history.append({'title': _('Catalogs'),
+                'catalogs': self.catalogs})
+            for key in self.catalogs.keys():
+                self.categories.append({'text': key, 'dentro': []})
+            self.treemodel.clear()
+
+            for p in self.categories:
+                self.path_iter[p['text']] = self.treemodel.append([p['text']])
 
     def can_close(self):
         if self.queryresults is not None:
@@ -882,13 +901,11 @@ class GetIABooksActivity(activity.Activity):
             self.find_books(search_terms)
         # enable/disable catalogs button if configuration is available
         self.source = self._books_toolbar.source_combo.props.value
-        have_catalogs = False
-        for catalog_name in self.catalogs.keys():
-            catalog_config = self.catalogs[catalog_name]
-            if catalog_config['source'] == self.source:
-                have_catalogs = True
-                break
-        if have_catalogs:
+
+        # Get catalogs for this source
+        self.load_source_catalogs()
+
+        if len(self.catalogs) > 0:
             self.bt_catalogs.show()
             self.bt_catalogs.set_active(True)
         else:
