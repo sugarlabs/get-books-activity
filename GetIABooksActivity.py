@@ -401,6 +401,7 @@ class GetIABooksActivity(activity.Activity):
             return
         else:
             # move a level up the tree
+            self.catalog_listview.handler_block(self._catalog_changed_id)
             self.catalog_history.pop()
             len_cat -= 1
             if(len_cat == 1):
@@ -421,6 +422,7 @@ class GetIABooksActivity(activity.Activity):
                 for p in self.categories:
                     self.path_iter[p['text']] = \
                             self.treemodel.append([p['text']])
+            self.catalog_listview.handler_unblock(self._catalog_changed_id)
 
     def move_down_catalog(self, treeview):
         treestore, coldex = \
@@ -482,7 +484,8 @@ class GetIABooksActivity(activity.Activity):
         self.catalog_listview.headers_clickble = True
         self.catalog_listview.hover_expand = True
         self.catalog_listview.rules_hint = True
-        self.catalog_listview.connect('cursor-changed', self.move_down_catalog)
+        self._catalog_changed_id = self.catalog_listview.connect(
+                'cursor-changed', self.move_down_catalog)
         self.catalog_listview.set_enable_search(False)
 
         self.treemodel = Gtk.ListStore(str)
