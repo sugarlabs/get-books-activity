@@ -1,0 +1,150 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-08 00:31-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.7.0\n"
+
+#: activity/activity.info:2
+msgid "Get Books"
+msgstr "Tīkina atu ngā Pukapuka"
+
+#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
+#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
+msgid "Catalogs"
+msgstr "Ngā Putumōhio"
+
+#: GetIABooksActivity.py:267
+msgid "Any language"
+msgstr "Ahakoa te reo"
+
+#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
+msgid "Performing lookup, please wait..."
+msgstr "Mahi ana i te tiroake, taihoa koa..."
+
+#: GetIABooksActivity.py:354
+msgid "My books"
+msgstr "Aku pukapuka"
+
+#: GetIABooksActivity.py:368
+#, python-format
+msgid "%.2f GB Volume"
+msgstr "%.2f GB Rōrahi"
+
+#: GetIABooksActivity.py:554
+msgid "Format:"
+msgstr "Hōputu:"
+
+#: GetIABooksActivity.py:567
+msgid "Get Book"
+msgstr "Tiki Pukapuka"
+
+#: GetIABooksActivity.py:594
+msgid "Enter words from the Author or Title to begin search."
+msgstr ""
+"Whakauru kupu mai i te rapunga Kaituhi, Taitara rānei kia tīmata te rapu."
+
+#: GetIABooksActivity.py:616
+msgid "Selected book"
+msgstr "Pukapuka kua tīpakohia"
+
+#: GetIABooksActivity.py:635
+msgid "Title:\t\t"
+msgstr "Taitara:\t\t"
+
+#: GetIABooksActivity.py:637
+msgid "Author:\t\t"
+msgstr "Kaituhi:\t\t"
+
+#: GetIABooksActivity.py:641
+msgid "Summary:\t"
+msgstr "Whakarāpopototanga:\t"
+
+#: GetIABooksActivity.py:650
+msgid "Language:\t"
+msgstr "Reo:\t"
+
+#: GetIABooksActivity.py:651
+msgid "Publisher:\t"
+msgstr "Kaiwhakaputa:\t"
+
+#: GetIABooksActivity.py:777
+msgid "You must enter at least 3 letters."
+msgstr "Me whakauru e 3 pū, neke atu rānei."
+
+#: GetIABooksActivity.py:805
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:809
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:811
+#, python-format
+msgid "New catalog list %s was found"
+msgstr "I kitea te rārangi putumōhio hōu %s"
+
+#: GetIABooksActivity.py:815
+msgid "Sorry, no books could be found."
+msgstr "Aroha mai, kāore i kitea he pukapuka."
+
+#: GetIABooksActivity.py:829
+msgid "Sorry, we only found english books."
+msgstr "Aroha mai, he pukapuka Ingarihi anake i kitea."
+
+#: GetIABooksActivity.py:948
+msgid "Error"
+msgstr "Hapa"
+
+#: GetIABooksActivity.py:948
+msgid "Connection timed out for "
+msgstr "I momotu te hononga mō "
+
+#: GetIABooksActivity.py:993
+#, python-format
+msgid "Error: Could not download %s. "
+msgstr "Hapa: Kāore i taea te tikiake i ngā %s. "
+
+#: GetIABooksActivity.py:1051
+msgid "Download completed"
+msgstr "Kua oti te tikiake"
+
+#: GetIABooksActivity.py:1059
+msgid "Show in Journal"
+msgstr "Whakaatu ki Tuhitaka"
+
+#: GetIABooksActivity.py:1062
+msgid "Ok"
+msgstr "Āe"
+
+#: listview.py:35
+msgid "Title"
+msgstr "Taitara"
+
+#: listview.py:37
+msgid "Author"
+msgstr "Kaituhi"
+
+#: listview.py:39
+msgid "Publisher"
+msgstr "Kaiwhakaputa"
+
+#: listview.py:41
+msgid "Language"
+msgstr "Reo"
+
+#: listview.py:43
+msgid "Publish Date"
+msgstr "Rā Whakaputa"
