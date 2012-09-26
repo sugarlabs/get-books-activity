@@ -6,3 +6,4 @@ exec = sugar-activity GetIABooksActivity.GetIABooksActivity
 show_launcher = yes
 activity_version = 13
 license = GPLv2+
+summary = Need books? We all do! This activity lets you search and retrieve books from many different sources. Start reading!
