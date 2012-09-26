@@ -965,7 +965,7 @@ class GetIABooksActivity(activity.Activity):
         try:
             self._getter.start(path)
         except:
-            self.show_error_alert(_('Error'), _('Connection timed out for ') +
+            self._show_error_alert(_('Error'), _('Connection timed out for ') +
                     self.selected_title)
 
         self._download_content_length = self._getter.get_content_length()
