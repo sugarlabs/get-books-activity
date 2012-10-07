@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-08 00:31-0400\n"
-"PO-Revision-Date: 2012-08-12 22:36+0200\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
+"PO-Revision-Date: 2012-10-03 19:34+0200\n"
 "Last-Translator: whe <heppew@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nl\n"
@@ -41,116 +41,125 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Neem Boeken"
 
-#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
-#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
+"Boeken nodig? Dat hebben we allemaal! Deze activiteit laat je boeken zoeken "
+"en vinden van veel verschillende bronnen. Begin te lezen!"
+
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "Catalogi"
 
-#: GetIABooksActivity.py:267
+#: GetIABooksActivity.py:271
 msgid "Any language"
 msgstr "Elke taal"
 
-#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "Aan het opzoeken, even geduld aub..."
 
-#: GetIABooksActivity.py:354
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "Mijn boeken"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Volume"
 
-#: GetIABooksActivity.py:554
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "Formaat:"
 
-#: GetIABooksActivity.py:567
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "Neem Boek"
 
-#: GetIABooksActivity.py:594
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Voer woorden van de Auteur of Titel in om zoeken te beginnen."
 
-#: GetIABooksActivity.py:616
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "Geselecteerd boek"
 
-#: GetIABooksActivity.py:635
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "Titel:\t\t"
 
-#: GetIABooksActivity.py:637
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Auteur:\t\t"
 
-#: GetIABooksActivity.py:641
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "Samenvatting:\t"
 
-#: GetIABooksActivity.py:650
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "Taal:\t"
 
-#: GetIABooksActivity.py:651
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "Uitgever:\t"
 
-#: GetIABooksActivity.py:777
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "Je moet tenminste 3 letters invoeren."
 
-#: GetIABooksActivity.py:805
+#: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
 "Kon server niet bereiken. Misschien ben je niet met het netwerk verbonden"
 
-#: GetIABooksActivity.py:809
+#: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr "Fout bij downloaden van de lijst."
 
-#: GetIABooksActivity.py:811
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Nieuwe catalogus lijst %s is gevonden"
 
-#: GetIABooksActivity.py:815
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Sorry, geen boeken gevonden."
 
-#: GetIABooksActivity.py:829
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "Sorry, we hebben alleen engelse boeken gevonden."
 
-#: GetIABooksActivity.py:948
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "Fout"
 
-#: GetIABooksActivity.py:948
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Tijdoverschrijding bij verbinding voor "
 
-#: GetIABooksActivity.py:993
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "Fout: Kon niet downloaden %s. "
 
-#: GetIABooksActivity.py:1051
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "Download voltooid"
 
-#: GetIABooksActivity.py:1059
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "Toon in Dagboek"
 
-#: GetIABooksActivity.py:1062
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "Ok"
 
