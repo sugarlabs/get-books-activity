@@ -34,144 +34,158 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
-"PO-Revision-Date: 2010-03-07 14:55+0200\n"
-"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
+"PO-Revision-Date: 2012-09-19 11:22+0200\n"
+"Last-Translator: vucv <chuvanvu@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Lấy sách"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "Sách"
-
-#: GetIABooksActivity.py:260
-msgid "Any language"
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
 msgstr ""
 
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
-msgstr ""
+msgstr "Danh mục"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:271
+msgid "Any language"
+msgstr "Ngôn ngữ bất kỳ"
+
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "Đang tra tìm, hãy đợi..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "Sách của tôi"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "Khối tin %.2f GB"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:553
 msgid "Format:"
-msgstr ""
+msgstr "Định dạng:"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "Lấy sách"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Gõ từ của Tác giả hay Tên sách để bắt đầu tìm kiếm."
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:638
 msgid "Selected book"
-msgstr ""
+msgstr "Sách được chọn"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "Tên sách:\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Tác giả:\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "Tóm tắt:\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "Ngôn ngữ:\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "Nhà xuất bản:\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Bạn phải điền tối thiểu 3 ký tự."
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr "Không thể kết nối với máy chủ. Có thể bạn đang không kết nối vào mạng"
+
+#: GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr "Đã có lỗi khi tải về danh sách"
+
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "Danh mục mới %s tìm được"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Tiếc là không tìm thấy cuốn sách nào."
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Xin lỗi, chỉ tìm được sách tiếng Anh"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "Lỗi"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Kết nối quá hạn trong "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr ""
+msgstr "Lỗi: Không thể tải về %s"
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
-msgstr ""
+msgstr "Hoàn thành tải xuống"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
-msgstr ""
+msgstr "Hiển thị trong nhật ký"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "Được"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "Tên sách"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "Tác giả"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "Nhà xuất bản"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "Ngôn ngữ"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Ngày xuất bản"
+
+#~ msgid "Books"
+#~ msgstr "Sách"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "Liên kết:\t\t"
