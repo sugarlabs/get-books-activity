@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
 "PO-Revision-Date: 2011-11-08 19:25+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,133 +45,147 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "愛讀書"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "書籍"
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
 
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "任何語言"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "目錄"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:271
+msgid "Any language"
+msgstr "任何語言"
+
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "搜尋中，請稍待。"
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "我的收藏"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB  容量"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "格式:"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "取書"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "請輸入作者或書名來進行查詢。"
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "選擇書籍"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "書名:\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "作者:\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "摘要:\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "語言:\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "出版商:\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "您至少要輸入三個字。"
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "找到新的分類清單 %s"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "抱歉，找不到相符的書籍。"
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "抱歉，只能找到英文書籍。"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "錯誤"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "連線逾時 "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "錯誤，無法下載 %s 。"
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "下載完成"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "顯示日誌"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "確定"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "書名"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "作者"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "出版商"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "語言"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "發行日期"
+
+#~ msgid "Books"
+#~ msgstr "書籍"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "連結:\t\t"

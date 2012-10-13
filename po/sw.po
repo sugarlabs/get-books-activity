@@ -42,7 +42,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
 "PO-Revision-Date: 2011-07-19 15:15+0200\n"
 "Last-Translator: Christian <kryskaka@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,133 +53,147 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "kupata vitabu"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "vitabu"
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
 
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "lugha yoyote"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "Katalogi"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:271
+msgid "Any language"
+msgstr "lugha yoyote"
+
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "utendaji wa kuboresha,  subiri tafadhali..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "vitabu zangu"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB kiasi"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "format"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "kupata kitabu"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Kuingiza maneno kutoka kwa mwandishi ama Title ju ya kuanza kutafuta"
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "kitabu imechaguliwa"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "title"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Mwandishi"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "lugha"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "mchapishaji"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "Lazima kuingiza barua angalau 3"
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr ""
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Samahani, hakuna vitabu viliweza kupatikana."
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "samahani, hakuna vitabu vya English viliweza kupatikana"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "kosa"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Uhusiano wakati muafaka kwa ajili ya"
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "kosa: hauwezi  kuchukua %s"
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "kuchukua imekwisha"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "kuonyesha katika journal"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "sawa"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "title"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "Mwandishi"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "mchapishaji"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "lugha"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "tarehe ya kuchapisha "
+
+#~ msgid "Books"
+#~ msgstr "vitabu"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "Kiunganishi:\t\t"

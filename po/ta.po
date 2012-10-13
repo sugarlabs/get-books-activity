@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
 "PO-Revision-Date: 2012-03-10 16:41+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,134 +45,148 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "புத்தகங்களை வாங்கு"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "புத்தகங்கள்"
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
 
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "எந்த மொழியானாலும்"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "உரைபதிவுகள்"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:271
+msgid "Any language"
+msgstr "எந்த மொழியானாலும்"
+
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "பார்த்தல் செயலுல், தயவுசெய்து காத்திருக்கவும்..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "என்னுடைய புத்தகங்கள்"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB கணஅளவு"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "வடிவம்:"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "புத்தகத்தை வாங்கு"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "ஆசிரியரிகளிடமிருந்து வார்த்தைகளை தட்டு (அ) தேடலை தலைப்புடன் தொடங்கு"
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "தெரிவு செய்த புத்தகம்"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "தலைப்பு:\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "ஆசிரியர்:\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "சுருக்க உரை:\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "மொழி:\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "வெளியீடுபவர்:\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "நீங்கள் குறைந்தபட்சம் 3 எழத்துகளையாவது தட்ட வேண்டும்."
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "%s புதிய அடக்கப்பட்டியல்  கண்டறியப்பட்டது"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "மன்னிக்கவும், ஒரு புத்தகமும் தென்படவில்லை"
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr ""
 "மன்னிக்கவும், எங்களால் ஆங்கில புத்தகங்களை மட்டுமே கண்டுபிடிக்க முடிந்நது."
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "தவறு"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "இணைப்பின் கால அவகாசம் மிகுதியானது "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "பிழை: %s பதிவிறக்கம் செய்ய முடியவில்லை. "
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "பதிவிறக்கம் முடிந்தது"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "சஞ்சிகையில் காட்டு"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "சரி"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "தலைப்பு"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "ஆசிரியர்"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "வெளியிடுபவர்"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "மொழி"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "வளியீடு திகதி"
+
+#~ msgid "Books"
+#~ msgstr "புத்தகங்கள்"
 
 #~ msgid "Link:\t\t"
 #~ msgstr "இணைப்பு:\t\t"

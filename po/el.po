@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-08 00:31-0400\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
 "PO-Revision-Date: 2012-09-08 11:26+0200\n"
 "Last-Translator: Yannis <kiolalis@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,119 +49,126 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Προμήθεια βιβλίων"
 
-#: GetIABooksActivity.py:253 GetIABooksActivity.py:490
-#: GetIABooksActivity.py:494 GetIABooksActivity.py:499
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
+
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "Κατάλογοι"
 
-#: GetIABooksActivity.py:267
+#: GetIABooksActivity.py:271
 msgid "Any language"
 msgstr "Οποιαδήποτε γλώσσα"
 
-#: GetIABooksActivity.py:314 GetIABooksActivity.py:793
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "Εκτέλεση αναζήτησης, παρακαλώ περιμένετε..."
 
-#: GetIABooksActivity.py:354
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "Τα βιβλία μου"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Ένταση"
 
-#: GetIABooksActivity.py:554
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "Μορφή:"
 
-#: GetIABooksActivity.py:567
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "Προμήθεια βιβλίου"
 
-#: GetIABooksActivity.py:594
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Εισάγετε λέξεις από το ονοματεπώνυμο του συγγραφέα ή τον τίτλο του βιβλίου, "
 "για να ξεκινήσει η αναζήτηση."
 
-#: GetIABooksActivity.py:616
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "Επιλεγμένο βιβλίο"
 
-#: GetIABooksActivity.py:635
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "Τίτλος:\t\t"
 
-#: GetIABooksActivity.py:637
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Συγγραφέας:\t\t"
 
-#: GetIABooksActivity.py:641
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "Περίληψη:\t"
 
-#: GetIABooksActivity.py:650
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "Γλώσσα:\t"
 
-#: GetIABooksActivity.py:651
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "Εκδότης:\t"
 
-#: GetIABooksActivity.py:777
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "Πρέπει να εισάγεις τουλάχιστον 3 γράμματα."
 
-#: GetIABooksActivity.py:805
+#: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
 "Αδύνατη η σύνδεση με τον διακομιστή. Πιθανόν να μην είστε συνδεδεμένοι στο "
 "διαδίκτυο."
 
-#: GetIABooksActivity.py:809
+#: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr "Υπήρξε ένα σφάλμα κατά τη λήψη της λίστας"
 
-#: GetIABooksActivity.py:811
+#: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Βρέθηκε ένας νέος κατάλογος %s."
 
-#: GetIABooksActivity.py:815
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Συγνώμη, αλλά δεν είναι δυνατόν να βρεθούν βιβλία."
 
-#: GetIABooksActivity.py:829
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "Συγνώμη, αλλά βρήκαμε μόνο βιβλία στην αγγλική γλώσσα."
 
-#: GetIABooksActivity.py:948
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "Σφάλμα"
 
-#: GetIABooksActivity.py:948
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Λήξη χρόνου σύνδεσης για "
 
-#: GetIABooksActivity.py:993
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "Σφάλμα: Αδυναμία λήψης %s. "
 
-#: GetIABooksActivity.py:1051
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "Η λήψη ολοκληρώθηκε"
 
-#: GetIABooksActivity.py:1059
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "Εμφάνιση στο Ημερολόγιο"
 
-#: GetIABooksActivity.py:1062
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "Εντάξει"
 

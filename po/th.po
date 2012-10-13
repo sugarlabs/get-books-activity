@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-08 10:43-0300\n"
+"POT-Creation-Date: 2012-09-27 14:55-0400\n"
 "PO-Revision-Date: 2012-03-15 11:40+0200\n"
 "Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,132 +45,146 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Get Books"
 
-#: GetIABooksActivity.py:98
-msgid "Books"
-msgstr "หนังสือ"
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
 
-#: GetIABooksActivity.py:260
-msgid "Any language"
-msgstr "ภาษาใดก็ได้"
-
-#: GetIABooksActivity.py:272 GetIABooksActivity.py:394
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:487
+#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
+#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "แคตตาล็อก"
 
-#: GetIABooksActivity.py:313 GetIABooksActivity.py:777
+#: GetIABooksActivity.py:271
+msgid "Any language"
+msgstr "ภาษาใดก็ได้"
+
+#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "กำลังค้นหากรุณารอสักครู่..."
 
-#: GetIABooksActivity.py:353
+#: GetIABooksActivity.py:358
 msgid "My books"
 msgstr "หนังสือของฉัน"
 
-#: GetIABooksActivity.py:368
+#: GetIABooksActivity.py:372
 #, python-format
 #, python-format,
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Volume"
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "รูปแบบ:"
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "รับหนังสือ"
 
-#: GetIABooksActivity.py:578
+#: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "ป้อนชื่อผู้เขียนหรือชื่อเรื้องในการค้นหา"
 
-#: GetIABooksActivity.py:599
+#: GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "หนังเสือที่เลือก"
 
-#: GetIABooksActivity.py:618
+#: GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "ชื่อเรื่อง:\t\t"
 
-#: GetIABooksActivity.py:620
+#: GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "ผู้เขียน:\t\t"
 
-#: GetIABooksActivity.py:624
+#: GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "สรุป:\t"
 
-#: GetIABooksActivity.py:633
+#: GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "ภาษา:\t"
 
-#: GetIABooksActivity.py:634
+#: GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "สำนักพิมพ์:\t"
 
-#: GetIABooksActivity.py:761
+#: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "คุณต้องใส่อย่างน้อย 3 ตัวอักษร"
 
-#: GetIABooksActivity.py:784
+#: GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: GetIABooksActivity.py:833
 #, python-format
 #, python-format, ,
 msgid "New catalog list %s was found"
 msgstr "รายการแคตตาล็อกใหม่ %s ถูกพบ"
 
-#: GetIABooksActivity.py:788
+#: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "ขออภัย, ไม่มีหนังสือที่คุณต้องการ"
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "ขออภัย, เจอเพียงหนังสือภาษาอังกฤษ"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Error"
 msgstr "ข้อผิดพลาด"
 
-#: GetIABooksActivity.py:897
+#: GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "หมดเวลาการเชื่อมต่อ "
 
-#: GetIABooksActivity.py:942
+#: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
 msgstr "ข้อผิดพลาด: ไม่สามารถดาวน์โหลด %s "
 
-#: GetIABooksActivity.py:1000
+#: GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "ดาวน์โหลดเสร็จสิ้นแล้ว"
 
-#: GetIABooksActivity.py:1008
+#: GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "แสดงในบันทึกประจำวัน"
 
-#: GetIABooksActivity.py:1011
+#: GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "ตกลง"
 
-#: listview.py:39
+#: listview.py:35
 msgid "Title"
 msgstr "ชื่อเรื่อง"
 
-#: listview.py:41
+#: listview.py:37
 msgid "Author"
 msgstr "ผู้เขียน"
 
-#: listview.py:43
+#: listview.py:39
 msgid "Publisher"
 msgstr "สำนักพิมพ์"
 
-#: listview.py:45
+#: listview.py:41
 msgid "Language"
 msgstr "ภาษา"
 
-#: listview.py:47
+#: listview.py:43
 msgid "Publish Date"
 msgstr "วันที่พิมพ์"
+
+#~ msgid "Books"
+#~ msgstr "หนังสือ"
