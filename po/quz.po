@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-07-23 07:19+0200\n"
+"PO-Revision-Date: 2012-11-26 10:11+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: quz\n"
@@ -154,7 +154,7 @@ msgstr ""
 #: listview.py:39
 #, fuzzy
 msgid "Publisher"
-msgstr "Ñit'ichiq:\t"
+msgstr "Ñit'ichiq"
 
 #  "Lenguaje"
 #: listview.py:41
