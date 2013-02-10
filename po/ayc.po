@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-10-13 20:40+0200\n"
+"PO-Revision-Date: 2013-02-10 17:56+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ayc\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANS: "name" option from activity.info file
 msgid "Get Books"
-msgstr ""
+msgstr "Pankanaka jakiña"
 
 #. TRANS: "summary" option from activity.info file
 #. TRANS: "description" option from activity.info file
@@ -27,28 +27,30 @@ msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"¿Pankanaka muntati? ¡Taqiwa munapxtana! Akïri wakichataxa kunaymana "
+"pankanaka thaqañataki jakiñatakiwa wakisiraki. ¡Ullaña qalltma!"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
-msgstr ""
+msgstr "Panakanaka thaqaña pankanaka"
 
 #: GetIABooksActivity.py:271
 msgid "Any language"
-msgstr ""
+msgstr "Maski kawkipiri aru"
 
 #: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "Thaqasiskiwa, paya suma suyt'ma..."
 
 #: GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "Pankanakaja"
 
 #: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB utjiri chani"
 
 #  "Formato:"
 #: GetIABooksActivity.py:553
@@ -57,15 +59,15 @@ msgstr "Wakichata:"
 
 #: GetIABooksActivity.py:566
 msgid "Get Book"
-msgstr ""
+msgstr "Panka jakiña"
 
 #: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
-msgstr ""
+msgstr "Qillqirina jani ukaxa p'iqinchiri suti thaqaña qalltañataki qillqantma."
 
 #: GetIABooksActivity.py:638
 msgid "Selected book"
-msgstr ""
+msgstr "Chhijllata panka"
 
 #  "Título:\t\t"
 #: GetIABooksActivity.py:657
@@ -79,7 +81,7 @@ msgstr "Luriri:\t\t"
 
 #: GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "Utjirinaka qillqata:\t"
 
 #  "Lenguaje:\t"
 #: GetIABooksActivity.py:672
@@ -88,32 +90,32 @@ msgstr "Aru:\t\t"
 
 #: GetIABooksActivity.py:673
 msgid "Publisher:\t"
-msgstr ""
+msgstr "Qillqata wakichiri:\t"
 
 #: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Niya kimsa qillqa qillqantañamawa"
 
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr ""
+msgstr "Katuqirimpi janiwa jakintasiyasiti. Janisa jakintasiñataki mantatäkchi"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "Qillqata apaqañana pantjasiwiwa."
 
 #: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "Machaqa pankanaka thaqaña pankawa jakisi %s"
 
 #: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "Pampachapxita, janiwa pankanakaxa jakisiti."
 
 #: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Pampachita, Inglés aruta qillqata pankanakakiwa jakisi."
 
 #  "Error"
 #: GetIABooksActivity.py:968
@@ -122,38 +124,38 @@ msgstr "Pantjata"
 
 #: GetIABooksActivity.py:968
 msgid "Connection timed out for "
-msgstr ""
+msgstr "Wakichataru mantañataki wakichataxa chhaqtawiwa "
 
 #: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr ""
+msgstr "Pantjatawa: Janiwa apaqayasiti %s. "
 
 #: GetIABooksActivity.py:1071
 msgid "Download completed"
-msgstr ""
+msgstr "Phuqata apaqata"
 
 #: GetIABooksActivity.py:1079
 msgid "Show in Journal"
-msgstr ""
+msgstr "Saupüru luräwiru uñstayaña"
 
 #: GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "Walikiwa"
 
 #  "Título"
 #: listview.py:35
 msgid "Title"
-msgstr "Suti"
+msgstr "P'iqinchäwi"
 
 #  "Autor"
 #: listview.py:37
 msgid "Author"
-msgstr "Luriri"
+msgstr "Qillqiri"
 
 #: listview.py:39
 msgid "Publisher"
-msgstr ""
+msgstr "Qillqata wakichiri"
 
 #  "Lenguaje"
 #: listview.py:41
@@ -162,4 +164,4 @@ msgstr "Aru"
 
 #: listview.py:43
 msgid "Publish Date"
-msgstr ""
+msgstr "Qillqata apsuña pacha chimpu"
