@@ -35,10 +35,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-03-16 01:40+0200\n"
+"PO-Revision-Date: 2013-11-26 21:21+0200\n"
 "Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,6 +55,8 @@ msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Precisas de livros? Todos precisamos! Esta atividade permite-te pesquisar e "
+"obter livros de várias fontes diferentes. Começa a ler!"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
@@ -121,10 +123,11 @@ msgstr "Precisas de escrever pelo menos 3 letras."
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
+"Não foi possível contactar com o servidor. Talvez não estejas ligado à rede"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "Houve um erro ao transferir a lista."
 
 #: GetIABooksActivity.py:833
 #, python-format
