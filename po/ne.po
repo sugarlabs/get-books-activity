@@ -35,15 +35,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2011-07-14 23:11+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2013-11-26 08:02+0200\n"
+"Last-Translator: Ganesh <ganesh.ghimire@olenepal.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ne\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #. TRANS: "name" option from activity.info file
 msgid "Get Books"
@@ -55,6 +55,8 @@ msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"किताबहरू चाहिन्छ? सबैलाई चाहिन्छ! यो क्रियाकलापले तपाईँलाई किताबहरू खोज्न र "
+"विभिन्न स्रोतहरूबाट प्राप्त गर्न सहयोग गर्छ। पढ्न सुरू गरौँ !"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
@@ -104,7 +106,7 @@ msgstr "लेखक:\t\t"
 
 #: GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "सारांश:\t"
 
 #: GetIABooksActivity.py:672
 msgid "Language:\t"
@@ -120,16 +122,16 @@ msgstr "तिमीले कम्तीमा ३वटा शब्दहर
 
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr ""
+msgstr "सर्भर भेटाउन सकिएन। सायद तपाईँ सञ्जालमा जोडिनु भएको छैन।"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "यहाँ सूची डाउनलोड गर्दा त्रुटि भयो।"
 
 #: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "नयाँ विवरणिका सूची %s फेला पर्यो"
 
 #: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
