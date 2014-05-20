@@ -35,15 +35,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2010-03-25 22:28+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2013-11-06 23:41+0200\n"
+"Last-Translator: arosella <arosella@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.3\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #. TRANS: "name" option from activity.info file
 msgid "Get Books"
@@ -55,15 +55,17 @@ msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Ti servono dei libri? Tutti ne abbiamo bisogno! Questa attività ti permette "
+"di cercarne e trovarne da molte fonti diverse. Inizia a leggere!"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
-msgstr ""
+msgstr "Cataloghi"
 
 #: GetIABooksActivity.py:271
 msgid "Any language"
-msgstr ""
+msgstr "Qualsiasi linguaggio"
 
 #: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
@@ -71,7 +73,7 @@ msgstr "Ricerca in corso, per favore attendere..."
 
 #: GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "I miei libri"
 
 #: GetIABooksActivity.py:372
 #, python-format
@@ -80,7 +82,7 @@ msgstr "%.2f GB Volume"
 
 #: GetIABooksActivity.py:553
 msgid "Format:"
-msgstr ""
+msgstr "Formato:"
 
 #: GetIABooksActivity.py:566
 msgid "Get Book"
@@ -92,7 +94,7 @@ msgstr "Inserisci dati su autore o titolo per iniziare la ricerca."
 
 #: GetIABooksActivity.py:638
 msgid "Selected book"
-msgstr ""
+msgstr "Libro selezionato"
 
 #: GetIABooksActivity.py:657
 msgid "Title:\t\t"
@@ -104,7 +106,7 @@ msgstr "Autore:\t\t"
 
 #: GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "Sommario:\t"
 
 #: GetIABooksActivity.py:672
 msgid "Language:\t"
@@ -116,20 +118,20 @@ msgstr "Editore:\t"
 
 #: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Devi inserire almeno 3 lettere."
 
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr ""
+msgstr "Non riesco a raggiungere il server. Forse non sei connesso alla rete"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "C'è stato un errore durante lo scaricamento della lista."
 
 #: GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "Trovato nuovo catalogo %s"
 
 #: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
@@ -137,7 +139,7 @@ msgstr "Spiacente, non ho trovato libri."
 
 #: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Spiacente, abbiamo trovato soltanto libri in inglese"
 
 #: GetIABooksActivity.py:968
 msgid "Error"
@@ -150,19 +152,19 @@ msgstr "Connessione fuori tempo massimo per "
 #: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr ""
+msgstr "Errore: non riesco a scaricare %s. "
 
 #: GetIABooksActivity.py:1071
 msgid "Download completed"
-msgstr ""
+msgstr "Scaricamento completato"
 
 #: GetIABooksActivity.py:1079
 msgid "Show in Journal"
-msgstr ""
+msgstr "Mostra nel diario"
 
 #: GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: listview.py:35
 msgid "Title"
