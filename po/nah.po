@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-04-28 06:43+0200\n"
+"PO-Revision-Date: 2014-05-20 18:51+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: nah\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANS: "name" option from activity.info file
 msgid "Get Books"
-msgstr ""
+msgstr "Tipias amochtli"
 
 #. TRANS: "summary" option from activity.info file
 #. TRANS: "description" option from activity.info file
@@ -27,103 +27,107 @@ msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"¿Ti neki amochtli? ¡Nochi ti tekiuian! Pan inin tekipanol ti uelis titemos "
+"uan ti pias amochuen tlen uala miyaj kampa. ¡Xipeua amapoua!"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
 msgid "Catalogs"
-msgstr ""
+msgstr "Amochtlaixnextili"
 
 #: GetIABooksActivity.py:271
 msgid "Any language"
-msgstr ""
+msgstr "Amo san se tlajtoli"
 
 #: GetIABooksActivity.py:318 GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "Ki temoua tlen titlali, ti chia..."
 
 #: GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "No amochuen"
 
 #: GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB Volumen"
 
 #: GetIABooksActivity.py:553
 msgid "Format:"
-msgstr ""
+msgstr "Amaisuatl"
 
 #: GetIABooksActivity.py:566
 msgid "Get Book"
-msgstr ""
+msgstr "Ti pias se amochtli"
 
 #: GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
+"Xi tlali tlajkuilo tlen tejtos tlen ki chujki tlan itokax tlen tlajkuilol "
+"pan peualtis ki temouas"
 
 #: GetIABooksActivity.py:638
 msgid "Selected book"
-msgstr ""
+msgstr "Tlapejpentli amochtli"
 
 #: GetIABooksActivity.py:657
 msgid "Title:\t\t"
-msgstr ""
+msgstr "Título:\t\t"
 
 #: GetIABooksActivity.py:659
 msgid "Author:\t\t"
-msgstr ""
+msgstr "Tlen ki tlajkuilo:\t\t"
 
 #: GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "Sumario:\t"
 
 #: GetIABooksActivity.py:672
 msgid "Language:\t"
-msgstr ""
+msgstr "Tlajtoli:\t"
 
 #: GetIABooksActivity.py:673
 msgid "Publisher:\t"
-msgstr ""
+msgstr "tlen ki kualchichiua:\t"
 
 #: GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Ti pia ti tlalis tlen axkensin 3 tlajkuilol"
 
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
+"Amo uelki mo sasalo ka tlachijketl. Uistel amo ti sasalojtoj ka tlanechikoli"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "Ki pixki se kuapopolistli keman tlatemouiyaya tokayotlpouali."
 
 #: GetIABooksActivity.py:833
-#, python-format
+#, python-format, fuzzy
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "Yankuik tokayopouali tlen amochtlaixkopinal pantijtoj"
 
 #: GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "Ti matin, amo uelki mo panti amochuen."
 
 #: GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Ti matin, san ti pantijken amocuen pan ingles."
 
 #: GetIABooksActivity.py:968
-#, fuzzy
 msgid "Error"
 msgstr "Kuapopolistli"
 
 #: GetIABooksActivity.py:968
 msgid "Connection timed out for "
-msgstr ""
+msgstr "Mo polo tlen sasalojtoya tlen "
 
 #: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr ""
+msgstr "Kuapolistli: Amo uelki temoltis %s. "
 
 #: GetIABooksActivity.py:1071
 msgid "Download completed"
@@ -131,28 +135,28 @@ msgstr ""
 
 #: GetIABooksActivity.py:1079
 msgid "Show in Journal"
-msgstr ""
+msgstr "Kixnextis poualistli"
 
 #: GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: listview.py:35
 msgid "Title"
-msgstr ""
+msgstr "Tokax tlajkuilol"
 
 #: listview.py:37
 msgid "Author"
-msgstr ""
+msgstr "Tlen kichijki"
 
 #: listview.py:39
 msgid "Publisher"
-msgstr ""
+msgstr "Tlen ki kualchichiua"
 
 #: listview.py:41
 msgid "Language"
-msgstr ""
+msgstr "Tlajtoli"
 
 #: listview.py:43
 msgid "Publish Date"
-msgstr ""
+msgstr "Tonalpouali tlen mo tlali"
