@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-09-19 11:22+0200\n"
-"Last-Translator: vucv <chuvanvu@gmail.com>\n"
+"PO-Revision-Date: 2014-05-28 00:52+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
@@ -150,7 +150,7 @@ msgstr "Kết nối quá hạn trong "
 #: GetIABooksActivity.py:1013
 #, python-format
 msgid "Error: Could not download %s. "
-msgstr "Lỗi: Không thể tải về %s"
+msgstr "Lỗi: Không thể tải về %s "
 
 #: GetIABooksActivity.py:1071
 msgid "Download completed"
