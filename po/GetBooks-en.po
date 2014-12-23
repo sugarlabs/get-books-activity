@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.11.0\n"
+
+msgid "Get Books"
+msgstr ""
+
+msgid ""
+"Need books? We all do! This activity lets you search and retrieve books from "
+"many different sources. Start reading!"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
+msgid "Catalogs"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
+msgid "Any language"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
+msgid "Performing lookup, please wait..."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
+msgid "My books"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
+#, python-format
+msgid "%.2f GB Volume"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
+msgid "Format:"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
+msgid "Get Book"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
+msgid "Enter words from the Author or Title to begin search."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
+msgid "Selected book"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
+msgid "Title:\t\t"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
+msgid "Author:\t\t"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
+msgid "Summary:\t"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
+msgid "Language:\t"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
+msgid "Publisher:\t"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
+msgid "You must enter at least 3 letters."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
+msgid "Could not reach the server. Maybe you are not connected to the network"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
+msgid "There was an error downloading the list."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
+#, python-format
+msgid "New catalog list %s was found"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
+msgid "Sorry, no books could be found."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
+msgid "Sorry, we only found english books."
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
+msgid "Error"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
+msgid "Connection timed out for "
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
+#, python-format
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
+msgid "Download completed"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
+msgid "Show in Journal"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
+msgid "Ok"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
+msgid "Title"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
+msgid "Author"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
+msgid "Publisher"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
+msgid "Language"
+msgstr ""
+
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
+msgid "Publish Date"
+msgstr ""
