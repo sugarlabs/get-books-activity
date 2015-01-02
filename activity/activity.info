@@ -8,3 +8,4 @@ activity_version = 14
 license = GPLv2+
 summary = Need books? We all do! This activity lets you search and retrieve books from many different sources. Start reading!
 repository = git@github.com:godiard/get-books-activity.git
+category = language internet
