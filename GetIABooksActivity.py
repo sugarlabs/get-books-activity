@@ -795,7 +795,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             if search_text is None:
                 return
-            elif len(search_text) < 3:
+            elif len(search_text) < 3 and self.source != 'Library for all':
                 self.show_message(_('You must enter at least 3 letters.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
@@ -803,8 +803,10 @@ class GetIABooksActivity(activity.Activity):
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
                         query_language, self)
+            elif self.source == 'Library for all':
+                self.queryresults = opds.LFAVolumeQueryResult(search_text,
+                                                              query_language)
             elif self.source in _SOURCES_CONFIG:
-            #if self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language)

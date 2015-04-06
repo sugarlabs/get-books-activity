@@ -27,6 +27,7 @@ import os
 import urllib
 import time
 import csv
+import json
 
 import sys
 sys.path.insert(0, './')
@@ -370,6 +371,12 @@ class IABook(Book):
     def get_image_url(self):
         return {'jpg': self._entry['cover_image']}
 
+    def get_summary(self):
+        if 'summary' in self._entry:
+            return self._entry['summary']
+        else:
+            return ''
+
 
 class DownloadIAThread(threading.Thread):
 
@@ -508,6 +515,91 @@ class InternetArchiveQueryResult(QueryResult):
         d_thread = DownloadIAThread(self, midway)
         self.threads.append(d_thread)
         d_thread.start()
+
+
+# LFA: Library for All - https://www.libraryforall.org/
+# have a non standard interface, with urls who provide json content
+# due to the way their api is implemented, you can't query
+# using filters. Then, we download the catalog and use it locally.
+
+
+class LFAVolumeQueryResult(QueryResult):
+
+    def __init__(self, queryterm, language):
+        configuration = {'query_uri': './books.json'}
+        QueryResult.__init__(self, configuration, queryterm, language)
+
+    def is_local(self):
+        return False
+
+    def get_book_list(self):
+        ret = []
+
+        BOOKS_DATA_LOCAL = './books.json'
+
+        lang = self._language.upper()
+        logging.error('searching language %s ', lang)
+
+        all_books = []
+        with open(BOOKS_DATA_LOCAL) as local_cache:
+            all_books = json.load(local_cache)
+
+        for book_data in all_books:
+            if lang != 'ALL' and lang not in book_data['languages']:
+                continue
+
+            author = ''
+            for author_data in book_data['authors']:
+                author += author_data['full_name'] + ', '
+            author = author[0:-2]
+
+            if self._queryterm.upper() not in book_data['name'].upper() and \
+                    self._queryterm.upper() not in author.upper():
+                continue
+
+            # TODO: add filter by tags (catalogs)
+
+            logging.error('%s (%s)', book_data['name'], book_data['_id'])
+            """
+            This is the stucture of the book data:
+            {"_id":"100","_rev":"216-df0af32a43cfea9d62e83954f6d63851",
+             "blurb":"",
+            "thumbnail_590_url":"images/100/thumbnail.jpg",
+            "editor":[{"id":1,"name":"Library For All"}],
+            "authors":[{"full_name":" Ministre de l'Education","id":44}],
+            "name":"Curriculum troisieme annee fondamentale",
+            "tags":["PEDAGOGY","TEACHERS-ADULTS","TEACHER-TRAINING"],
+            "subjects":["TEACHER-RESOURCES"],
+            "languages":["FR"],"countries":"HT,RW,CD","total_pages":112}
+            """
+            entry = {}
+            entry['author'] = author
+            entry['summary'] = book_data['blurb']
+            # TODO: entry['format'] =
+            entry['identifier'] = book_data['_id']
+            # TODO: multiple languages
+            # entry['dcterms_language'] = row[4]
+            editor = ''
+            for editor_data in book_data['editor']:
+                editor += editor_data['name'] + ', '
+            editor = editor[0:-2]
+
+            entry['dcterms_publisher'] = editor
+            entry['title'] = book_data['name']
+            entry['cover_image'] = 'https://haiti.libraryforall.org:6984/' \
+                'images/%s/thumbnail.jpg' % book_data['_id']
+
+            entry['links'] = {}
+            """
+            url_base = 'http://www.archive.org/download/'
+            if entry['format'].find('PDF') > -1:
+                entry['links']['application/pdf'] = url_base + '_text.pdf'
+            if entry['format'].find('EPUB') > -1:
+                entry['links']['application/epub+zip'] = url_base + '.epub'
+            """
+            ret.append(IABook(None, entry, ''))
+
+        return ret
 
 
 class ImageDownloaderThread(threading.Thread):
