@@ -61,6 +61,12 @@ _MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw',
 _SOURCES = {}
 _SOURCES_CONFIG = {}
 
+# Special sources: these sources are not real opds sources,
+# then we need modify the activity normal procedures
+# define constants to identify them
+SOURCE_LIBRARY_FOR_ALL = 'Library for all'
+SOURCE_INTERNET_ARCHIVE = 'Internet Archive'
+
 READ_STREAM_SERVICE = 'read-activity-http'
 
 # directory exists if powerd is running.  create a file here,
@@ -293,8 +299,9 @@ class GetIABooksActivity(activity.Activity):
         palette.popup(immediate=True, state=palette.SECONDARY)
 
     def __switch_catalog_cb(self, catalog_name):
-        catalog_config = self.catalogs[catalog_name.decode('utf-8')]
-        self.__activate_catalog_cb(None, catalog_config)
+        if catalog_name.decode('utf-8') in self.catalogs:
+            catalog_config = self.catalogs[catalog_name.decode('utf-8')]
+            self.__activate_catalog_cb(None, catalog_config)
 
     def __activate_catalog_cb(self, menu, catalog_config):
         query_language = self.get_query_language()
@@ -313,8 +320,12 @@ class GetIABooksActivity(activity.Activity):
             self.queryresults.cancel()
             self.queryresults = None
 
-        self.queryresults = opds.RemoteQueryResult(catalog_config,
-                '', query_language)
+        if self.source == SOURCE_LIBRARY_FOR_ALL:
+            self.queryresults = opds.LFAVolumeQueryResult(
+                '', query_language, catalog_config['tag'])
+        else:
+            self.queryresults = opds.RemoteQueryResult(catalog_config,
+                    '', query_language)
         self.show_message(_('Performing lookup, please wait...'))
         # README: I think we should create some global variables for
         # each cursor that we are using to avoid the creation of them
@@ -598,10 +609,22 @@ class GetIABooksActivity(activity.Activity):
 
     def filter_catalogs_by_source(self):
         self.catalogs = {}
+
         for catalog_key in self.catalogs_configuration:
             catalog = self.catalogs_configuration[catalog_key]
             if catalog['source'] == self.source:
                 self.catalogs[catalog_key] = catalog
+
+        if self.source == SOURCE_LIBRARY_FOR_ALL:
+            if self.catalogs == {}:
+                # the first time, load the catalogs from the json file
+                self.queryresults = opds.LFAVolumeQueryResult('', 'all')
+                tags = self.queryresults.get_tags()
+                for tag in tags:
+                    config = {'source': SOURCE_LIBRARY_FOR_ALL,
+                              'tag': tag}
+                    self.catalogs[tag] = config
+                    self.catalogs_configuration[tag] = config
 
     def load_source_catalogs(self):
         self.filter_catalogs_by_source()
@@ -795,15 +818,16 @@ class GetIABooksActivity(activity.Activity):
         else:
             if search_text is None:
                 return
-            elif len(search_text) < 3 and self.source != 'Library for all':
+            elif len(search_text) < 3 and \
+                    self.source != SOURCE_LIBRARY_FOR_ALL:
                 self.show_message(_('You must enter at least 3 letters.'))
                 self._books_toolbar.search_entry.grab_focus()
                 return
-            if self.source == 'Internet Archive':
+            if self.source == SOURCE_INTERNET_ARCHIVE:
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
                         query_language, self)
-            elif self.source == 'Library for all':
+            elif self.source == SOURCE_LIBRARY_FOR_ALL:
                 self.queryresults = opds.LFAVolumeQueryResult(search_text,
                                                               query_language)
             elif self.source in _SOURCES_CONFIG:
@@ -1002,7 +1026,7 @@ class GetIABooksActivity(activity.Activity):
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        if self.source == 'Internet Archive' and \
+        if self.source == SOURCE_INTERNET_ARCHIVE and \
            getter._url.endswith('_text.pdf'):
             # in the IA server there are files ending with _text.pdf
             # smaller and better than the .pdf files, but not for all

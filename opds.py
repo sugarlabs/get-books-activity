@@ -525,8 +525,8 @@ class InternetArchiveQueryResult(QueryResult):
 
 class LFAVolumeQueryResult(QueryResult):
 
-    def __init__(self, queryterm, language):
-        configuration = {'query_uri': './books.json'}
+    def __init__(self, queryterm, language, tag=None):
+        configuration = {'query_uri': './books.json', 'tag':tag}
         QueryResult.__init__(self, configuration, queryterm, language)
 
     def is_local(self):
@@ -535,13 +535,11 @@ class LFAVolumeQueryResult(QueryResult):
     def get_book_list(self):
         ret = []
 
-        BOOKS_DATA_LOCAL = './books.json'
-
         lang = self._language.upper()
         logging.error('searching language %s ', lang)
 
         all_books = []
-        with open(BOOKS_DATA_LOCAL) as local_cache:
+        with open(self._configuration['query_uri']) as local_cache:
             all_books = json.load(local_cache)
 
         for book_data in all_books:
@@ -558,6 +556,10 @@ class LFAVolumeQueryResult(QueryResult):
                 continue
 
             # TODO: add filter by tags (catalogs)
+            if self._configuration['tag'] is not None:
+                tag = self._configuration['tag']
+                if tag not in book_data['tags']:
+                    continue
 
             logging.error('%s (%s)', book_data['name'], book_data['_id'])
             """
@@ -600,6 +602,20 @@ class LFAVolumeQueryResult(QueryResult):
             ret.append(IABook(None, entry, ''))
 
         return ret
+
+    def get_tags(self):
+        # load the catalogs from the tags in books.json
+
+        all_books = []
+        with open(self._configuration['query_uri']) as local_cache:
+            all_books = json.load(local_cache)
+
+        tags = []
+        for book_data in all_books:
+            for tag in book_data['tags']:
+                if tag not in tags:
+                    tags.append(tag)
+        return tags
 
 
 class ImageDownloaderThread(threading.Thread):
