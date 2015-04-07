@@ -528,6 +528,7 @@ class LFAVolumeQueryResult(QueryResult):
     def __init__(self, queryterm, language, tag=None):
         configuration = {'query_uri': './books.json', 'tag':tag}
         QueryResult.__init__(self, configuration, queryterm, language)
+        self.get_book_list()
 
     def is_local(self):
         return False
@@ -600,7 +601,6 @@ class LFAVolumeQueryResult(QueryResult):
                 entry['links']['application/epub+zip'] = url_base + '.epub'
             """
             ret.append(IABook(None, entry, ''))
-
         return ret
 
     def get_tags(self):
