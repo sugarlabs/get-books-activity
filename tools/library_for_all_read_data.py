@@ -38,6 +38,14 @@ for row in all_books['rows']:
         f = opener.open(req)
         book_json = f.read()
         book_data = json.loads(book_json)
+        # clean countries info (the countrie are repeated many times)
+        countries = book_data['countries'].split(',')
+        unique_countries = []
+        for country in countries:
+            if country not in unique_countries:
+                unique_countries.append(country)
+        book_data['countries'] = ','.join(unique_countries)
+
         books_data.append(book_data)
     except:
         logging.exception("Unexpected error: %s", sys.exc_info()[0])
