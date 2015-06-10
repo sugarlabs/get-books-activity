@@ -1,0 +1,12 @@
+[Package]
+name = sugar-get-books-activity
+version = 0~godiard1
+vcs-git = https://github.com/godiard/get-books-activity.git
+vcs-browser = https://github.com/godiard/get-books-activity.git
+primary_branch = 0.104
+
+[Maintainer]
+name = Debian Sugar Team
+email = pkg-sugar-devel@lists.alioth.debian.org
+uploaders = Jonas Smedegaard <dr@jones.dk>,
+ Gonzalo Odiard <godiard@gmail.com>
