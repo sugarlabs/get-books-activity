@@ -44,6 +44,13 @@ from sugar3.graphics.alert import Alert
 from sugar3.graphics.icon import Icon
 from gettext import gettext as _
 
+try:
+    from jarabe.journal.bundlelauncher import get_bundle
+    from sugar3.activity.activity import launch_bundle
+    _HAS_BUNDLE_LAUNCHER = True
+except ImportError:
+    _HAS_BUNDLE_LAUNCHER = False
+
 import dbus
 import ConfigParser
 import base64
@@ -1074,10 +1081,20 @@ class GetIABooksActivity(activity.Activity):
         _stop_alert = Alert()
         _stop_alert.props.title = title
         _stop_alert.props.msg = msg
-        open_icon = Icon(icon_name='zoom-activity')
-        _stop_alert.add_button(Gtk.ResponseType.APPLY,
-                                    _('Show in Journal'), open_icon)
-        open_icon.show()
+
+        if _HAS_BUNDLE_LAUNCHER:
+                bundle = get_bundle(object_id=self._object_id)
+
+        if bundle is not None:
+            icon = Icon(file=bundle.get_icon())
+            label = _('Open with %s') % bundle.get_name()
+            _stop_alert.add_button(Gtk.ResponseType.APPLY, label, icon)
+        else:
+            icon = Icon(icon_name='zoom-activity')
+            label = _('Show in Journal')
+            _stop_alert.add_button(Gtk.ResponseType.ACCEPT, label, icon)
+        icon.show()
+
         ok_icon = Icon(icon_name='dialog-ok')
         _stop_alert.add_button(Gtk.ResponseType.OK, _('Ok'), ok_icon)
         ok_icon.show()
@@ -1092,6 +1109,8 @@ class GetIABooksActivity(activity.Activity):
     def __stop_response_cb(self, alert, response_id):
         if response_id is Gtk.ResponseType.APPLY:
             activity.show_object_in_journal(self._object_id)
+        elif response_id is Gtk.ResponseType.ACCEPT:
+            launch_bundle(object_id=self._object_id)
         self.remove_alert(alert)
 
     def _get_preview_image_buffer(self):
