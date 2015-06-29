@@ -1088,11 +1088,11 @@ class GetIABooksActivity(activity.Activity):
         if bundle is not None:
             icon = Icon(file=bundle.get_icon())
             label = _('Open with %s') % bundle.get_name()
-            _stop_alert.add_button(Gtk.ResponseType.APPLY, label, icon)
+            _stop_alert.add_button(Gtk.ResponseType.ACCEPT, label, icon)
         else:
             icon = Icon(icon_name='zoom-activity')
             label = _('Show in Journal')
-            _stop_alert.add_button(Gtk.ResponseType.ACCEPT, label, icon)
+            _stop_alert.add_button(Gtk.ResponseType.APPLY, label, icon)
         icon.show()
 
         ok_icon = Icon(icon_name='dialog-ok')
