@@ -45,8 +45,7 @@ from sugar3.graphics.icon import Icon
 from gettext import gettext as _
 
 try:
-    from jarabe.journal.bundlelauncher import get_bundle
-    from sugar3.activity.activity import launch_bundle
+    from sugar3.activity.activity import get_bundle, launch_bundle
     _HAS_BUNDLE_LAUNCHER = True
 except ImportError:
     _HAS_BUNDLE_LAUNCHER = False
