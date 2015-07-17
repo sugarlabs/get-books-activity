@@ -1,9 +1,9 @@
 [Package]
 name = sugar-get-books-activity
-version = 0~godiard1
+version = 1~godiard1
 vcs-git = https://github.com/godiard/get-books-activity.git
 vcs-browser = https://github.com/godiard/get-books-activity.git
-primary_branch = 0.104
+primary_branch = debian_packaging
 
 [Maintainer]
 name = Debian Sugar Team
