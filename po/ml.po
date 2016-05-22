@@ -30,156 +30,166 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"PO-Revision-Date: 2016-05-19 23:52+0000\n"
+"Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ml\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.3.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1463701955.000000\n"
 
-#. TRANS: "name" option from activity.info file
 msgid "Get Books"
-msgstr ""
+msgstr "നേടു ബുക്കുകൾ"
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"ബുക്കുകൾ വേണോ? നമുക്കെല്ലാവർക്കും വേണം! ഈ ആക്ടിവിറ്റി സ്രോതസ്സുകളിൽ നിന്നും "
+"നിനക്ക് ബുക്കുകൾ തിരയാനും വീണ്ടെടുക്കാനും സഹായിക്കുന്നു. വായന തുടങ്ങട്ടെ!"
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
 msgid "Catalogs"
-msgstr ""
+msgstr "കാറ്റലോഗ്"
 
-#: GetIABooksActivity.py:271
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
 msgid "Any language"
-msgstr ""
+msgstr "ഏതു ഭാഷയും"
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "തിരഞ്ഞുക്കൊണ്ടിരിക്കുന്നു, ദയവായി കാക്കുക..."
 
-#: GetIABooksActivity.py:358
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "എൻറെ ബുക്കുകൾ"
 
-#: GetIABooksActivity.py:372
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "%.2f GB (ജി.ബി) വോള്യം"
 
-#: GetIABooksActivity.py:553
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
 msgid "Format:"
-msgstr ""
+msgstr "ഫോര്‍മാറ്റ്:"
 
-#: GetIABooksActivity.py:566
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
 msgid "Get Book"
-msgstr ""
+msgstr "ബുക്ക്‌ നേടു"
 
-#: GetIABooksActivity.py:593
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
+"രചയിതാവിന്റെയോ ബുക്കിന്റെയോ പേരിലെ വാക്കുകൾ ടൈപ്പ് ചെയ്‌താൽ തിരച്ചിൽ "
+"തുടങ്ങാം."
 
-#: GetIABooksActivity.py:638
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
 msgid "Selected book"
-msgstr ""
+msgstr "തെരഞ്ഞെടുക്കപ്പെട്ട ബുക്ക്‌"
 
-#: GetIABooksActivity.py:657
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
 msgid "Title:\t\t"
-msgstr ""
+msgstr "തലക്കെട്ട്:\t\t"
 
-#: GetIABooksActivity.py:659
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
 msgid "Author:\t\t"
-msgstr ""
+msgstr "രചയിതാവ്:\t\t"
 
-#: GetIABooksActivity.py:663
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
 msgid "Summary:\t"
-msgstr ""
+msgstr "ചുരുക്കത്തില്‍:\t"
 
-#: GetIABooksActivity.py:672
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
 msgid "Language:\t"
-msgstr ""
+msgstr "ഭാഷ:\t"
 
-#: GetIABooksActivity.py:673
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
 msgid "Publisher:\t"
-msgstr ""
+msgstr "പ്രസാധകൻ:\t"
 
-#: GetIABooksActivity.py:799
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "മൂന്നു അക്ഷരങ്ങല്ലെങ്കിലും ടൈപ്പ് ചെയ്യണം."
 
-#: GetIABooksActivity.py:827
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
+"സെർവറുമായി ഘടിപ്പിക്കാൻ സാധിക്കുന്നില്ല. ചിലപ്പോൾ നെറ്റ്-വർക്കുമായുള്ള ബന്ധം "
+"ഇല്ലായിരിക്കും."
 
-#: GetIABooksActivity.py:831
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "ലിസ്റ്റ് ഡൗൺലോഡ് ചെയ്യുന്നതിൽ പിശക് സംഭവിച്ചിരിക്കുന്നു."
 
-#: GetIABooksActivity.py:833
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "പുതിയ കാറ്റലോഗ് ലിസ്റ്റ് %s കണ്ടെത്തിയിരിക്കുന്നു"
 
-#: GetIABooksActivity.py:837
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "ക്ഷമിക്കണം, ബുക്കുകൾ ഒന്നും തന്നെ കണ്ടെത്താൻ സാധിച്ചില്ല."
 
-#: GetIABooksActivity.py:851
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "ക്ഷമിക്കണം, ഇംഗ്ലീഷ് ബുക്കുകൾ മാത്രമേ കണ്ടെത്താൻ സാധിച്ചുള്ളൂ."
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Error"
-msgstr ""
+msgstr "പിശക്"
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Connection timed out for "
-msgstr ""
+msgstr "കണക്ഷനുള്ള സമയം കഴിഞ്ഞിരിക്കുന്നു "
 
-#: GetIABooksActivity.py:1013
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
 #, python-format
-msgid "Error: Could not download %s. "
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
 msgstr ""
+"പിശക്: %s ഡൗൺലോഡ് ചെയ്യാൻ സാധിച്ചില്ല. കാറ്റലോഗിൽ ഉള്ള വിലാസം ശരിയല്ലെന്ന് "
+"തോന്നുന്നു"
 
-#: GetIABooksActivity.py:1071
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
 msgid "Download completed"
-msgstr ""
+msgstr "ഡൗൺലോഡ് പൂർത്തിയായിരിക്കുന്നു"
 
-#: GetIABooksActivity.py:1079
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
 msgid "Show in Journal"
-msgstr ""
+msgstr "ജേർണലിൽ കാണിക്കുക"
 
-#: GetIABooksActivity.py:1082
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "ശരി"
 
-#: listview.py:35
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
 msgid "Title"
-msgstr ""
+msgstr "തലക്കെട്ട്"
 
-#: listview.py:37
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
 msgid "Author"
-msgstr ""
+msgstr "രചയിതാവ്"
 
-#: listview.py:39
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
 msgid "Publisher"
-msgstr ""
+msgstr "പ്രസാധകൻ"
 
-#: listview.py:41
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
 msgid "Language"
-msgstr ""
+msgstr "ഭാഷ"
 
-#: listview.py:43
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
 msgid "Publish Date"
-msgstr ""
+msgstr "പ്രസിദ്ധീകരിച്ച തീയതി"
