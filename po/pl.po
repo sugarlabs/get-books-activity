@@ -34,9 +34,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2012-10-18 07:48+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"PO-Revision-Date: 2015-02-19 14:43+0000\n"
+"Last-Translator: Tymon <dwgipk@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -44,146 +44,154 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1424356986.000000\n"
 
-#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Znajdź książki"
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Potrzebujesz książek? Tak jak my wszyscy! Ta aktywność pozwoli Ci na "
+"wyszukanie i pobranie książek z wielu różnych źródeł. Zacznij czytać!"
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "Katalogi"
 
-#: GetIABooksActivity.py:271
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
 msgid "Any language"
 msgstr "Dowolny język"
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "Szukam, proszę czekać..."
 
-#: GetIABooksActivity.py:358
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
 msgid "My books"
 msgstr "Moje książki"
 
-#: GetIABooksActivity.py:372
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Pojemności"
 
-#: GetIABooksActivity.py:553
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "Formatuj:"
 
-#: GetIABooksActivity.py:566
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "Poberz książkę"
 
-#: GetIABooksActivity.py:593
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Wprowadź słowa z tytułu lub autora aby rozpocząć przeszukiwanie."
 
-#: GetIABooksActivity.py:638
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "Wybrana książka"
 
-#: GetIABooksActivity.py:657
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "Tytuł:\t\t"
 
-#: GetIABooksActivity.py:659
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Autor:\t\t"
 
-#: GetIABooksActivity.py:663
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "Podsumowanie:\t"
 
-#: GetIABooksActivity.py:672
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "Język:\t"
 
-#: GetIABooksActivity.py:673
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "Wydawca:\t"
 
-#: GetIABooksActivity.py:799
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "Musisz wprowadzić przynajmniej 3 litery."
 
-#: GetIABooksActivity.py:827
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr "Nie można połączyć się z serwerem. Sprawdź swoją łączność z internetem"
 
-#: GetIABooksActivity.py:831
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr "Wystąpił błąd podczas pobierania listy."
 
-#: GetIABooksActivity.py:833
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Znaleziono nowy katalog: %s"
 
-#: GetIABooksActivity.py:837
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Niesetety, nie znaleziono żadnej książki."
 
-#: GetIABooksActivity.py:851
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "Niestety, znaleziono tylko książki po angielsku."
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Error"
 msgstr "Błąd"
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Przekroczono limit czasu dla "
 
-#: GetIABooksActivity.py:1013
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
 #, python-format
-msgid "Error: Could not download %s. "
-msgstr "Błąd: nie można pobrać %s. "
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
+msgstr "Błąd: Nie można pobrać %s. Ścieżka w katalogu wygląda na nieprawidłową"
 
-#: GetIABooksActivity.py:1071
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "Pobieranie zakończone"
 
-#: GetIABooksActivity.py:1079
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "Pokaż w Dzienniku"
 
-#: GetIABooksActivity.py:1082
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "Ok"
 
-#: listview.py:35
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
 msgid "Title"
 msgstr "Tytuł"
 
-#: listview.py:37
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
 msgid "Author"
 msgstr "Autor"
 
-#: listview.py:39
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
 msgid "Publisher"
 msgstr "Wydawca"
 
-#: listview.py:41
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
 msgid "Language"
 msgstr "Język"
 
-#: listview.py:43
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
 msgid "Publish Date"
 msgstr "Data publickacji"
+
+#, python-format
+#~ msgid "Error: Could not download %s. "
+#~ msgstr "Błąd: nie można pobrać %s. "
 
 #~ msgid "Books"
 #~ msgstr "Książki"
