@@ -65,56 +65,19 @@ class ReadURLDownloader(network.GlibURLDownloader):
 
 class DownloadThread(threading.Thread):
 
-    def __init__(self, obj, midway):
+    def __init__(self, uri, headers, feedobj_cb):
         threading.Thread.__init__(self)
-        self.midway = midway
-        self.obj = obj
+        self._uri = uri
+        self._headers = headers
+        self._feedobj_cb = feedobj_cb
+
         self.stopthread = threading.Event()
 
-    def _download(self):
-
-        def entry_type(entry):
-            for link in entry['links']:
-                if link['rel'] in \
-                    [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
-                    return "CATALOG"
-                else:
-                    return 'BOOK'
-
-        logging.debug('feedparser version %s', feedparser.__version__)
-        if not self.obj.is_local() and self.midway == False:
-            uri = self.obj._uri + self.obj._query.replace(' ', '+')
-            headers = {}
-            if self.obj._language is not None and self.obj._language != 'all':
-                headers['Accept-Language'] = self.obj._language
-                uri = uri + '&lang=' + self.obj._language
-            logging.error('Searching URL %s headers %s' % (uri, headers))
-            feedobj = feedparser.parse(uri, request_headers=headers)
-        else:
-            feedobj = feedparser.parse(self.obj._uri)
-
-        # Get catalog Type
-        CATALOG_TYPE = 'COMMON'
-        if 'links' in feedobj['feed']:
-            for link in feedobj['feed']['links']:
-                if link['rel'] == _REL_CRAWLABLE:
-                    CATALOG_TYPE = 'CRAWLABLE'
-                    break
-
-        for entry in feedobj['entries']:
-            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
-                self.obj._booklist.append(Book(self.obj._configuration, entry))
-            elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
-                self.obj._cataloglist.append( \
-                    Book(self.obj._configuration, entry))
-
-        self.obj._feedobj = feedobj
-        self.obj._ready = True
-        GObject.idle_add(self.obj.notify_updated, self.midway)
-        return False
-
     def run(self):
-        self._download()
+        logging.error('Searching URL %s headers %s' % (self._uri,
+                                                       self._headers))
+        feedobj = feedparser.parse(self._uri, request_headers=self._headers)
+        self._feedobj_cb(feedobj)
 
     def stop(self):
         self.stopthread.set()
@@ -254,15 +217,46 @@ class QueryResult(GObject.GObject):
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-        self._start_download()
 
-    def _start_download(self, midway=False):
-        d_thread = DownloadThread(self, midway)
+        uri = self._uri
+        headers = {}
+        if not self.is_local():
+            uri += self._query.replace(' ', '+')
+            if self._language is not None and self._language != 'all':
+                headers['Accept-Language'] = self._language
+                uri += '&lang=' + self._language
+
+        d_thread = DownloadThread(uri, headers, self.__feedobj_cb)
         self.threads.append(d_thread)
         d_thread.start()
 
-    def notify_updated(self, midway):
-        self.emit('updated', midway)
+    def __feedobj_cb(self, feedobj):
+        self._feedobj = feedobj
+
+        # Get catalog Type
+        CATALOG_TYPE = 'COMMON'
+        if 'links' in feedobj['feed']:
+            for link in feedobj['feed']['links']:
+                if link['rel'] == _REL_CRAWLABLE:
+                    CATALOG_TYPE = 'CRAWLABLE'
+                    break
+
+        def entry_type(entry):
+            for link in entry['links']:
+                if link['rel'] in \
+                    [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
+                    return "CATALOG"
+                else:
+                    return 'BOOK'
+
+        for entry in feedobj['entries']:
+            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
+                self._booklist.append(Book(self._configuration, entry))
+            elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
+                self._cataloglist.append(Book(self._configuration, entry))
+
+        self._ready = True
+        self.emit('updated', False)
 
     def __len__(self):
         return len(self._booklist)
