@@ -384,7 +384,7 @@ class DownloadIAThread(threading.Thread):
         # search_tuple = queryterm.lower().split()
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
-        self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
+        self.search_url = 'http://archive.org/advancedsearch.php?q=' +  \
             urllib.quote('(title:(' + self.obj._queryterm.lower() + ') OR ' + \
             'creator:(' + queryterm.lower() + ')) AND format:(DJVU)')
         self.search_url += '&' + FL + '=creator&' + FL + '=description&' + \
@@ -455,7 +455,7 @@ class DownloadIAThread(threading.Thread):
                 entry['title'] = row[6] + 'Volume ' + volume
 
             entry['links'] = {}
-            url_base = 'http://www.archive.org/download/' + \
+            url_base = 'http://archive.org/download/' + \
                         row[3] + '/' + row[3]
 
             if entry['format'].find('DjVu') > -1:
@@ -467,7 +467,7 @@ class DownloadIAThread(threading.Thread):
                 entry['links']['application/pdf'] = url_base + '_text.pdf'
             if entry['format'].find('EPUB') > -1:
                 entry['links']['application/epub+zip'] = url_base + '.epub'
-            entry['cover_image'] = 'http://www.archive.org/download/' + \
+            entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
             self.obj._booklist.append(IABook(None, entry, ''))
