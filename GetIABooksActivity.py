@@ -783,11 +783,11 @@ class GetIABooksActivity(activity.Activity):
                 self._books_toolbar.search_entry.grab_focus()
                 return
             if self.source == 'Internet Archive':
+                path = os.path.join(self.get_activity_root(), 'instance',
+                                    'tmp%i.csv' % time.time())
                 self.queryresults = \
-                        opds.InternetArchiveQueryResult(search_text,
-                        query_language, self)
+                        opds.InternetArchiveQueryResult(search_text, path)
             elif self.source in _SOURCES_CONFIG:
-            #if self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language)

@@ -373,48 +373,43 @@ class InternetArchiveBook(Book):
 
 class InternetArchiveDownloadThread(threading.Thread):
 
-    def __init__(self, obj, midway):
+    def __init__(self, query, path, updated_cb, append_cb, ready_cb):
         threading.Thread.__init__(self)
-        self.midway = midway
-        self.obj = obj
+        self._path = path
+        self._updated_cb = updated_cb
+        self._append_cb = append_cb
+        self._ready_cb = ready_cb
+
         self._download_content_length = 0
         self._download_content_type = None
-        self._booklist = []
-        queryterm = self.obj._queryterm
-        # search_tuple = queryterm.lower().split()
+
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
-        self.search_url = 'http://archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(title:(' + self.obj._queryterm.lower() + ') OR ' + \
-            'creator:(' + queryterm.lower() + ')) AND format:(DJVU)')
-        self.search_url += '&' + FL + '=creator&' + FL + '=description&' + \
+        self._url = 'http://archive.org/advancedsearch.php?q=' +  \
+            urllib.quote('(title:(' + query.lower() + ') OR ' + \
+            'creator:(' + query.lower() + ')) AND format:(DJVU)')
+        self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
-        self.search_url += '&' + FL + '=publisher&' + FL + '=title&' + \
+        self._url += '&' + FL + '=publisher&' + FL + '=title&' + \
             FL + '=volume'
-        self.search_url += '&' + SORT + '=title&' + SORT + '&' + \
+        self._url += '&' + SORT + '=title&' + SORT + '&' + \
             SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
         self.stopthread = threading.Event()
 
-    def _download(self):
-        GObject.idle_add(self.download_csv, self.search_url)
-
-    def download_csv(self, url):
-        logging.error('get csv from %s', url)
-        path = os.path.join(self.obj._activity.get_activity_root(), 'instance',
-                'tmp%i.csv' % time.time())
-        print 'path=', path
-        getter = ReadURLDownloader(url)
-        getter.connect("finished", self._get_csv_result_cb)
-        getter.connect("progress", self._get_csv_progress_cb)
-        getter.connect("error", self._get_csv_error_cb)
-        _logger.debug("Starting download to %s...", path)
+    def run(self):
+        logging.error('Searching URL %s', self._url)
+        getter = ReadURLDownloader(self._url)
+        getter.connect("finished", self.__finished_cb)
+        getter.connect("progress", self.__progress_cb)
+        getter.connect("error", self.__error_cb)
+        _logger.debug("Starting download to %s...", self._path)
         try:
-            getter.start(path)
+            getter.start(self._path)
         except:
             pass
         self._download_content_type = getter.get_content_type()
 
-    def _get_csv_progress_cb(self, getter, bytes_downloaded):
+    def __progress_cb(self, getter, bytes_downloaded):
         if self._download_content_length > 0:
             _logger.debug("Downloaded %u of %u bytes...",
                           bytes_downloaded, self._download_content_length)
@@ -422,21 +417,18 @@ class InternetArchiveDownloadThread(threading.Thread):
             _logger.debug("Downloaded %u bytes...",
                           bytes_downloaded)
 
-    def _get_csv_error_cb(self, getter, err):
+    def __error_cb(self, getter, err):
         _logger.debug("Error getting CSV: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
 
-    def _get_csv_result_cb(self, getter, tempfile, suggested_name):
-        print 'Content type:',  self._download_content_type
+    def __finished_cb(self, getter, path, suggested_name):
         if self._download_content_type.startswith('text/html'):
             # got an error page instead
             self._get_csv_error_cb(getter, 'HTTP Error')
             return
-        self.process_downloaded_csv(tempfile,  suggested_name)
 
-    def process_downloaded_csv(self,  tempfile,  suggested_name):
-        reader = csv.reader(open(tempfile,  'rb'))
+        reader = csv.reader(open(path,  'rb'))
         reader.next()  # skip the first header row.
         for row in reader:
             if len(row) < 7:
@@ -470,15 +462,11 @@ class InternetArchiveDownloadThread(threading.Thread):
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
-            self.obj._booklist.append(InternetArchiveBook(None, entry, ''))
+            self._append_cb(InternetArchiveBook(None, entry, ''))
 
-        os.remove(tempfile)
-        GObject.idle_add(self.obj.notify_updated, self.midway)
-        self.obj._ready = True
-        return False
-
-    def run(self):
-        self._download()
+        os.remove(path)
+        self._updated_cb()
+        self._ready_cb()
 
     def stop(self):
         self.stopthread.set()
@@ -489,25 +477,29 @@ class InternetArchiveQueryResult(QueryResult):
     # Search in internet archive does not use OPDS
     # because the server implementation is not working very well
 
-    def __init__(self, queryterm, language, activity):
+    def __init__(self, query, path):
         GObject.GObject.__init__(self)
-        self._activity = activity
-        self._queryterm = queryterm
-        self._language = language
         self._next_uri = ''
         self._ready = False
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-        self._start_download()
 
-    def notify_updated(self, midway):
-        self.emit('updated', midway)
-
-    def _start_download(self, midway=False):
-        d_thread = InternetArchiveDownloadThread(self, midway)
+        d_thread = InternetArchiveDownloadThread(query, path,
+                                                 self.__updated_cb,
+                                                 self.__append_cb,
+                                                 self.__ready_cb)
         self.threads.append(d_thread)
         d_thread.start()
+
+    def __updated_cb(self):
+        self.emit('updated', False)
+
+    def __append_cb(self, book):
+        self._booklist.append(book)
+
+    def __ready_cb(self):
+        self._ready = True
 
 
 class ImageDownloaderThread(threading.Thread):
