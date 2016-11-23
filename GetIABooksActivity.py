@@ -935,83 +935,54 @@ class GetIABooksActivity(activity.Activity):
         GObject.idle_add(self.download_book, self.download_url)
 
     def download_book(self,  url):
-        self._inhibit_suspend()
         logging.error('DOWNLOAD BOOK %s', url)
+        self._inhibit_suspend()
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
         path = os.path.join(self.get_activity_root(), 'instance',
                             'tmp%i' % time.time())
-        self._getter = opds.ReadURLDownloader(url)
-        self._getter.connect("finished", self._get_book_result_cb)
-        self._getter.connect("progress", self._get_book_progress_cb)
-        self._getter.connect("error", self._get_book_error_cb)
-        logging.debug("Starting download from %s to %s", url, path)
-        try:
-            self._getter.start(path)
-        except:
-            self._show_error_alert(_('Error'), _('Connection timed out for ') +
-                    self.selected_title)
+        self.__book_downloader = opds.FileDownloader(url, path)
+        self.__book_downloader.connect('updated', self.__book_updated_cb)
+        self.__book_downloader.connect('progress', self.__book_progress_cb)
 
-        self._download_content_length = self._getter.get_content_length()
-        self._download_content_type = self._getter.get_content_type()
-
-    def _get_book_result_cb(self, getter, tempfile, suggested_name):
-        self.listview.props.sensitive = True
+    def __book_updated_cb(self, downloader, path):
         self._books_toolbar.search_entry.set_sensitive(True)
-        if self._download_content_type.startswith('text/html'):
-            # got an error page instead
-            self._get_book_error_cb(getter, 'HTTP Error')
-            return
-        self.process_downloaded_book(tempfile,  suggested_name)
-
-    def _get_book_progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
-            logging.debug("Downloaded %u of %u bytes...",
-                          bytes_downloaded, self._download_content_length)
-        else:
-            logging.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-        total = self._download_content_length
-        self.set_downloaded_bytes(bytes_downloaded,  total)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-    def _get_book_error_cb(self, getter, err):
         self.listview.props.sensitive = True
-        self.enable_button(True)
+        self._allow_suspend()
         self.progressbox.hide()
-        logging.debug("Error getting document: %s", err)
-        self._download_content_length = 0
-        self._download_content_type = None
-        self._getter = None
-        if self.source == 'Internet Archive' and \
-           getter._url.endswith('_text.pdf'):
-            # in the IA server there are files ending with _text.pdf
-            # smaller and better than the .pdf files, but not for all
-            # the books. We try to download them and if is not present
-            # download the .pdf file
-            self.download_url = self.download_url.replace('_text.pdf', '.pdf')
-            self.get_book()
+        self.enable_button(True)
+
+# FIXME: http://ia800305.us.archive.org/19/items/EyesOnTheUniverse/EyesOnTheUniverse_text.pdf returns HTML error page
+
+#        if self._download_content_type.startswith('text/html'):
+#            # got an error page instead
+#            self._get_book_error_cb(getter, 'HTTP Error')
+#            return
+
+        if path is not None:
+            self.process_downloaded_book(path)
         else:
-            self._allow_suspend()
             self._show_error_alert(_('Error: Could not download %s. ' +
                     'The path in the catalog seems to be incorrect') %
                     self.selected_title)
 
-    def set_downloaded_bytes(self, downloaded_bytes,  total):
-        fraction = float(downloaded_bytes) / float(total + 1)
-        self.progressbar.set_fraction(fraction)
+        self.__file_downloader = None
+
+    def __book_progress_cb(self, downloader, value):
+        self.progressbar.set_fraction(value)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def clear_downloaded_bytes(self):
         self.progressbar.set_fraction(0.0)
 
-    def process_downloaded_book(self,  tempfile,  suggested_name):
-        logging.debug("Got document %s (%s)", tempfile, suggested_name)
-        self.create_journal_entry(tempfile)
+    def process_downloaded_book(self, path):
+        logging.debug("Got document %s", path)
+        self.create_journal_entry(path)
         self._getter = None
         self._allow_suspend()
 
-    def create_journal_entry(self,  tempfile):
+    def create_journal_entry(self, path):
         journal_entry = datastore.create()
         journal_title = self.selected_title
         if self.selected_author != '':
@@ -1047,9 +1018,9 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['summary'] = self.selected_summary
         journal_entry.metadata['language'] = self.selected_language_code
 
-        journal_entry.file_path = tempfile
+        journal_entry.file_path = path
         datastore.write(journal_entry)
-        os.remove(tempfile)
+        os.remove(path)
         self.progressbox.hide()
         self._object_id = journal_entry.object_id
         self._show_journal_alert(_('Download completed'), self.selected_title)

@@ -498,10 +498,11 @@ class InternetArchiveQueryResult(QueryResult):
 
 class FileDownloaderThread(threading.Thread):
 
-    def __init__(self, url, path, updated_cb):
+    def __init__(self, url, path, updated_cb, progress_cb):
         threading.Thread.__init__(self)
         self._path = path
         self._updated_cb = updated_cb
+        self._progress_cb = progress_cb
         self._getter = ReadURLDownloader(url)
         self._download_content_length = 0
         self._download_content_type = None
@@ -511,22 +512,21 @@ class FileDownloaderThread(threading.Thread):
         self._getter.connect("finished", self.__result_cb)
         self._getter.connect("progress", self.__progress_cb)
         self._getter.connect("error", self.__error_cb)
-        _logger.debug("Starting download to %s...", self._path)
         try:
             self._getter.start(self._path)
         except:
             _logger.debug("Connection timed out for")
-            GObject.idle_add(self._updated_cb, None)
+            self._updated_cb(None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
         self._download_content_type = self._getter.get_content_type()
 
     def __result_cb(self, getter, path, suggested_name):
-        _logger.debug("Got file %s (%s)", path, suggested_name)
+        _logger.error("Got file %s (%s)", path, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
-            GObject.idle_add(self._updated_cb, path)
+            self._updated_cb(path)
 
     def __progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
@@ -537,20 +537,20 @@ class FileDownloaderThread(threading.Thread):
                 _logger.debug('Got an exception while trying ' + \
                         'to cancel download')
         if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
+            _logger.error("Downloaded %u of %u bytes...", bytes_downloaded,
                         self._download_content_length)
         else:
-            _logger.debug("Downloaded %u bytes...",
+            _logger.error("Downloaded %u bytes...",
                           bytes_downloaded)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        self._progress_cb(float(bytes_downloaded) / \
+                          float(self._download_content_length + 1))
 
     def __error_cb(self, getter, err):
         _logger.debug("Error getting file: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        GObject.idle_add(self._updated_cb, None)
+        self._updated_cb(None)
 
     def stop(self):
         self.stopthread.set()
@@ -562,18 +562,26 @@ class FileDownloader(GObject.GObject):
         'updated': (GObject.SignalFlags.RUN_FIRST,
                           None,
                           ([GObject.TYPE_STRING])),
+        'progress': (GObject.SignalFlags.RUN_FIRST,
+                          None,
+                          ([GObject.TYPE_FLOAT])),
     }
 
     def __init__(self, url, path):
+        _logger.error("FileDownloader %s to %s", url, path)
         GObject.GObject.__init__(self)
         self.threads = []
 
-        d_thread = FileDownloaderThread(url, path, self.__updated_cb)
+        d_thread = FileDownloaderThread(url, path, self.__updated_cb,
+                                        self.__progress_cb)
         self.threads.append(d_thread)
         d_thread.start()
 
     def __updated_cb(self, path):
         self.emit('updated', path)
+
+    def __progress_cb(self, value):
+        self.emit('progress', value)
 
     def stop(self):
         for thread in self.threads:
