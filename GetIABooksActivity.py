@@ -122,21 +122,7 @@ class GetIABooksActivity(activity.Activity):
 
         self._create_controls()
 
-        if not self.powerd_running():
-            try:
-                bus = dbus.SystemBus()
-                proxy = bus.get_object('org.freedesktop.ohm',
-                               '/org/freedesktop/ohm/Keystore')
-                self.ohm_keystore = dbus.Interface(proxy,
-                                 'org.freedesktop.ohm.Keystore')
-            except dbus.DBusException, e:
-                logging.warning("Error setting OHM inhibit: %s", e)
-                self.ohm_keystore = None
-
-    def powerd_running(self):
         self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
-        logging.error("using_powerd: %d", self.using_powerd)
-        return self.using_powerd
 
     def _inhibit_suspend(self):
         if self.using_powerd:
@@ -146,15 +132,7 @@ class GetIABooksActivity(activity.Activity):
             fd.close()
             return True
 
-        if self.ohm_keystore is not None:
-            try:
-                self.ohm_keystore.SetKey('suspend.inhibit', 1)
-                return self.ohm_keystore.GetKey('suspend.inhibit')
-            except dbus.exceptions.DBusException:
-                logging.debug("failed to inhibit suspend")
-                return False
-        else:
-            return False
+        return False
 
     def _allow_suspend(self):
         if self.using_powerd:
@@ -164,15 +142,7 @@ class GetIABooksActivity(activity.Activity):
                     + "/%u" % os.getpid()))
             return True
 
-        if self.ohm_keystore is not None:
-            try:
-                self.ohm_keystore.SetKey('suspend.inhibit', 0)
-                return self.ohm_keystore.GetKey('suspend.inhibit')
-            except dbus.exceptions.DBusException:
-                logging.error("failed to allow suspend")
-                return False
-        else:
-            return False
+        return False
 
     def _read_configuration(self, file_name='get-books.cfg'):
         logging.error('Reading configuration from file %s', file_name)
