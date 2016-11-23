@@ -20,6 +20,8 @@ import os
 import logging
 import time
 
+from pprint import pformat
+
 import gi
 gi.require_version('Gtk', '3.0')
 
@@ -180,8 +182,8 @@ class GetIABooksActivity(activity.Activity):
 
                 _SOURCES_CONFIG[section] = repo_config
 
-        logging.error('_SOURCES %s', _SOURCES)
-        logging.error('_SOURCES_CONFIG %s', _SOURCES_CONFIG)
+        logging.error('_SOURCES %s', pformat(_SOURCES))
+        logging.error('_SOURCES_CONFIG %s', pformat(_SOURCES_CONFIG))
 
         for section in config.sections():
             if section.startswith('Catalogs'):
@@ -206,8 +208,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.filter_catalogs_by_source()
 
-        logging.error('languages %s', self.languages)
-        logging.error('catalogs %s', self.catalogs)
+        logging.error('languages %s', pformat(self.languages))
+        logging.error('catalogs %s', pformat(self.catalogs))
 
     def _add_search_controls(self, toolbar):
         book_search_item = Gtk.ToolItem()
