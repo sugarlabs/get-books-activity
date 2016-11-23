@@ -83,7 +83,7 @@ class DownloadThread(threading.Thread):
 
         logging.debug('feedparser version %s', feedparser.__version__)
         if not self.obj.is_local() and self.midway == False:
-            uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
+            uri = self.obj._uri + self.obj._query.replace(' ', '+')
             headers = {}
             if self.obj._language is not None and self.obj._language != 'all':
                 headers['Accept-Language'] = self.obj._language
@@ -242,11 +242,11 @@ class QueryResult(GObject.GObject):
                           ([bool])),
     }
 
-    def __init__(self, configuration, queryterm, language):
+    def __init__(self, configuration, query, language):
         GObject.GObject.__init__(self)
         self._configuration = configuration
         self._uri = self._configuration['query_uri']
-        self._queryterm = queryterm
+        self._query = query
         self._language = language
         self._feedobj = None
         self._next_uri = ''
@@ -333,30 +333,30 @@ class QueryResult(GObject.GObject):
 
 class LocalVolumeQueryResult(QueryResult):
 
-    def __init__(self, path, queryterm, language):
+    def __init__(self, path, query, language):
         configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
-        QueryResult.__init__(self, configuration, queryterm, language)
+        QueryResult.__init__(self, configuration, query, language)
 
     def is_local(self):
         return True
 
     def get_book_list(self):
         ret = []
-        if self._queryterm is None or self._queryterm is '':
+        if self._query is None or self._query is '':
             for entry in self._feedobj['entries']:
                 ret.append(Book(entry, basepath=os.path.dirname(self._uri)))
         else:
             for entry in self._feedobj['entries']:
                 book = Book(entry, basepath=os.path.dirname(self._uri))
-                if book.match(self._queryterm.replace(' ', '+')):
+                if book.match(self._query.replace(' ', '+')):
                     ret.append(book)
         return ret
 
 
 class RemoteQueryResult(QueryResult):
 
-    def __init__(self, configuration, queryterm, language):
-        QueryResult.__init__(self, configuration, queryterm, language)
+    def __init__(self, configuration, query, language):
+        QueryResult.__init__(self, configuration, query, language)
 
 
 class InternetArchiveBook(Book):
