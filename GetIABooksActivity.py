@@ -703,7 +703,7 @@ class GetIABooksActivity(activity.Activity):
             self.__image_downloader.stop()
         path = os.path.join(self.get_activity_root(),
                             'instance', 'tmp%i' % time.time())
-        self.__image_downloader = opds.ImageDownloader(url, path)
+        self.__image_downloader = opds.FileDownloader(url, path)
         self.__image_downloader.connect('updated', self.__image_updated_cb)
 
     def __image_updated_cb(self, downloader, file_name):

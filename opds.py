@@ -496,39 +496,39 @@ class InternetArchiveQueryResult(QueryResult):
         self._ready = True
 
 
-class ImageDownloaderThread(threading.Thread):
+class FileDownloaderThread(threading.Thread):
 
-    def __init__(self, url, path, notify_cb):
+    def __init__(self, url, path, updated_cb):
         threading.Thread.__init__(self)
         self._path = path
-        self._notify_cb = notify_cb
+        self._updated_cb = updated_cb
         self._getter = ReadURLDownloader(url)
         self._download_content_length = 0
         self._download_content_type = None
         self.stopthread = threading.Event()
 
-    def _download_image(self):
-        self._getter.connect("finished", self._get_image_result_cb)
-        self._getter.connect("progress", self._get_image_progress_cb)
-        self._getter.connect("error", self._get_image_error_cb)
+    def run(self):
+        self._getter.connect("finished", self.__result_cb)
+        self._getter.connect("progress", self.__progress_cb)
+        self._getter.connect("error", self.__error_cb)
         _logger.debug("Starting download to %s...", self._path)
         try:
             self._getter.start(self._path)
         except:
             _logger.debug("Connection timed out for")
-            GObject.idle_add(self._notify_cb, None)
+            GObject.idle_add(self._updated_cb, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
         self._download_content_type = self._getter.get_content_type()
 
-    def _get_image_result_cb(self, getter, path, suggested_name):
-        _logger.debug("Got Cover Image %s (%s)", path, suggested_name)
+    def __result_cb(self, getter, path, suggested_name):
+        _logger.debug("Got file %s (%s)", path, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
-            GObject.idle_add(self._notify_cb, path)
+            GObject.idle_add(self._updated_cb, path)
 
-    def _get_image_progress_cb(self, getter, bytes_downloaded):
+    def __progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
             try:
                 _logger.debug('The download %s was cancelled' % getter._fname)
@@ -545,21 +545,18 @@ class ImageDownloaderThread(threading.Thread):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-    def _get_image_error_cb(self, getter, err):
-        _logger.debug("Error getting image: %s", err)
+    def __error_cb(self, getter, err):
+        _logger.debug("Error getting file: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        GObject.idle_add(self._notify_cb, None)
-
-    def run(self):
-        self._download_image()
+        GObject.idle_add(self._updated_cb, None)
 
     def stop(self):
         self.stopthread.set()
 
 
-class ImageDownloader(GObject.GObject):
+class FileDownloader(GObject.GObject):
 
     __gsignals__ = {
         'updated': (GObject.SignalFlags.RUN_FIRST,
@@ -571,7 +568,7 @@ class ImageDownloader(GObject.GObject):
         GObject.GObject.__init__(self)
         self.threads = []
 
-        d_thread = ImageDownloaderThread(url, path, self.__updated_cb)
+        d_thread = FileDownloaderThread(url, path, self.__updated_cb)
         self.threads.append(d_thread)
         d_thread.start()
 
