@@ -797,7 +797,8 @@ class GetIABooksActivity(activity.Activity):
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
-        if 'bozo_exception' in self.queryresults._feedobj:
+        if hasattr(self.queryresults, '_feedobj') and \
+           'bozo_exception' in self.queryresults._feedobj:
             # something went wrong and we have to inform about this
             bozo_exception = self.queryresults._feedobj.bozo_exception
             if isinstance(bozo_exception, urllib2.URLError):
