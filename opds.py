@@ -359,7 +359,7 @@ class RemoteQueryResult(QueryResult):
         QueryResult.__init__(self, configuration, queryterm, language)
 
 
-class IABook(Book):
+class InternetArchiveBook(Book):
 
     def __init__(self, configuration, entry, basepath=None):
         Book.__init__(self, configuration, entry, basepath=None)
@@ -371,7 +371,7 @@ class IABook(Book):
         return {'jpg': self._entry['cover_image']}
 
 
-class DownloadIAThread(threading.Thread):
+class InternetArchiveDownloadThread(threading.Thread):
 
     def __init__(self, obj, midway):
         threading.Thread.__init__(self)
@@ -470,7 +470,7 @@ class DownloadIAThread(threading.Thread):
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
-            self.obj._booklist.append(IABook(None, entry, ''))
+            self.obj._booklist.append(InternetArchiveBook(None, entry, ''))
 
         os.remove(tempfile)
         GObject.idle_add(self.obj.notify_updated, self.midway)
@@ -505,7 +505,7 @@ class InternetArchiveQueryResult(QueryResult):
         self.emit('updated', midway)
 
     def _start_download(self, midway=False):
-        d_thread = DownloadIAThread(self, midway)
+        d_thread = InternetArchiveDownloadThread(self, midway)
         self.threads.append(d_thread)
         d_thread.start()
 
