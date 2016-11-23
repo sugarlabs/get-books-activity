@@ -994,7 +994,7 @@ class GetIABooksActivity(activity.Activity):
                     self.selected_title)
 
     def set_downloaded_bytes(self, downloaded_bytes,  total):
-        fraction = float(downloaded_bytes) / float(total)
+        fraction = float(downloaded_bytes) / float(total + 1)
         self.progressbar.set_fraction(fraction)
 
     def clear_downloaded_bytes(self):
