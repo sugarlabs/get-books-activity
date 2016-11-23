@@ -698,8 +698,10 @@ class GetIABooksActivity(activity.Activity):
     def download_image(self,  url):
         self._inhibit_suspend()
         if self.__image_downloader is not None:
-            self.__image_downloader.stop_download()
-        self.__image_downloader = opds.ImageDownloader(self, url)
+            self.__image_downloader.stop()
+        path = os.path.join(self.get_activity_root(),
+                            'instance', 'tmp%i' % time.time())
+        self.__image_downloader = opds.ImageDownloader(url, path)
         self.__image_downloader.connect('updated', self.__image_updated_cb)
 
     def __image_updated_cb(self, downloader, file_name):

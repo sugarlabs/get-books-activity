@@ -512,36 +512,35 @@ class InternetArchiveQueryResult(QueryResult):
 
 class ImageDownloaderThread(threading.Thread):
 
-    def __init__(self, obj):
+    def __init__(self, url, path, notify_cb):
         threading.Thread.__init__(self)
-        self.obj = obj
-        self._getter = ReadURLDownloader(self.obj._url)
+        self._path = path
+        self._notify_cb = notify_cb
+        self._getter = ReadURLDownloader(url)
         self._download_content_length = 0
         self._download_content_type = None
         self.stopthread = threading.Event()
 
     def _download_image(self):
-        path = os.path.join(self.obj._activity.get_activity_root(),
-                            'instance', 'tmp%i' % time.time())
         self._getter.connect("finished", self._get_image_result_cb)
         self._getter.connect("progress", self._get_image_progress_cb)
         self._getter.connect("error", self._get_image_error_cb)
-        _logger.debug("Starting download to %s...", path)
+        _logger.debug("Starting download to %s...", self._path)
         try:
-            self._getter.start(path)
+            self._getter.start(self._path)
         except:
             _logger.debug("Connection timed out for")
-            GObject.idle_add(self.obj.notify_updated, None)
+            GObject.idle_add(self._notify_cb, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
         self._download_content_type = self._getter.get_content_type()
 
-    def _get_image_result_cb(self, getter, tempfile, suggested_name):
-        _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
+    def _get_image_result_cb(self, getter, path, suggested_name):
+        _logger.debug("Got Cover Image %s (%s)", path, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
-            GObject.idle_add(self.obj.notify_updated, tempfile)
+            GObject.idle_add(self._notify_cb, path)
 
     def _get_image_progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
@@ -565,7 +564,7 @@ class ImageDownloaderThread(threading.Thread):
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        GObject.idle_add(self.obj.notify_updated, None)
+        GObject.idle_add(self._notify_cb, None)
 
     def run(self):
         self._download_image()
@@ -582,21 +581,17 @@ class ImageDownloader(GObject.GObject):
                           ([GObject.TYPE_STRING])),
     }
 
-    def __init__(self, activity, url):
+    def __init__(self, url, path):
         GObject.GObject.__init__(self)
         self.threads = []
-        self._activity = activity
-        self._url = url
-        self._start_download()
 
-    def _start_download(self):
-        d_thread = ImageDownloaderThread(self)
+        d_thread = ImageDownloaderThread(url, path, self.__updated_cb)
         self.threads.append(d_thread)
         d_thread.start()
 
-    def notify_updated(self, temp_file):
-        self.emit('updated', temp_file)
+    def __updated_cb(self, path):
+        self.emit('updated', path)
 
-    def stop_download(self):
+    def stop(self):
         for thread in self.threads:
             thread.stop()
