@@ -709,12 +709,14 @@ class GetIABooksActivity(activity.Activity):
 
     def download_image(self,  url):
         self._inhibit_suspend()
+        self.progressbox.show_all()
         if self.__image_downloader is not None:
             self.__image_downloader.stop()
         path = os.path.join(self.get_activity_root(),
                             'instance', '%03d.tmp' % sequence())
         self.__image_downloader = opds.FileDownloader(url, path)
         self.__image_downloader.connect('updated', self.__image_updated_cb)
+        self.__image_downloader.connect('progress', self.__image_progress_cb)
 
     def __image_updated_cb(self, downloader, file_name):
         if file_name is not None:
@@ -724,7 +726,13 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.add_default_image()
         self.__image_downloader = None
+        GObject.timeout_add(500, self.progressbox.hide)
         self._allow_suspend()
+
+    def __image_progress_cb(self, downloader, value):
+        self.progressbar.set_fraction(value)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def add_default_image(self):
         file_path = os.path.join(activity.get_bundle_path(),
@@ -961,7 +969,7 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.set_sensitive(True)
         self.listview.props.sensitive = True
         self._allow_suspend()
-        self.progressbox.hide()
+        GObject.timeout_add(500, self.progressbox.hide)
         self.enable_button(True)
 
 # FIXME: http://ia800305.us.archive.org/19/items/EyesOnTheUniverse/EyesOnTheUniverse_text.pdf returns HTML error page
