@@ -32,7 +32,7 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_logger = logging.getLogger('get-ia-books-activity')
+_logger = logging.getLogger()
 
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
