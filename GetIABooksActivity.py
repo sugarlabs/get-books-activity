@@ -126,6 +126,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
 
+        self.__book_downloader = self.__image_downloader = None
+
     def get_path(self):
         self._sequence += 1
         return os.path.join(self.get_activity_root(),
@@ -924,20 +926,21 @@ class GetIABooksActivity(activity.Activity):
             return
 
     def __cancel_btn_clicked_cb(self, btn):
-        if self._getter is not None:
-            try:
-                self._getter.cancel()
-            except:
-                logging.debug('Got an exception while trying' + \
-                        'to cancel download')
-            self.progressbox.hide()
-            self.listview.props.sensitive = True
-            self._books_toolbar.search_entry.set_sensitive(True)
-            logging.debug('Download was canceled by the user.')
-            self._allow_suspend()
+        if self.__image_downloader is not None:
+            self.__image_downloader.stop()
+
+        if self.__book_downloader is not None:
+            self.__book_downloader.stop()
+
+        self.progressbox.hide()
+        self.listview.props.sensitive = True
+        self._books_toolbar.search_entry.set_sensitive(True)
+        logging.debug('Download was canceled by the user.')
+        self._allow_suspend()
 
     def get_book(self):
         self.enable_button(False)
+        self.clear_downloaded_bytes()
         self.progressbox.show_all()
         if self.source != 'local_books':
             self.selected_book.get_download_links(self.format_combo.props.value,
@@ -959,22 +962,27 @@ class GetIABooksActivity(activity.Activity):
         self._allow_suspend()
         GObject.timeout_add(500, self.progressbox.hide)
         self.enable_button(True)
+        self.__book_downloader = None
 
-# FIXME: http://ia800305.us.archive.org/19/items/EyesOnTheUniverse/EyesOnTheUniverse_text.pdf returns HTML error page
-
-#        if self._download_content_type.startswith('text/html'):
-#            # got an error page instead
-#            self._get_book_error_cb(getter, 'HTTP Error')
-#            return
-
-        if path is not None:
-            self.process_downloaded_book(path)
-        else:
+        if path is None:
             self._show_error_alert(_('Error: Could not download %s. ' +
-                    'The path in the catalog seems to be incorrect') %
+                    'The path in the catalog seems to be incorrect.') %
                     self.selected_title)
+            return
 
-        self.__file_downloader = None
+        if os.stat(path).st_size == 0:
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The other end sent an empty file.') %
+                    self.selected_title)
+            return
+
+        if content_type.startswith('text/html'):
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The other end sent text/html instead of a book.') %
+                    self.selected_title)
+            return
+
+        self.process_downloaded_book(path)
 
     def __book_progress_cb(self, downloader, progress):
         self.progressbar.set_fraction(progress)
