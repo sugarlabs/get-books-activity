@@ -454,16 +454,6 @@ class GetIABooksActivity(activity.Activity):
     def _create_controls(self):
         self._download_content_length = 0
         self._download_content_type = None
-        self.progressbox = Gtk.Box(spacing=20,
-                orientation=Gtk.Orientation.HORIZONTAL)
-        self.progressbar = Gtk.ProgressBar()
-        self.progressbar.set_fraction(0.0)
-        self.progressbox.pack_start(self.progressbar, expand=True, fill=True,
-                padding=0)
-        self.cancel_btn = Gtk.Button(stock=Gtk.STOCK_CANCEL)
-        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
-        self.progressbox.pack_start(self.cancel_btn, expand=False,
-                fill=False, padding=0)
 
         self.msg_label = Gtk.Label()
 
@@ -555,9 +545,23 @@ class GetIABooksActivity(activity.Activity):
         vbox_download.pack_start(hbox_format, False, False, 10)
 
         self._download = Gtk.Button(_('Get Book'))
+        self._download.set_image(Icon(icon_name='data-download'))
         self._download.props.sensitive = False
         self._download.connect('clicked', self.__get_book_cb)
         vbox_download.pack_start(self._download, False, False, 10)
+
+        self.progressbox = Gtk.Box(spacing=20,
+                orientation=Gtk.Orientation.HORIZONTAL)
+        self.progressbar = Gtk.ProgressBar()
+        self.progressbar.set_fraction(0.0)
+        self.progressbox.pack_start(self.progressbar, expand=True, fill=True,
+                padding=0)
+        self.cancel_btn = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        self.cancel_btn.set_image(Icon(icon_name='dialog-cancel'))
+        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
+        self.progressbox.pack_start(self.cancel_btn, expand=False,
+                fill=False, padding=0)
+        vbox_download.pack_start(self.progressbox, False, False, 10)
 
         bottom_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
@@ -572,20 +576,28 @@ class GetIABooksActivity(activity.Activity):
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.pack_start(self.msg_label, False, False, 10)
-        vbox.pack_start(self.progressbox, False, False, 10)
         vbox.pack_start(self.list_box, True, True, 0)
         vbox.pack_start(bottom_hbox, False, False, 10)
         self.set_canvas(vbox)
         self.listview.show()
         vbox.show()
         self.list_scroller.show()
-        self.progressbox.hide()
+        self.progress_hide()
         self.show_message(
                 _('Enter words from the Author or Title to begin search.'))
 
         self._books_toolbar.search_entry.grab_focus()
         if len(self.catalogs) > 0:
             self.bt_catalogs.set_active(True)
+
+    def progress_hide(self):
+        self.clear_downloaded_bytes()
+        self.progressbar.set_sensitive(False)
+        self.cancel_btn.set_sensitive(False)
+
+    def progress_show(self):
+        self.progressbar.set_sensitive(True)
+        self.cancel_btn.set_sensitive(True)
 
     def filter_catalogs_by_source(self):
         self.catalogs = {}
@@ -701,7 +713,7 @@ class GetIABooksActivity(activity.Activity):
 
     def download_image(self,  url):
         self._inhibit_suspend()
-        self.progressbox.show_all()
+        self.progress_show()
         if self.__image_downloader is not None:
             self.__image_downloader.stop()
         self.__image_downloader = opds.FileDownloader(url, self.get_path())
@@ -716,7 +728,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.add_default_image()
         self.__image_downloader = None
-        GObject.timeout_add(500, self.progressbox.hide)
+        GObject.timeout_add(500, self.progress_hide)
         self._allow_suspend()
 
     def __image_progress_cb(self, downloader, progress):
@@ -932,16 +944,16 @@ class GetIABooksActivity(activity.Activity):
         if self.__book_downloader is not None:
             self.__book_downloader.stop()
 
-        self.progressbox.hide()
+        self.progress_hide()
+        self.enable_button(True)
         self.listview.props.sensitive = True
         self._books_toolbar.search_entry.set_sensitive(True)
-        logging.debug('Download was canceled by the user.')
         self._allow_suspend()
 
     def get_book(self):
         self.enable_button(False)
         self.clear_downloaded_bytes()
-        self.progressbox.show_all()
+        self.progress_show()
         if self.source != 'local_books':
             self.selected_book.get_download_links(self.format_combo.props.value,
                                                   self.download_book,
@@ -960,7 +972,7 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.set_sensitive(True)
         self.listview.props.sensitive = True
         self._allow_suspend()
-        GObject.timeout_add(500, self.progressbox.hide)
+        GObject.timeout_add(500, self.progress_hide)
         self.enable_button(True)
         self.__book_downloader = None
 
@@ -1037,7 +1049,7 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.file_path = path
         datastore.write(journal_entry)
         os.remove(path)
-        self.progressbox.hide()
+        self.progress_hide()
         self._object_id = journal_entry.object_id
         self._show_journal_alert(_('Download completed'), self.selected_title)
 
