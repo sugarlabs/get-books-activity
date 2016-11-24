@@ -32,8 +32,6 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_logger = logging.getLogger()
-
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
 _REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
@@ -447,25 +445,14 @@ class InternetArchiveDownloadThread(threading.Thread):
         logging.error('Searching URL %s', self._url)
         getter = ReadURLDownloader(self._url)
         getter.connect("finished", self.__finished_cb)
-        getter.connect("progress", self.__progress_cb)
         getter.connect("error", self.__error_cb)
-        _logger.debug("Starting download to %s...", self._path)
         try:
             getter.start(self._path)
         except:
             pass
         self._download_content_type = getter.get_content_type()
 
-    def __progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...",
-                          bytes_downloaded, self._download_content_length)
-        else:
-            _logger.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-
     def __error_cb(self, getter, err):
-        _logger.debug("Error getting CSV: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
 
@@ -479,7 +466,6 @@ class InternetArchiveDownloadThread(threading.Thread):
         reader.next()  # skip the first header row.
         for row in reader:
             if len(row) < 7:
-                _logger.debug("Server Error: %s",  self.search_url)
                 return
             entry = {}
             entry['author'] = row[0]
@@ -569,7 +555,6 @@ class FileDownloaderThread(threading.Thread):
         try:
             self._getter.start(self._path)
         except:
-            _logger.debug("Connection timed out for")
             self._updated_cb(None, None)
 
         self._download_content_length = \
@@ -584,22 +569,13 @@ class FileDownloaderThread(threading.Thread):
     def __progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
             try:
-                _logger.debug('The download %s was cancelled' % getter._fname)
                 getter.cancel()
             except:
-                _logger.debug('Got an exception while trying ' + \
-                        'to cancel download')
-        if self._download_content_length > 0:
-            _logger.error("Downloaded %u of %u bytes...", bytes_downloaded,
-                        self._download_content_length)
-        else:
-            _logger.error("Downloaded %u bytes...",
-                          bytes_downloaded)
+                pass
         self._progress_cb(float(bytes_downloaded) / \
                           float(self._download_content_length + 1))
 
     def __error_cb(self, getter, err):
-        _logger.debug("Error getting file: %s", err)
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
@@ -621,7 +597,6 @@ class FileDownloader(GObject.GObject):
     }
 
     def __init__(self, url, path):
-        _logger.error("FileDownloader %s to %s", url, path)
         GObject.GObject.__init__(self)
         self.threads = []
 
