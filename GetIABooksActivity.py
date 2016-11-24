@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import os
 import logging
-import time
 
 from pprint import pformat
 
@@ -77,6 +76,15 @@ READ_STREAM_SERVICE = 'read-activity-http'
 # directory exists if powerd is running.  create a file here,
 # named after our pid, to inhibit suspend.
 POWERD_INHIBIT_DIR = '/var/run/powerd-inhibit-suspend'
+
+
+_sequence = 0
+
+def sequence():
+    global _sequence
+
+    _sequence += 1
+    return _sequence
 
 
 class GetIABooksActivity(activity.Activity):
@@ -704,7 +712,7 @@ class GetIABooksActivity(activity.Activity):
         if self.__image_downloader is not None:
             self.__image_downloader.stop()
         path = os.path.join(self.get_activity_root(),
-                            'instance', 'tmp%i' % time.time())
+                            'instance', '%03d.tmp' % sequence())
         self.__image_downloader = opds.FileDownloader(url, path)
         self.__image_downloader.connect('updated', self.__image_updated_cb)
 
@@ -787,8 +795,8 @@ class GetIABooksActivity(activity.Activity):
                 self._books_toolbar.search_entry.grab_focus()
                 return
             if self.source == 'Internet Archive':
-                path = os.path.join(self.get_activity_root(), 'instance',
-                                    'tmp%i.csv' % time.time())
+                path = os.path.join(self.get_activity_root(),
+                                    'instance', '%03d.tmp' % sequence())
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text, path)
             elif self.source in _SOURCES_CONFIG:
@@ -944,7 +952,7 @@ class GetIABooksActivity(activity.Activity):
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
         path = os.path.join(self.get_activity_root(), 'instance',
-                            'tmp%i' % time.time())
+                            '%03d.tmp' % sequence())
         self.__book_downloader = opds.FileDownloader(url, path)
         self.__book_downloader.connect('updated', self.__book_updated_cb)
         self.__book_downloader.connect('progress', self.__book_progress_cb)
