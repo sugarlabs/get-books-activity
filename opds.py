@@ -231,6 +231,7 @@ class QueryResult(GObject.GObject):
                 uri += '&lang=' + self._language
 
         d_thread = DownloadThread(uri, headers, self.__feedobj_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
@@ -523,6 +524,7 @@ class InternetArchiveQueryResult(QueryResult):
                                                  self.__updated_cb,
                                                  self.__append_cb,
                                                  self.__ready_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
@@ -602,6 +604,7 @@ class FileDownloader(GObject.GObject):
 
         d_thread = FileDownloaderThread(url, path, self.__updated_cb,
                                         self.__progress_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
