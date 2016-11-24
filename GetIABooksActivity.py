@@ -283,7 +283,9 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
+        self.listview.handler_block(self.selection_cb_id)
         self.listview.clear()
+        self.listview.handler_unblock(self.selection_cb_id)
         logging.error('SOURCE %s', catalog_config['source'])
         self._books_toolbar.search_entry.props.text = ''
         self.source = catalog_config['source']
@@ -498,7 +500,8 @@ class GetIABooksActivity(activity.Activity):
 
         # books listview
         self.listview = ListView(self._lang_code_handler)
-        self.listview.connect('selection-changed', self.selection_cb)
+        self.selection_cb_id = self.listview.connect('selection-changed',
+                                                     self.selection_cb)
         self.listview.set_enable_search(False)
 
         self.list_scroller = Gtk.ScrolledWindow(hadjustment=None,
@@ -607,7 +610,6 @@ class GetIABooksActivity(activity.Activity):
         return True
 
     def selection_cb(self, widget):
-        # Testing...
         selected_book = self.listview.get_selected_book()
         if self.source == 'local_books':
             if selected_book:
@@ -766,7 +768,9 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
+        self.listview.handler_block(self.selection_cb_id)
         self.listview.clear()
+        self.listview.handler_unblock(self.selection_cb_id)
 
         if self.queryresults is not None:
             self.queryresults.cancel()
