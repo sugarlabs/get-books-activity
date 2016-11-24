@@ -516,7 +516,7 @@ class FileDownloaderThread(threading.Thread):
             self._getter.start(self._path)
         except:
             _logger.debug("Connection timed out for")
-            self._updated_cb(None)
+            self._updated_cb(None, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
@@ -526,7 +526,7 @@ class FileDownloaderThread(threading.Thread):
         _logger.error("Got file %s (%s)", path, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
-            self._updated_cb(path)
+            self._updated_cb(path, self._download_content_type)
 
     def __progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
@@ -550,7 +550,7 @@ class FileDownloaderThread(threading.Thread):
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        self._updated_cb(None)
+        self._updated_cb(None, None)
 
     def stop(self):
         self.stopthread.set()
@@ -561,7 +561,7 @@ class FileDownloader(GObject.GObject):
     __gsignals__ = {
         'updated': (GObject.SignalFlags.RUN_FIRST,
                           None,
-                          ([GObject.TYPE_STRING])),
+                          ([GObject.TYPE_STRING, GObject.TYPE_STRING])),
         'progress': (GObject.SignalFlags.RUN_FIRST,
                           None,
                           ([GObject.TYPE_FLOAT])),
@@ -577,11 +577,11 @@ class FileDownloader(GObject.GObject):
         self.threads.append(d_thread)
         d_thread.start()
 
-    def __updated_cb(self, path):
-        self.emit('updated', path)
+    def __updated_cb(self, path, content_type):
+        self.emit('updated', path, content_type)
 
-    def __progress_cb(self, value):
-        self.emit('progress', value)
+    def __progress_cb(self, progress):
+        self.emit('progress', progress)
 
     def stop(self):
         for thread in self.threads:

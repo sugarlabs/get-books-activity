@@ -718,19 +718,19 @@ class GetIABooksActivity(activity.Activity):
         self.__image_downloader.connect('updated', self.__image_updated_cb)
         self.__image_downloader.connect('progress', self.__image_progress_cb)
 
-    def __image_updated_cb(self, downloader, file_name):
-        if file_name is not None:
-            self.add_image(file_name)
+    def __image_updated_cb(self, downloader, path, content_type):
+        if path is not None:
+            self.add_image(path)
             self.exist_cover_image = True
-            os.remove(file_name)
+            os.remove(path)
         else:
             self.add_default_image()
         self.__image_downloader = None
         GObject.timeout_add(500, self.progressbox.hide)
         self._allow_suspend()
 
-    def __image_progress_cb(self, downloader, value):
-        self.progressbar.set_fraction(value)
+    def __image_progress_cb(self, downloader, progress):
+        self.progressbar.set_fraction(progress)
         while Gtk.events_pending():
             Gtk.main_iteration()
 
@@ -965,7 +965,7 @@ class GetIABooksActivity(activity.Activity):
         self.__book_downloader.connect('updated', self.__book_updated_cb)
         self.__book_downloader.connect('progress', self.__book_progress_cb)
 
-    def __book_updated_cb(self, downloader, path):
+    def __book_updated_cb(self, downloader, path, content_type):
         self._books_toolbar.search_entry.set_sensitive(True)
         self.listview.props.sensitive = True
         self._allow_suspend()
@@ -988,8 +988,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.__file_downloader = None
 
-    def __book_progress_cb(self, downloader, value):
-        self.progressbar.set_fraction(value)
+    def __book_progress_cb(self, downloader, progress):
+        self.progressbar.set_fraction(progress)
         while Gtk.events_pending():
             Gtk.main_iteration()
 
