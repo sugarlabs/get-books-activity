@@ -106,7 +106,7 @@ class Book(object):
 
         return ret
 
-    def get_download_links(self):
+    def get_types(self):
         ret = {}
         for link in self._entry['links']:
             if link['rel'] == _REL_OPDS_ACQUISTION:
@@ -125,6 +125,12 @@ class Book(object):
             else:
                 pass
         return ret
+
+    def get_download_links(self, content_type, download_cb, _):
+        types = self.get_types()
+        if content_type in types:
+            url = types[content_type]
+            GObject.idle_add(download_cb, url)
 
     def get_publisher(self):
         try:
@@ -358,8 +364,55 @@ class InternetArchiveBook(Book):
     def __init__(self, configuration, entry, basepath=None):
         Book.__init__(self, configuration, entry, basepath=None)
 
-    def get_download_links(self):
+    def get_types(self):
         return self._entry['links']
+
+    def get_download_links(self, content_type, download_cb, path):
+        """
+        Download and parse the {identifier}_files.xml file list in the
+        {identifier} directory and choose a file matching the
+        requested content type.
+        """
+        url_base = 'http://archive.org/download/%s' % self._entry['identifier']
+        url = os.path.join(url_base, '%s_files.xml' % self._entry['identifier'])
+
+        downloader = FileDownloader(url, path)
+
+        def updated(downloader, path, _):
+            if path is None:
+                logging.error('internet archive file list get fail')
+                # FIXME: report to user a failure to download
+                return
+
+            from xml.etree.ElementTree import XML
+            xml = XML(open(path, 'r').read())
+            os.remove(path)
+
+            table = {
+                'text pdf': u'application/pdf',
+                'grayscale luratech pdf': u'application/pdf-bw',
+                'image container pdf': u'application/pdf',
+                'djvu': u'image/x.djvu',
+                'epub': u'application/epub+zip',
+            }
+
+            chosen = None
+            for element in xml.findall('file'):
+                fmt = element.find('format').text.lower()
+                if fmt in table:
+                    if table[fmt] == content_type:
+                        chosen = element.get('name')
+                        break
+
+            if chosen is None:
+                logging.error('internet archive file list omits content type')
+                # FIXME: report to user a failure to find matching content
+                return
+
+            url = os.path.join(url_base, chosen)
+            GObject.idle_add(download_cb, url)
+
+        downloader.connect('updated', updated)
 
     def get_image_url(self):
         return {'jpg': self._entry['cover_image']}
@@ -444,15 +497,16 @@ class InternetArchiveDownloadThread(threading.Thread):
             url_base = 'http://archive.org/download/' + \
                         row[3] + '/' + row[3]
 
-            if entry['format'].find('DjVu') > -1:
-                entry['links']['image/x.djvu'] = url_base + '.djvu'
+            formats = entry['format'].split(',')
+            if 'DjVu' in formats:
+                entry['links']['image/x.djvu'] = 'yes'
             if entry['format'].find('Grayscale LuraTech PDF') > -1:
                 # Fake mime type
-                entry['links']['application/pdf-bw'] = url_base + '_bw.pdf'
+                entry['links']['application/pdf-bw'] = 'yes'
             if entry['format'].find('PDF') > -1:
-                entry['links']['application/pdf'] = url_base + '_text.pdf'
+                entry['links']['application/pdf'] = 'yes'
             if entry['format'].find('EPUB') > -1:
-                entry['links']['application/epub+zip'] = url_base + '.epub'
+                entry['links']['application/epub+zip'] = 'yes'
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
@@ -523,7 +577,6 @@ class FileDownloaderThread(threading.Thread):
         self._download_content_type = self._getter.get_content_type()
 
     def __result_cb(self, getter, path, suggested_name):
-        _logger.error("Got file %s (%s)", path, suggested_name)
         self._getter = None
         if not self.stopthread.is_set():
             self._updated_cb(path, self._download_content_type)

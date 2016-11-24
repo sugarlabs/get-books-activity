@@ -618,7 +618,6 @@ class GetIABooksActivity(activity.Activity):
         selected_book = self.listview.get_selected_book()
         if self.source == 'local_books':
             if selected_book:
-                self.download_url = ''
                 self.selected_book = selected_book
                 self._download.hide()
                 self.show_book_data()
@@ -628,7 +627,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.clear_downloaded_bytes()
             if selected_book:
-                self.update_format_combo(selected_book.get_download_links())
+                self.update_format_combo(selected_book.get_types())
                 self.selected_book = selected_book
                 self._download.show()
                 self.show_book_data()
@@ -659,12 +658,6 @@ class GetIABooksActivity(activity.Activity):
                 self.selected_language = self.selected_book.get_language()
             book_data += _('Language:\t') + self.selected_language + '\n'
         book_data += _('Publisher:\t') + self.selected_publisher + '\n'
-        if self.source != 'local_books':
-            try:
-                self.download_url = self.selected_book.get_download_links()[\
-                        self.format_combo.props.value]
-            except:
-                pass
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text('\n' + book_data)
         self.enable_button(True)
@@ -946,7 +939,10 @@ class GetIABooksActivity(activity.Activity):
     def get_book(self):
         self.enable_button(False)
         self.progressbox.show_all()
-        GObject.idle_add(self.download_book, self.download_url)
+        if self.source != 'local_books':
+            self.selected_book.get_download_links(self.format_combo.props.value,
+                                                  self.download_book,
+                                                  self.get_path())
 
     def download_book(self,  url):
         logging.error('DOWNLOAD BOOK %s', url)
