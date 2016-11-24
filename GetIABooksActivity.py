@@ -78,15 +78,6 @@ READ_STREAM_SERVICE = 'read-activity-http'
 POWERD_INHIBIT_DIR = '/var/run/powerd-inhibit-suspend'
 
 
-_sequence = 0
-
-def sequence():
-    global _sequence
-
-    _sequence += 1
-    return _sequence
-
-
 class GetIABooksActivity(activity.Activity):
 
     def __init__(self, handle):
@@ -94,6 +85,7 @@ class GetIABooksActivity(activity.Activity):
         activity.Activity.__init__(self, handle, False)
         self.max_participants = 1
 
+        self._sequence = 0
         self.selected_book = None
         self.queryresults = None
         self._getter = None
@@ -133,6 +125,11 @@ class GetIABooksActivity(activity.Activity):
         self._create_controls()
 
         self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
+
+    def get_path(self):
+        self._sequence += 1
+        return os.path.join(self.get_activity_root(),
+                            'instance', '%03d.tmp' % self._sequence)
 
     def _inhibit_suspend(self):
         if self.using_powerd:
@@ -712,9 +709,7 @@ class GetIABooksActivity(activity.Activity):
         self.progressbox.show_all()
         if self.__image_downloader is not None:
             self.__image_downloader.stop()
-        path = os.path.join(self.get_activity_root(),
-                            'instance', '%03d.tmp' % sequence())
-        self.__image_downloader = opds.FileDownloader(url, path)
+        self.__image_downloader = opds.FileDownloader(url, self.get_path())
         self.__image_downloader.connect('updated', self.__image_updated_cb)
         self.__image_downloader.connect('progress', self.__image_progress_cb)
 
@@ -803,10 +798,9 @@ class GetIABooksActivity(activity.Activity):
                 self._books_toolbar.search_entry.grab_focus()
                 return
             if self.source == 'Internet Archive':
-                path = os.path.join(self.get_activity_root(),
-                                    'instance', '%03d.tmp' % sequence())
                 self.queryresults = \
-                        opds.InternetArchiveQueryResult(search_text, path)
+                        opds.InternetArchiveQueryResult(search_text,
+                                                        self.get_path())
             elif self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
@@ -959,9 +953,7 @@ class GetIABooksActivity(activity.Activity):
         self._inhibit_suspend()
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
-        path = os.path.join(self.get_activity_root(), 'instance',
-                            '%03d.tmp' % sequence())
-        self.__book_downloader = opds.FileDownloader(url, path)
+        self.__book_downloader = opds.FileDownloader(url, self.get_path())
         self.__book_downloader.connect('updated', self.__book_updated_cb)
         self.__book_downloader.connect('progress', self.__book_progress_cb)
 
