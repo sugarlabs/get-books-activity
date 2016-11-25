@@ -16,7 +16,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
-# ExtListView v1.6
+# ExtListView v1.6+v1.8 hybrid
+#
+# v1.8:
+#   * Really fixed the intermittent improper columns resizing
+#     (manual cherry-pick from decibel-audio-player debian package)
 #
 # v1.6:
 #   * Added a context menu to column headers allowing users to show/hide
@@ -152,8 +156,7 @@ class ExtListView(Gtk.TreeView):
                 dataTypes += [renderer[1] for renderer in renderers]
             else:
                 column = ExtListViewColumn(title)
-                column.set_resizable(True)
-                # column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+                column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
                 column.set_expand(expandable)
                 column.set_visible(visible)
                 if canShowHideColumns:
@@ -222,6 +225,11 @@ class ExtListView(Gtk.TreeView):
         """ Return a list of iterators pointing to the selected rows """
         return [self.store.get_iter(path) \
                 for path in self.selection.get_selected_rows()[1]]
+
+    def __resizeColumns(self):
+        """ That's the only way I could find to make sure columns are correctly resized (e.g., columns_autosize() has no effect) """
+        for column in self.get_columns():
+            column.queue_resize()
 
     def addColumnAttribute(self, colIndex, renderer, attribute, value):
         """ Add a new attribute to the given column """
@@ -403,8 +411,7 @@ class ExtListView(Gtk.TreeView):
         self.__resetSorting()
         self.clearMark()
         self.store.clear()
-        # This fixes the problem of columns sometimes not resizing correctly
-        self.resize_children()
+        self.__resizeColumns()
 
     def setItem(self, rowIndex, colIndex, value):
         """ Change the value of the given item """
@@ -435,8 +442,7 @@ class ExtListView(Gtk.TreeView):
         if len(self.store) == 0:
             self.set_cursor(0)
             self.__resetSorting()
-        # This fixes the problem of columns sometimes not resizing correctly
-        self.resize_children()
+        self.__resizeColumns()
         self.emit('extlistview-modified')
 
     def cropSelectedRows(self):
@@ -701,5 +707,6 @@ class ExtListView(Gtk.TreeView):
     def onShowHideColumn(self, menuItem, column):
         """ Switch the visibility of the given column """
         column.set_visible(not column.get_visible())
+        self.__resizeColumns()
         self.emit('extlistview-column-visibility-changed', \
                 column.get_title(), column.get_visible())
