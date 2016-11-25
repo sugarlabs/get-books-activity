@@ -32,8 +32,6 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_logger = logging.getLogger('get-ia-books-activity')
-
 _REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
 _REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
@@ -65,56 +63,19 @@ class ReadURLDownloader(network.GlibURLDownloader):
 
 class DownloadThread(threading.Thread):
 
-    def __init__(self, obj, midway):
+    def __init__(self, uri, headers, feedobj_cb):
         threading.Thread.__init__(self)
-        self.midway = midway
-        self.obj = obj
+        self._uri = uri
+        self._headers = headers
+        self._feedobj_cb = feedobj_cb
+
         self.stopthread = threading.Event()
 
-    def _download(self):
-
-        def entry_type(entry):
-            for link in entry['links']:
-                if link['rel'] in \
-                    [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
-                    return "CATALOG"
-                else:
-                    return 'BOOK'
-
-        logging.debug('feedparser version %s', feedparser.__version__)
-        if not self.obj.is_local() and self.midway == False:
-            uri = self.obj._uri + self.obj._queryterm.replace(' ', '+')
-            headers = {}
-            if self.obj._language is not None and self.obj._language != 'all':
-                headers['Accept-Language'] = self.obj._language
-                uri = uri + '&lang=' + self.obj._language
-            logging.error('Searching URL %s headers %s' % (uri, headers))
-            feedobj = feedparser.parse(uri, request_headers=headers)
-        else:
-            feedobj = feedparser.parse(self.obj._uri)
-
-        # Get catalog Type
-        CATALOG_TYPE = 'COMMON'
-        if 'links' in feedobj['feed']:
-            for link in feedobj['feed']['links']:
-                if link['rel'] == _REL_CRAWLABLE:
-                    CATALOG_TYPE = 'CRAWLABLE'
-                    break
-
-        for entry in feedobj['entries']:
-            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
-                self.obj._booklist.append(Book(self.obj._configuration, entry))
-            elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
-                self.obj._cataloglist.append( \
-                    Book(self.obj._configuration, entry))
-
-        self.obj._feedobj = feedobj
-        self.obj._ready = True
-        GObject.idle_add(self.obj.notify_updated, self.midway)
-        return False
-
     def run(self):
-        self._download()
+        logging.error('Searching URL %s headers %s' % (self._uri,
+                                                       self._headers))
+        feedobj = feedparser.parse(self._uri, request_headers=self._headers)
+        self._feedobj_cb(feedobj)
 
     def stop(self):
         self.stopthread.set()
@@ -143,7 +104,7 @@ class Book(object):
 
         return ret
 
-    def get_download_links(self):
+    def get_types(self):
         ret = {}
         for link in self._entry['links']:
             if link['rel'] == _REL_OPDS_ACQUISTION:
@@ -162,6 +123,12 @@ class Book(object):
             else:
                 pass
         return ret
+
+    def get_download_links(self, content_type, download_cb, _):
+        types = self.get_types()
+        if content_type in types:
+            url = types[content_type]
+            GObject.idle_add(download_cb, url)
 
     def get_publisher(self):
         try:
@@ -242,11 +209,11 @@ class QueryResult(GObject.GObject):
                           ([bool])),
     }
 
-    def __init__(self, configuration, queryterm, language):
+    def __init__(self, configuration, query, language):
         GObject.GObject.__init__(self)
         self._configuration = configuration
         self._uri = self._configuration['query_uri']
-        self._queryterm = queryterm
+        self._query = query
         self._language = language
         self._feedobj = None
         self._next_uri = ''
@@ -254,15 +221,47 @@ class QueryResult(GObject.GObject):
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-        self._start_download()
 
-    def _start_download(self, midway=False):
-        d_thread = DownloadThread(self, midway)
+        uri = self._uri
+        headers = {}
+        if not self.is_local():
+            uri += self._query.replace(' ', '+')
+            if self._language is not None and self._language != 'all':
+                headers['Accept-Language'] = self._language
+                uri += '&lang=' + self._language
+
+        d_thread = DownloadThread(uri, headers, self.__feedobj_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
-    def notify_updated(self, midway):
-        self.emit('updated', midway)
+    def __feedobj_cb(self, feedobj):
+        self._feedobj = feedobj
+
+        # Get catalog Type
+        CATALOG_TYPE = 'COMMON'
+        if 'links' in feedobj['feed']:
+            for link in feedobj['feed']['links']:
+                if link['rel'] == _REL_CRAWLABLE:
+                    CATALOG_TYPE = 'CRAWLABLE'
+                    break
+
+        def entry_type(entry):
+            for link in entry['links']:
+                if link['rel'] in \
+                    [_REL_OPDS_POPULAR, _REL_OPDS_NEW, _REL_SUBSECTION]:
+                    return "CATALOG"
+                else:
+                    return 'BOOK'
+
+        for entry in feedobj['entries']:
+            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
+                self._booklist.append(Book(self._configuration, entry))
+            elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
+                self._cataloglist.append(Book(self._configuration, entry))
+
+        self._ready = True
+        self.emit('updated', False)
 
     def __len__(self):
         return len(self._booklist)
@@ -333,114 +332,141 @@ class QueryResult(GObject.GObject):
 
 class LocalVolumeQueryResult(QueryResult):
 
-    def __init__(self, path, queryterm, language):
+    def __init__(self, path, query, language):
         configuration = {'query_uri': os.path.join(path, 'catalog.xml')}
-        QueryResult.__init__(self, configuration, queryterm, language)
+        QueryResult.__init__(self, configuration, query, language)
 
     def is_local(self):
         return True
 
     def get_book_list(self):
         ret = []
-        if self._queryterm is None or self._queryterm is '':
+        if self._query is None or self._query is '':
             for entry in self._feedobj['entries']:
                 ret.append(Book(entry, basepath=os.path.dirname(self._uri)))
         else:
             for entry in self._feedobj['entries']:
                 book = Book(entry, basepath=os.path.dirname(self._uri))
-                if book.match(self._queryterm.replace(' ', '+')):
+                if book.match(self._query.replace(' ', '+')):
                     ret.append(book)
         return ret
 
 
 class RemoteQueryResult(QueryResult):
 
-    def __init__(self, configuration, queryterm, language):
-        QueryResult.__init__(self, configuration, queryterm, language)
+    def __init__(self, configuration, query, language):
+        QueryResult.__init__(self, configuration, query, language)
 
 
-class IABook(Book):
+class InternetArchiveBook(Book):
 
     def __init__(self, configuration, entry, basepath=None):
         Book.__init__(self, configuration, entry, basepath=None)
 
-    def get_download_links(self):
+    def get_types(self):
         return self._entry['links']
+
+    def get_download_links(self, content_type, download_cb, path):
+        """
+        Download and parse the {identifier}_files.xml file list in the
+        {identifier} directory and choose a file matching the
+        requested content type.
+        """
+        url_base = 'http://archive.org/download/%s' % self._entry['identifier']
+        url = os.path.join(url_base, '%s_files.xml' % self._entry['identifier'])
+
+        downloader = FileDownloader(url, path)
+
+        def updated(downloader, path, _):
+            if path is None:
+                logging.error('internet archive file list get fail')
+                # FIXME: report to user a failure to download
+                return
+
+            from xml.etree.ElementTree import XML
+            xml = XML(open(path, 'r').read())
+            os.remove(path)
+
+            table = {
+                'text pdf': u'application/pdf',
+                'grayscale luratech pdf': u'application/pdf-bw',
+                'image container pdf': u'application/pdf',
+                'djvu': u'image/x.djvu',
+                'epub': u'application/epub+zip',
+            }
+
+            chosen = None
+            for element in xml.findall('file'):
+                fmt = element.find('format').text.lower()
+                if fmt in table:
+                    if table[fmt] == content_type:
+                        chosen = element.get('name')
+                        break
+
+            if chosen is None:
+                logging.error('internet archive file list omits content type')
+                # FIXME: report to user a failure to find matching content
+                return
+
+            url = os.path.join(url_base, chosen)
+            GObject.idle_add(download_cb, url)
+
+        downloader.connect('updated', updated)
 
     def get_image_url(self):
         return {'jpg': self._entry['cover_image']}
 
 
-class DownloadIAThread(threading.Thread):
+class InternetArchiveDownloadThread(threading.Thread):
 
-    def __init__(self, obj, midway):
+    def __init__(self, query, path, updated_cb, append_cb, ready_cb):
         threading.Thread.__init__(self)
-        self.midway = midway
-        self.obj = obj
+        self._path = path
+        self._updated_cb = updated_cb
+        self._append_cb = append_cb
+        self._ready_cb = ready_cb
+
         self._download_content_length = 0
         self._download_content_type = None
-        self._booklist = []
-        queryterm = self.obj._queryterm
-        # search_tuple = queryterm.lower().split()
+
         FL = urllib.quote('fl[]')
         SORT = urllib.quote('sort[]')
-        self.search_url = 'http://www.archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(title:(' + self.obj._queryterm.lower() + ') OR ' + \
-            'creator:(' + queryterm.lower() + ')) AND format:(DJVU)')
-        self.search_url += '&' + FL + '=creator&' + FL + '=description&' + \
+        self._url = 'http://archive.org/advancedsearch.php?q=' +  \
+            urllib.quote('(title:(' + query.lower() + ') OR ' + \
+            'creator:(' + query.lower() + ')) AND format:(DJVU)')
+        self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
-        self.search_url += '&' + FL + '=publisher&' + FL + '=title&' + \
+        self._url += '&' + FL + '=publisher&' + FL + '=title&' + \
             FL + '=volume'
-        self.search_url += '&' + SORT + '=title&' + SORT + '&' + \
+        self._url += '&' + SORT + '=title&' + SORT + '&' + \
             SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
         self.stopthread = threading.Event()
 
-    def _download(self):
-        GObject.idle_add(self.download_csv, self.search_url)
-
-    def download_csv(self, url):
-        logging.error('get csv from %s', url)
-        path = os.path.join(self.obj._activity.get_activity_root(), 'instance',
-                'tmp%i.csv' % time.time())
-        print 'path=', path
-        getter = ReadURLDownloader(url)
-        getter.connect("finished", self._get_csv_result_cb)
-        getter.connect("progress", self._get_csv_progress_cb)
-        getter.connect("error", self._get_csv_error_cb)
-        _logger.debug("Starting download to %s...", path)
+    def run(self):
+        logging.error('Searching URL %s', self._url)
+        getter = ReadURLDownloader(self._url)
+        getter.connect("finished", self.__finished_cb)
+        getter.connect("error", self.__error_cb)
         try:
-            getter.start(path)
+            getter.start(self._path)
         except:
             pass
         self._download_content_type = getter.get_content_type()
 
-    def _get_csv_progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...",
-                          bytes_downloaded, self._download_content_length)
-        else:
-            _logger.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-
-    def _get_csv_error_cb(self, getter, err):
-        _logger.debug("Error getting CSV: %s", err)
+    def __error_cb(self, getter, err):
         self._download_content_length = 0
         self._download_content_type = None
 
-    def _get_csv_result_cb(self, getter, tempfile, suggested_name):
-        print 'Content type:',  self._download_content_type
+    def __finished_cb(self, getter, path, suggested_name):
         if self._download_content_type.startswith('text/html'):
             # got an error page instead
             self._get_csv_error_cb(getter, 'HTTP Error')
             return
-        self.process_downloaded_csv(tempfile,  suggested_name)
 
-    def process_downloaded_csv(self,  tempfile,  suggested_name):
-        reader = csv.reader(open(tempfile,  'rb'))
+        reader = csv.reader(open(path,  'rb'))
         reader.next()  # skip the first header row.
         for row in reader:
             if len(row) < 7:
-                _logger.debug("Server Error: %s",  self.search_url)
                 return
             entry = {}
             entry['author'] = row[0]
@@ -455,30 +481,27 @@ class DownloadIAThread(threading.Thread):
                 entry['title'] = row[6] + 'Volume ' + volume
 
             entry['links'] = {}
-            url_base = 'http://www.archive.org/download/' + \
+            url_base = 'http://archive.org/download/' + \
                         row[3] + '/' + row[3]
 
-            if entry['format'].find('DjVu') > -1:
-                entry['links']['image/x.djvu'] = url_base + '.djvu'
+            formats = entry['format'].split(',')
+            if 'DjVu' in formats:
+                entry['links']['image/x.djvu'] = 'yes'
             if entry['format'].find('Grayscale LuraTech PDF') > -1:
                 # Fake mime type
-                entry['links']['application/pdf-bw'] = url_base + '_bw.pdf'
+                entry['links']['application/pdf-bw'] = 'yes'
             if entry['format'].find('PDF') > -1:
-                entry['links']['application/pdf'] = url_base + '_text.pdf'
+                entry['links']['application/pdf'] = 'yes'
             if entry['format'].find('EPUB') > -1:
-                entry['links']['application/epub+zip'] = url_base + '.epub'
-            entry['cover_image'] = 'http://www.archive.org/download/' + \
+                entry['links']['application/epub+zip'] = 'yes'
+            entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
-            self.obj._booklist.append(IABook(None, entry, ''))
+            self._append_cb(InternetArchiveBook(None, entry, ''))
 
-        os.remove(tempfile)
-        GObject.idle_add(self.obj.notify_updated, self.midway)
-        self.obj._ready = True
-        return False
-
-    def run(self):
-        self._download()
+        os.remove(path)
+        self._updated_cb()
+        self._ready_cb()
 
     def stop(self):
         self.stopthread.set()
@@ -489,114 +512,108 @@ class InternetArchiveQueryResult(QueryResult):
     # Search in internet archive does not use OPDS
     # because the server implementation is not working very well
 
-    def __init__(self, queryterm, language, activity):
+    def __init__(self, query, path):
         GObject.GObject.__init__(self)
-        self._activity = activity
-        self._queryterm = queryterm
-        self._language = language
         self._next_uri = ''
         self._ready = False
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-        self._start_download()
 
-    def notify_updated(self, midway):
-        self.emit('updated', midway)
-
-    def _start_download(self, midway=False):
-        d_thread = DownloadIAThread(self, midway)
+        d_thread = InternetArchiveDownloadThread(query, path,
+                                                 self.__updated_cb,
+                                                 self.__append_cb,
+                                                 self.__ready_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
+    def __updated_cb(self):
+        self.emit('updated', False)
 
-class ImageDownloaderThread(threading.Thread):
+    def __append_cb(self, book):
+        self._booklist.append(book)
 
-    def __init__(self, obj):
+    def __ready_cb(self):
+        self._ready = True
+
+
+class FileDownloaderThread(threading.Thread):
+
+    def __init__(self, url, path, updated_cb, progress_cb):
         threading.Thread.__init__(self)
-        self.obj = obj
-        self._getter = ReadURLDownloader(self.obj._url)
+        self._path = path
+        self._updated_cb = updated_cb
+        self._progress_cb = progress_cb
+        self._getter = ReadURLDownloader(url)
         self._download_content_length = 0
         self._download_content_type = None
         self.stopthread = threading.Event()
 
-    def _download_image(self):
-        path = os.path.join(self.obj._activity.get_activity_root(),
-                            'instance', 'tmp%i' % time.time())
-        self._getter.connect("finished", self._get_image_result_cb)
-        self._getter.connect("progress", self._get_image_progress_cb)
-        self._getter.connect("error", self._get_image_error_cb)
-        _logger.debug("Starting download to %s...", path)
+    def run(self):
+        self._getter.connect("finished", self.__result_cb)
+        self._getter.connect("progress", self.__progress_cb)
+        self._getter.connect("error", self.__error_cb)
         try:
-            self._getter.start(path)
+            self._getter.start(self._path)
         except:
-            _logger.debug("Connection timed out for")
-            GObject.idle_add(self.obj.notify_updated, None)
+            self._updated_cb(None, None)
 
         self._download_content_length = \
                 self._getter.get_content_length()
         self._download_content_type = self._getter.get_content_type()
 
-    def _get_image_result_cb(self, getter, tempfile, suggested_name):
-        _logger.debug("Got Cover Image %s (%s)", tempfile, suggested_name)
+    def __result_cb(self, getter, path, suggested_name):
         self._getter = None
         if not self.stopthread.is_set():
-            GObject.idle_add(self.obj.notify_updated, tempfile)
+            self._updated_cb(path, self._download_content_type)
 
-    def _get_image_progress_cb(self, getter, bytes_downloaded):
+    def __progress_cb(self, getter, bytes_downloaded):
         if self.stopthread.is_set():
             try:
-                _logger.debug('The download %s was cancelled' % getter._fname)
                 getter.cancel()
             except:
-                _logger.debug('Got an exception while trying ' + \
-                        'to cancel download')
-        if self._download_content_length > 0:
-            _logger.debug("Downloaded %u of %u bytes...", bytes_downloaded,
-                        self._download_content_length)
-        else:
-            _logger.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+                pass
+        self._progress_cb(float(bytes_downloaded) / \
+                          float(self._download_content_length + 1))
 
-    def _get_image_error_cb(self, getter, err):
-        _logger.debug("Error getting image: %s", err)
+    def __error_cb(self, getter, err):
         self._download_content_length = 0
         self._download_content_type = None
         self._getter = None
-        GObject.idle_add(self.obj.notify_updated, None)
-
-    def run(self):
-        self._download_image()
+        self._updated_cb(None, None)
 
     def stop(self):
         self.stopthread.set()
 
 
-class ImageDownloader(GObject.GObject):
+class FileDownloader(GObject.GObject):
 
     __gsignals__ = {
         'updated': (GObject.SignalFlags.RUN_FIRST,
                           None,
-                          ([GObject.TYPE_STRING])),
+                          ([GObject.TYPE_STRING, GObject.TYPE_STRING])),
+        'progress': (GObject.SignalFlags.RUN_FIRST,
+                          None,
+                          ([GObject.TYPE_FLOAT])),
     }
 
-    def __init__(self, activity, url):
+    def __init__(self, url, path):
         GObject.GObject.__init__(self)
         self.threads = []
-        self._activity = activity
-        self._url = url
-        self._start_download()
 
-    def _start_download(self):
-        d_thread = ImageDownloaderThread(self)
+        d_thread = FileDownloaderThread(url, path, self.__updated_cb,
+                                        self.__progress_cb)
+        d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
 
-    def notify_updated(self, temp_file):
-        self.emit('updated', temp_file)
+    def __updated_cb(self, path, content_type):
+        self.emit('updated', path, content_type)
 
-    def stop_download(self):
+    def __progress_cb(self, progress):
+        self.emit('progress', progress)
+
+    def stop(self):
         for thread in self.threads:
             thread.stop()

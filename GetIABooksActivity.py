@@ -18,7 +18,11 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import os
 import logging
-import time
+
+from pprint import pformat
+
+import gi
+gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -81,6 +85,7 @@ class GetIABooksActivity(activity.Activity):
         activity.Activity.__init__(self, handle, False)
         self.max_participants = 1
 
+        self._sequence = 0
         self.selected_book = None
         self.queryresults = None
         self._getter = None
@@ -119,21 +124,14 @@ class GetIABooksActivity(activity.Activity):
 
         self._create_controls()
 
-        if not self.powerd_running():
-            try:
-                bus = dbus.SystemBus()
-                proxy = bus.get_object('org.freedesktop.ohm',
-                               '/org/freedesktop/ohm/Keystore')
-                self.ohm_keystore = dbus.Interface(proxy,
-                                 'org.freedesktop.ohm.Keystore')
-            except dbus.DBusException, e:
-                logging.warning("Error setting OHM inhibit: %s", e)
-                self.ohm_keystore = None
-
-    def powerd_running(self):
         self.using_powerd = os.access(POWERD_INHIBIT_DIR, os.W_OK)
-        logging.error("using_powerd: %d", self.using_powerd)
-        return self.using_powerd
+
+        self.__book_downloader = self.__image_downloader = None
+
+    def get_path(self):
+        self._sequence += 1
+        return os.path.join(self.get_activity_root(),
+                            'instance', '%03d.tmp' % self._sequence)
 
     def _inhibit_suspend(self):
         if self.using_powerd:
@@ -143,15 +141,7 @@ class GetIABooksActivity(activity.Activity):
             fd.close()
             return True
 
-        if self.ohm_keystore is not None:
-            try:
-                self.ohm_keystore.SetKey('suspend.inhibit', 1)
-                return self.ohm_keystore.GetKey('suspend.inhibit')
-            except dbus.exceptions.DBusException:
-                logging.debug("failed to inhibit suspend")
-                return False
-        else:
-            return False
+        return False
 
     def _allow_suspend(self):
         if self.using_powerd:
@@ -161,15 +151,7 @@ class GetIABooksActivity(activity.Activity):
                     + "/%u" % os.getpid()))
             return True
 
-        if self.ohm_keystore is not None:
-            try:
-                self.ohm_keystore.SetKey('suspend.inhibit', 0)
-                return self.ohm_keystore.GetKey('suspend.inhibit')
-            except dbus.exceptions.DBusException:
-                logging.error("failed to allow suspend")
-                return False
-        else:
-            return False
+        return False
 
     def _read_configuration(self, file_name='get-books.cfg'):
         logging.error('Reading configuration from file %s', file_name)
@@ -207,8 +189,8 @@ class GetIABooksActivity(activity.Activity):
 
                 _SOURCES_CONFIG[section] = repo_config
 
-        logging.error('_SOURCES %s', _SOURCES)
-        logging.error('_SOURCES_CONFIG %s', _SOURCES_CONFIG)
+        logging.error('_SOURCES %s', pformat(_SOURCES))
+        logging.error('_SOURCES_CONFIG %s', pformat(_SOURCES_CONFIG))
 
         for section in config.sections():
             if section.startswith('Catalogs'):
@@ -233,8 +215,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.filter_catalogs_by_source()
 
-        logging.error('languages %s', self.languages)
-        logging.error('catalogs %s', self.catalogs)
+        logging.error('languages %s', pformat(self.languages))
+        logging.error('catalogs %s', pformat(self.catalogs))
 
     def _add_search_controls(self, toolbar):
         book_search_item = Gtk.ToolItem()
@@ -308,7 +290,9 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
+        self.listview.handler_block(self.selection_cb_id)
         self.listview.clear()
+        self.listview.handler_unblock(self.selection_cb_id)
         logging.error('SOURCE %s', catalog_config['source'])
         self._books_toolbar.search_entry.props.text = ''
         self.source = catalog_config['source']
@@ -470,16 +454,6 @@ class GetIABooksActivity(activity.Activity):
     def _create_controls(self):
         self._download_content_length = 0
         self._download_content_type = None
-        self.progressbox = Gtk.Box(spacing=20,
-                orientation=Gtk.Orientation.HORIZONTAL)
-        self.progressbar = Gtk.ProgressBar()
-        self.progressbar.set_fraction(0.0)
-        self.progressbox.pack_start(self.progressbar, expand=True, fill=True,
-                padding=0)
-        self.cancel_btn = Gtk.Button(stock=Gtk.STOCK_CANCEL)
-        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
-        self.progressbox.pack_start(self.cancel_btn, expand=False,
-                fill=False, padding=0)
 
         self.msg_label = Gtk.Label()
 
@@ -523,7 +497,8 @@ class GetIABooksActivity(activity.Activity):
 
         # books listview
         self.listview = ListView(self._lang_code_handler)
-        self.listview.connect('selection-changed', self.selection_cb)
+        self.selection_cb_id = self.listview.connect('selection-changed',
+                                                     self.selection_cb)
         self.listview.set_enable_search(False)
 
         self.list_scroller = Gtk.ScrolledWindow(hadjustment=None,
@@ -570,9 +545,23 @@ class GetIABooksActivity(activity.Activity):
         vbox_download.pack_start(hbox_format, False, False, 10)
 
         self._download = Gtk.Button(_('Get Book'))
+        self._download.set_image(Icon(icon_name='data-download'))
         self._download.props.sensitive = False
         self._download.connect('clicked', self.__get_book_cb)
         vbox_download.pack_start(self._download, False, False, 10)
+
+        self.progressbox = Gtk.Box(spacing=20,
+                orientation=Gtk.Orientation.HORIZONTAL)
+        self.progressbar = Gtk.ProgressBar()
+        self.progressbar.set_fraction(0.0)
+        self.progressbox.pack_start(self.progressbar, expand=True, fill=True,
+                padding=0)
+        self.cancel_btn = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        self.cancel_btn.set_image(Icon(icon_name='dialog-cancel'))
+        self.cancel_btn.connect('clicked', self.__cancel_btn_clicked_cb)
+        self.progressbox.pack_start(self.cancel_btn, expand=False,
+                fill=False, padding=0)
+        vbox_download.pack_start(self.progressbox, False, False, 10)
 
         bottom_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
@@ -587,20 +576,28 @@ class GetIABooksActivity(activity.Activity):
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.pack_start(self.msg_label, False, False, 10)
-        vbox.pack_start(self.progressbox, False, False, 10)
         vbox.pack_start(self.list_box, True, True, 0)
         vbox.pack_start(bottom_hbox, False, False, 10)
         self.set_canvas(vbox)
         self.listview.show()
         vbox.show()
         self.list_scroller.show()
-        self.progressbox.hide()
+        self.progress_hide()
         self.show_message(
                 _('Enter words from the Author or Title to begin search.'))
 
         self._books_toolbar.search_entry.grab_focus()
         if len(self.catalogs) > 0:
             self.bt_catalogs.set_active(True)
+
+    def progress_hide(self):
+        self.clear_downloaded_bytes()
+        self.progressbar.set_sensitive(False)
+        self.cancel_btn.set_sensitive(False)
+
+    def progress_show(self):
+        self.progressbar.set_sensitive(True)
+        self.cancel_btn.set_sensitive(True)
 
     def filter_catalogs_by_source(self):
         self.catalogs = {}
@@ -632,11 +629,9 @@ class GetIABooksActivity(activity.Activity):
         return True
 
     def selection_cb(self, widget):
-        # Testing...
         selected_book = self.listview.get_selected_book()
         if self.source == 'local_books':
             if selected_book:
-                self.download_url = ''
                 self.selected_book = selected_book
                 self._download.hide()
                 self.show_book_data()
@@ -646,7 +641,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.clear_downloaded_bytes()
             if selected_book:
-                self.update_format_combo(selected_book.get_download_links())
+                self.update_format_combo(selected_book.get_types())
                 self.selected_book = selected_book
                 self._download.show()
                 self.show_book_data()
@@ -677,12 +672,6 @@ class GetIABooksActivity(activity.Activity):
                 self.selected_language = self.selected_book.get_language()
             book_data += _('Language:\t') + self.selected_language + '\n'
         book_data += _('Publisher:\t') + self.selected_publisher + '\n'
-        if self.source != 'local_books':
-            try:
-                self.download_url = self.selected_book.get_download_links()[\
-                        self.format_combo.props.value]
-            except:
-                pass
         textbuffer = self.textview.get_buffer()
         textbuffer.set_text('\n' + book_data)
         self.enable_button(True)
@@ -724,20 +713,28 @@ class GetIABooksActivity(activity.Activity):
 
     def download_image(self,  url):
         self._inhibit_suspend()
+        self.progress_show()
         if self.__image_downloader is not None:
-            self.__image_downloader.stop_download()
-        self.__image_downloader = opds.ImageDownloader(self, url)
+            self.__image_downloader.stop()
+        self.__image_downloader = opds.FileDownloader(url, self.get_path())
         self.__image_downloader.connect('updated', self.__image_updated_cb)
+        self.__image_downloader.connect('progress', self.__image_progress_cb)
 
-    def __image_updated_cb(self, downloader, file_name):
-        if file_name is not None:
-            self.add_image(file_name)
+    def __image_updated_cb(self, downloader, path, content_type):
+        if path is not None:
+            self.add_image(path)
             self.exist_cover_image = True
-            os.remove(file_name)
+            os.remove(path)
         else:
             self.add_default_image()
         self.__image_downloader = None
+        GObject.timeout_add(500, self.progress_hide)
         self._allow_suspend()
+
+    def __image_progress_cb(self, downloader, progress):
+        self.progressbar.set_fraction(progress)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def add_default_image(self):
         file_path = os.path.join(activity.get_bundle_path(),
@@ -789,7 +786,9 @@ class GetIABooksActivity(activity.Activity):
         self.enable_button(False)
         self.clear_downloaded_bytes()
         self.book_selected = False
+        self.listview.handler_block(self.selection_cb_id)
         self.listview.clear()
+        self.listview.handler_unblock(self.selection_cb_id)
 
         if self.queryresults is not None:
             self.queryresults.cancel()
@@ -808,9 +807,8 @@ class GetIABooksActivity(activity.Activity):
             if self.source == 'Internet Archive':
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
-                        query_language, self)
+                                                        self.get_path())
             elif self.source in _SOURCES_CONFIG:
-            #if self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
                         search_text, query_language)
@@ -824,7 +822,8 @@ class GetIABooksActivity(activity.Activity):
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
-        if 'bozo_exception' in self.queryresults._feedobj:
+        if hasattr(self.queryresults, '_feedobj') and \
+           'bozo_exception' in self.queryresults._feedobj:
             # something went wrong and we have to inform about this
             bozo_exception = self.queryresults._feedobj.bozo_exception
             if isinstance(bozo_exception, urllib2.URLError):
@@ -939,101 +938,79 @@ class GetIABooksActivity(activity.Activity):
             return
 
     def __cancel_btn_clicked_cb(self, btn):
-        if self._getter is not None:
-            try:
-                self._getter.cancel()
-            except:
-                logging.debug('Got an exception while trying' + \
-                        'to cancel download')
-            self.progressbox.hide()
-            self.listview.props.sensitive = True
-            self._books_toolbar.search_entry.set_sensitive(True)
-            logging.debug('Download was canceled by the user.')
-            self._allow_suspend()
+        if self.__image_downloader is not None:
+            self.__image_downloader.stop()
+
+        if self.__book_downloader is not None:
+            self.__book_downloader.stop()
+
+        self.progress_hide()
+        self.enable_button(True)
+        self.listview.props.sensitive = True
+        self._books_toolbar.search_entry.set_sensitive(True)
+        self._allow_suspend()
 
     def get_book(self):
         self.enable_button(False)
-        self.progressbox.show_all()
-        GObject.idle_add(self.download_book, self.download_url)
+        self.clear_downloaded_bytes()
+        self.progress_show()
+        if self.source != 'local_books':
+            self.selected_book.get_download_links(self.format_combo.props.value,
+                                                  self.download_book,
+                                                  self.get_path())
 
     def download_book(self,  url):
-        self._inhibit_suspend()
         logging.error('DOWNLOAD BOOK %s', url)
+        self._inhibit_suspend()
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
-        path = os.path.join(self.get_activity_root(), 'instance',
-                            'tmp%i' % time.time())
-        self._getter = opds.ReadURLDownloader(url)
-        self._getter.connect("finished", self._get_book_result_cb)
-        self._getter.connect("progress", self._get_book_progress_cb)
-        self._getter.connect("error", self._get_book_error_cb)
-        logging.debug("Starting download from %s to %s", url, path)
-        try:
-            self._getter.start(path)
-        except:
-            self._show_error_alert(_('Error'), _('Connection timed out for ') +
-                    self.selected_title)
+        self.__book_downloader = opds.FileDownloader(url, self.get_path())
+        self.__book_downloader.connect('updated', self.__book_updated_cb)
+        self.__book_downloader.connect('progress', self.__book_progress_cb)
 
-        self._download_content_length = self._getter.get_content_length()
-        self._download_content_type = self._getter.get_content_type()
-
-    def _get_book_result_cb(self, getter, tempfile, suggested_name):
-        self.listview.props.sensitive = True
+    def __book_updated_cb(self, downloader, path, content_type):
         self._books_toolbar.search_entry.set_sensitive(True)
-        if self._download_content_type.startswith('text/html'):
-            # got an error page instead
-            self._get_book_error_cb(getter, 'HTTP Error')
-            return
-        self.process_downloaded_book(tempfile,  suggested_name)
+        self.listview.props.sensitive = True
+        self._allow_suspend()
+        GObject.timeout_add(500, self.progress_hide)
+        self.enable_button(True)
+        self.__book_downloader = None
 
-    def _get_book_progress_cb(self, getter, bytes_downloaded):
-        if self._download_content_length > 0:
-            logging.debug("Downloaded %u of %u bytes...",
-                          bytes_downloaded, self._download_content_length)
-        else:
-            logging.debug("Downloaded %u bytes...",
-                          bytes_downloaded)
-        total = self._download_content_length
-        self.set_downloaded_bytes(bytes_downloaded,  total)
+        if path is None:
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The path in the catalog seems to be incorrect.') %
+                    self.selected_title)
+            return
+
+        if os.stat(path).st_size == 0:
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The other end sent an empty file.') %
+                    self.selected_title)
+            return
+
+        if content_type.startswith('text/html'):
+            self._show_error_alert(_('Error: Could not download %s. ' +
+                    'The other end sent text/html instead of a book.') %
+                    self.selected_title)
+            return
+
+        self.process_downloaded_book(path)
+
+    def __book_progress_cb(self, downloader, progress):
+        self.progressbar.set_fraction(progress)
         while Gtk.events_pending():
             Gtk.main_iteration()
-
-    def _get_book_error_cb(self, getter, err):
-        self.listview.props.sensitive = True
-        self.enable_button(True)
-        self.progressbox.hide()
-        logging.debug("Error getting document: %s", err)
-        self._download_content_length = 0
-        self._download_content_type = None
-        self._getter = None
-        if self.source == 'Internet Archive' and \
-           getter._url.endswith('_text.pdf'):
-            # in the IA server there are files ending with _text.pdf
-            # smaller and better than the .pdf files, but not for all
-            # the books. We try to download them and if is not present
-            # download the .pdf file
-            self.download_url = self.download_url.replace('_text.pdf', '.pdf')
-            self.get_book()
-        else:
-            self._allow_suspend()
-            self._show_error_alert(_('Error: Could not download %s. ' +
-                    'The path in the catalog seems to be incorrect') %
-                    self.selected_title)
-
-    def set_downloaded_bytes(self, downloaded_bytes,  total):
-        fraction = float(downloaded_bytes) / float(total)
-        self.progressbar.set_fraction(fraction)
 
     def clear_downloaded_bytes(self):
         self.progressbar.set_fraction(0.0)
 
-    def process_downloaded_book(self,  tempfile,  suggested_name):
-        logging.debug("Got document %s (%s)", tempfile, suggested_name)
-        self.create_journal_entry(tempfile)
+    def process_downloaded_book(self, path):
+        logging.debug("Got document %s", path)
+        self.create_journal_entry(path)
         self._getter = None
         self._allow_suspend()
 
-    def create_journal_entry(self,  tempfile):
+    def create_journal_entry(self, path):
         journal_entry = datastore.create()
         journal_title = self.selected_title
         if self.selected_author != '':
@@ -1069,10 +1046,10 @@ class GetIABooksActivity(activity.Activity):
         journal_entry.metadata['summary'] = self.selected_summary
         journal_entry.metadata['language'] = self.selected_language_code
 
-        journal_entry.file_path = tempfile
+        journal_entry.file_path = path
         datastore.write(journal_entry)
-        os.remove(tempfile)
-        self.progressbox.hide()
+        os.remove(path)
+        self.progress_hide()
         self._object_id = journal_entry.object_id
         self._show_journal_alert(_('Download completed'), self.selected_title)
 
