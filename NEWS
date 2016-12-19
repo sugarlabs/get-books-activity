@@ -1,3 +1,21 @@
+17
+
+* Updated translations
+* Improved code consistency and clearness
+* Removed OHM
+* Fixed division by zero during downloading
+* Fixed exception during searching
+* Enabled scope enforecement of images' downloader, queries' and Internet Archive's results
+* Changed logger's name to match activity's name
+* Formatted log objects' dumps
+* Fixed downloading books from Internet Archive error
+* Fixed non-unique downloaded files error
+* Improved download cancellation
+* Moved progress bar to the area below "Get Book" button
+* Fixed main window width growth
+* Implemented destoryal of download threads on activity stop
+* Applied other minor bugs' fixes and improvements
+
 5
 
 * Spanish translations (Rafael Ortiz)
