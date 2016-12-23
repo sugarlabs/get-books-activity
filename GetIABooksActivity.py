@@ -238,7 +238,7 @@ class GetIABooksActivity(activity.Activity):
         toolbar.source_changed_cb_id = \
             toolbar.source_combo.connect('changed', self.__source_changed_cb)
         combotool = ToolComboBox(toolbar.source_combo)
-        toolbar.insert(combotool, -1)
+        toolbar.insert(combotool, -1)	
         combotool.show()
 
         self.bt_catalogs = ToggleToolButton('books')
@@ -515,14 +515,14 @@ class GetIABooksActivity(activity.Activity):
         self.scrolled = Gtk.ScrolledWindow()
         self.scrolled.set_policy(Gtk.PolicyType.NEVER,
                 Gtk.PolicyType.AUTOMATIC)
-        self.scrolled.props.shadow_type = Gtk.ShadowType.NONE
+        self.scrolled.props.shadow_type = Gtk.ShadowType.ETCHED_OUT
         self.textview = Gtk.TextView()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.LEFT)
-        self.textview.set_left_margin(20)
-        self.textview.set_right_margin(20)
+        self.textview.set_left_margin(60)
+        self.textview.set_right_margin(60)
         self.scrolled.add(self.textview)
         self.list_box.show_all()
         self.separa.hide()
