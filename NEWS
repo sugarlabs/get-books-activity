@@ -1,20 +1,24 @@
 17
 
-* Updated translations
-* Improved code consistency and clearness
-* Removed OHM
+* New translations
+* Improved code consistency and clarity
+* Removed deprecated OHM
 * Fixed division by zero during downloading
 * Fixed exception during searching
-* Enabled scope enforecement of images' downloader, queries' and Internet Archive's results
-* Changed logger's name to match activity's name
-* Formatted log objects' dumps
+* Enabled scope enforcement of image downloader, queries and Internet
+  Archive results
+* Changed logger name to match activity name
+* Formatted log object dumps
 * Fixed downloading books from Internet Archive error
 * Fixed non-unique downloaded files error
-* Improved download cancellation
+* Improve download cancellation
 * Moved progress bar to the area below "Get Book" button
 * Fixed main window width growth
-* Implemented destoryal of download threads on activity stop
-* Applied other minor bugs' fixes and improvements
+* Destroy download threads on premature exit
+* Applied other minor bugs fixes and improvements
+* Fix main window width growth
+* Split Internet Archive single category into three
+* Update repository metadata
 
 5
 
