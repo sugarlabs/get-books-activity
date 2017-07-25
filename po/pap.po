@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
 "PO-Revision-Date: 2013-10-31 01:16+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: JuneLeonora\n"
@@ -38,12 +38,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr "Atkirí buki"
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
@@ -51,133 +48,141 @@ msgstr ""
 "Bo mester di buki? Ta nos tur mester di nan! E aktividat akí ta laga bo "
 "buska i haña buki for di hopi diferente fuente. Kuminsá lesa!"
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "Katálogo"
 
-#: GetIABooksActivity.py:271
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
 msgid "Any language"
 msgstr "Kualke idioma"
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr "Realisando búskeda, por fabor warda un ratu..."
 
-#: GetIABooksActivity.py:358
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
 msgid "My books"
 msgstr "Mi bukinan"
 
-#: GetIABooksActivity.py:372
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Volúmen"
 
-#: GetIABooksActivity.py:553
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "Format:"
 
-#: GetIABooksActivity.py:566
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr "Tuma buki"
 
-#: GetIABooksActivity.py:593
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Hinka palabra di e outor òf título pa kuminsá buska."
 
-#: GetIABooksActivity.py:638
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr "Buki selektá"
 
-#: GetIABooksActivity.py:657
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "Título:\t\t"
 
-#: GetIABooksActivity.py:659
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "Outor:\t\t"
 
-#: GetIABooksActivity.py:663
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
 msgid "Summary:\t"
 msgstr "Resúmen:\t"
 
-#: GetIABooksActivity.py:672
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "Idioma:\t"
 
-#: GetIABooksActivity.py:673
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "Editor:\t"
 
-#: GetIABooksActivity.py:799
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr "Bo mester hinka por lo ménos 3 lèter."
 
-#: GetIABooksActivity.py:827
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr "No por a konektá ku e server. Por ta bo no ta konektá ku e ret."
 
-#: GetIABooksActivity.py:831
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr "Tabatin un eror bahando e lista."
 
-#: GetIABooksActivity.py:833
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "A haña lista di katalòk %s nobo"
 
-#: GetIABooksActivity.py:837
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr "Despensa, no por a haña niun buki."
 
-#: GetIABooksActivity.py:851
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr "Despensa, nos a haña buki na ingles so."
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Error"
 msgstr "Eror"
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr "Konekshon a pasa límite di tempu pa "
 
-#: GetIABooksActivity.py:1013
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
 #, python-format
-msgid "Error: Could not download %s. "
-msgstr "Eror: No por a baha %s. "
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
+msgstr ""
 
-#: GetIABooksActivity.py:1071
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "Deskarga terminá"
 
-#: GetIABooksActivity.py:1079
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "Mustra den diario"
 
-#: GetIABooksActivity.py:1082
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "Ok"
 
-#: listview.py:35
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
 msgid "Title"
 msgstr "Título"
 
-#: listview.py:37
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
 msgid "Author"
 msgstr "Outor"
 
-#: listview.py:39
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
 msgid "Publisher"
 msgstr "Editor"
 
-#: listview.py:41
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
 msgid "Language"
 msgstr "Idioma"
 
-#: listview.py:43
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
 msgid "Publish Date"
 msgstr "Fecha di publikashon"
+
+#, python-format
+#~ msgid "Error: Could not download %s. "
+#~ msgstr "Eror: No por a baha %s. "
 
 #~ msgid "Books"
 #~ msgstr "Bukinan"

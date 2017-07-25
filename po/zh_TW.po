@@ -35,15 +35,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2011-11-08 19:25+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2017-03-25 13:04+0000\n"
+"Last-Translator: Yuan <yuanchao@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1490447067.000000\n"
 
 #. TRANS: "name" option from activity.info file
 msgid "Get Books"
@@ -54,7 +55,7 @@ msgstr "愛讀書"
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
-msgstr ""
+msgstr "想看書嗎？大家都是！這個活動讓你可以搜尋並從不同的來源取得書籍。來讀書吧！"
 
 #: GetIABooksActivity.py:257 GetIABooksActivity.py:497
 #: GetIABooksActivity.py:501 GetIABooksActivity.py:613
@@ -120,11 +121,11 @@ msgstr "您至少要輸入三個字。"
 
 #: GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr ""
+msgstr "無法與伺服器連線。你可能沒有連上網路"
 
 #: GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "下載清單中有一個錯誤。"
 
 #: GetIABooksActivity.py:833
 #, python-format

@@ -6,154 +6,155 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
 "PO-Revision-Date: 2011-04-10 15:11+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: km\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.1\n"
 
-#. TRANS: "name" option from activity.info file
 msgid "Get Books"
 msgstr ""
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr "កា​តា​ឡុក"
 
-#: GetIABooksActivity.py:271
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
 msgid "Any language"
 msgstr ""
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr ""
 
-#: GetIABooksActivity.py:358
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
 msgid "My books"
 msgstr ""
 
-#: GetIABooksActivity.py:372
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr ""
 
-#: GetIABooksActivity.py:553
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
 msgid "Format:"
 msgstr "ទ្រង់​ទ្រាយ​ ៖"
 
-#: GetIABooksActivity.py:566
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr ""
 
-#: GetIABooksActivity.py:593
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 
-#: GetIABooksActivity.py:638
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr ""
 
-#: GetIABooksActivity.py:657
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
 msgid "Title:\t\t"
 msgstr "ចំណងជើង ៖\t\t"
 
-#: GetIABooksActivity.py:659
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
 msgid "Author:\t\t"
 msgstr "អ្នក​និពន្ធ ៖\t\t"
 
-#: GetIABooksActivity.py:663
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
 #, fuzzy
 msgid "Summary:\t"
 msgstr "សេចក្ដី​សង្ខេប"
 
-#: GetIABooksActivity.py:672
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
 msgid "Language:\t"
 msgstr "ភាសា ៖\t"
 
-#: GetIABooksActivity.py:673
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
 msgid "Publisher:\t"
 msgstr "អ្នក​បោះ​ពុម្ព​ផ្សាយ ៖\t"
 
-#: GetIABooksActivity.py:799
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
 msgstr ""
 
-#: GetIABooksActivity.py:827
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
 
-#: GetIABooksActivity.py:831
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr ""
 
-#: GetIABooksActivity.py:833
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr ""
 
-#: GetIABooksActivity.py:837
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr ""
 
-#: GetIABooksActivity.py:851
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
 msgstr ""
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Error"
 msgstr "កំហុស"
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr ""
 
-#: GetIABooksActivity.py:1013
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
 #, python-format
-msgid "Error: Could not download %s. "
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
 msgstr ""
 
-#: GetIABooksActivity.py:1071
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
 msgid "Download completed"
 msgstr "បាន​បញ្ចប់​ការ​ទាញយក"
 
-#: GetIABooksActivity.py:1079
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr "បង្ហាញ​ក្នុង​កំណត់​ប្រចាំ​ថ្ងៃ"
 
-#: GetIABooksActivity.py:1082
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
 msgid "Ok"
 msgstr "យល់ព្រម"
 
-#: listview.py:35
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
 msgid "Title"
 msgstr "ចំណង​ជើង"
 
-#: listview.py:37
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
 msgid "Author"
 msgstr "អ្នក​និពន្ធ"
 
-#: listview.py:39
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
 msgid "Publisher"
 msgstr "អ្នក​​បោះពុម្ព​​ផ្សាយ"
 
-#: listview.py:41
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
 msgid "Language"
 msgstr "ភាសា"
 
-#: listview.py:43
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
 msgid "Publish Date"
 msgstr ""
 

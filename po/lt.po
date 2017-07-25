@@ -2,156 +2,166 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"PO-Revision-Date: 2016-04-28 09:07+0000\n"
+"Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.7.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1461834448.000000\n"
 
-#. TRANS: "name" option from activity.info file
 msgid "Get Books"
-msgstr ""
+msgstr "Gauti knygų"
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Reikia knygų? Mums visiems reikalingos knygos! Ši veikla leidžia jums "
+"ieškoti ir gauti knygų iš daugelio įvairių šaltinių. Pradėkite skaityti!"
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
 msgid "Catalogs"
 msgstr ""
 
-#: GetIABooksActivity.py:271
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
 msgid "Any language"
 msgstr ""
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
 msgid "Performing lookup, please wait..."
 msgstr ""
 
-#: GetIABooksActivity.py:358
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
 msgid "My books"
-msgstr ""
+msgstr "Mano knygos"
 
-#: GetIABooksActivity.py:372
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
 #, python-format
 msgid "%.2f GB Volume"
 msgstr ""
 
-#: GetIABooksActivity.py:553
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
 msgid "Format:"
 msgstr ""
 
-#: GetIABooksActivity.py:566
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
 msgid "Get Book"
 msgstr ""
 
-#: GetIABooksActivity.py:593
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 
-#: GetIABooksActivity.py:638
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
 msgid "Selected book"
 msgstr ""
 
-#: GetIABooksActivity.py:657
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
+#, fuzzy
 msgid "Title:\t\t"
-msgstr ""
+msgstr "Pavadinimas:\t\t"
 
-#: GetIABooksActivity.py:659
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
+#, fuzzy
 msgid "Author:\t\t"
-msgstr ""
+msgstr "Autorius:\t\t"
 
-#: GetIABooksActivity.py:663
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
+#, fuzzy
 msgid "Summary:\t"
-msgstr ""
+msgstr "Santrauka:\t"
 
-#: GetIABooksActivity.py:672
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
+#, fuzzy
 msgid "Language:\t"
-msgstr ""
+msgstr "Kalba:\t"
 
-#: GetIABooksActivity.py:673
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
+#, fuzzy
 msgid "Publisher:\t"
-msgstr ""
+msgstr "Leidėjas:\t"
 
-#: GetIABooksActivity.py:799
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Privalote įrašyti bent 3 raides."
 
-#: GetIABooksActivity.py:827
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr ""
+msgstr "Nepavyko pasiekti serverio. Galbūt, jūs nesate prisijungę prie tinklo"
 
-#: GetIABooksActivity.py:831
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
 msgid "There was an error downloading the list."
 msgstr ""
 
-#: GetIABooksActivity.py:833
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
 #, python-format
 msgid "New catalog list %s was found"
 msgstr ""
 
-#: GetIABooksActivity.py:837
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
 msgid "Sorry, no books could be found."
 msgstr ""
 
-#: GetIABooksActivity.py:851
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Atleiskite, mes radome knygas tik anglų kalba."
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Error"
-msgstr ""
+msgstr "Klaida"
 
-#: GetIABooksActivity.py:968
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
 msgid "Connection timed out for "
 msgstr ""
 
-#: GetIABooksActivity.py:1013
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
 #, python-format
-msgid "Error: Could not download %s. "
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect"
 msgstr ""
 
-#: GetIABooksActivity.py:1071
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
 msgid "Download completed"
-msgstr ""
+msgstr "Atsiuntimas baigtas"
 
-#: GetIABooksActivity.py:1079
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
 msgid "Show in Journal"
 msgstr ""
 
-#: GetIABooksActivity.py:1082
+#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
 msgid "Ok"
-msgstr ""
+msgstr "Gerai"
 
-#: listview.py:35
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
 msgid "Title"
 msgstr ""
 
-#: listview.py:37
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
 msgid "Author"
 msgstr ""
 
-#: listview.py:39
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
 msgid "Publisher"
 msgstr ""
 
-#: listview.py:41
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
 msgid "Language"
-msgstr ""
+msgstr "Kalba"
 
-#: listview.py:43
+#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
 msgid "Publish Date"
 msgstr ""
