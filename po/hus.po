@@ -160,9 +160,3 @@ msgstr "Exbaxintaláb"
 #: listview.py:43
 msgid "Publish Date"
 msgstr "Ajixtal an tamub ti tejwamedháj"
-
-#~ msgid "Books"
-#~ msgstr "T'i'adhuchlabchik"
-
-#~ msgid "Books"
-#~ msgstr "T'i'adhuchlab"
