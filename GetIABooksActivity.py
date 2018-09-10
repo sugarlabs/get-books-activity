@@ -864,7 +864,7 @@ class GetIABooksActivity(activity.Activity):
             logging.debug('Add catalog %s', catalog_item.get_title())
             catalog_config = {}
             download_link = ''
-            download_links = catalog_item.get_download_links()
+            download_links = catalog_item.get_types()
             for link in download_links.keys():
                 download_link = download_links[link]
                 break
