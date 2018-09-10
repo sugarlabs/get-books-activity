@@ -414,7 +414,7 @@ class GetIABooksActivity(activity.Activity):
                             self.treemodel.append([p['text']])
             self.catalog_listview.handler_unblock(self._catalog_changed_id)
 
-    def move_down_catalog(self, treeview):
+    def move_down_catalog(self, treeview, path, column):
         treestore, coldex = \
                 self.catalog_listview.get_selection().get_selected()
         len_cat = len(self.catalog_history)
@@ -465,7 +465,8 @@ class GetIABooksActivity(activity.Activity):
         self.catalog_listview.hover_expand = True
         self.catalog_listview.rules_hint = True
         self._catalog_changed_id = self.catalog_listview.connect(
-                'cursor-changed', self.move_down_catalog)
+                'row-activated', self.move_down_catalog)
+        self.catalog_listview.set_activate_on_single_click(True)
         self.catalog_listview.set_enable_search(False)
 
         self.treemodel = Gtk.ListStore(str)
