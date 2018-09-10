@@ -107,7 +107,7 @@ class Book(object):
     def get_types(self):
         ret = {}
         for link in self._entry['links']:
-            if link['rel'] == _REL_OPDS_ACQUISTION:
+            if link['rel'].startswith(_REL_OPDS_ACQUISTION):
                 if self._basepath is not None and \
                         not (link['href'].startswith('http') or \
                                 link['href'].startswith('ftp')):
