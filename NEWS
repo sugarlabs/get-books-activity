@@ -1,3 +1,11 @@
+18
+
+* New translations (Chris Leonard et al),
+* Fix download of Internet Archive books (Lubomir Rintel),
+* Port from GObject to GLib (James Cameron),
+* Fix PyGObject warnings and demote errors (James Cameron),
+* Update POT file (James Cameron).
+
 17
 
 * New translations
