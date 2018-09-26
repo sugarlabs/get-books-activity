@@ -73,7 +73,7 @@ class DownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def run(self):
-        logging.error('Searching URL %s headers %s' % (self._uri,
+        logging.debug('Searching URL %s headers %s' % (self._uri,
                                                        self._headers))
         feedobj = feedparser.parse(self._uri, request_headers=self._headers)
         self._feedobj_cb(feedobj)
@@ -444,7 +444,7 @@ class InternetArchiveDownloadThread(threading.Thread):
         self.stopthread = threading.Event()
 
     def run(self):
-        logging.error('Searching URL %s', self._url)
+        logging.debug('Searching URL %s', self._url)
         getter = ReadURLDownloader(self._url)
         getter.connect("finished", self.__finished_cb)
         getter.connect("error", self.__error_cb)
