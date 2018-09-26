@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"POT-Creation-Date: 2017-07-25 11:58+1000\n"
 "PO-Revision-Date: 2017-03-28 22:09+0000\n"
 "Last-Translator: Anders <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,9 +46,11 @@ msgstr ""
 "X-Generator: Pootle 2.5.1.1\n"
 "X-POOTLE-MTIME: 1490738997.000000\n"
 
+#: activity/activity.info:2
 msgid "Get Books"
 msgstr "Hämta böcker"
 
+#: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
@@ -56,137 +58,153 @@ msgstr ""
 "Behöver du böcker? Det gör vi alla! Denna aktivitet låter dig söka och "
 "emotta böcker från många olika källor. Börja läsa!"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
+#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
 msgid "Catalogs"
 msgstr "Kataloger"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
+#: GetIABooksActivity.py:259
 msgid "Any language"
 msgstr "Alla språk"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
 msgstr "Söker, vänligen vänta..."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
+#: GetIABooksActivity.py:348
 msgid "My books"
 msgstr "Mina böcker"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
+#: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB volym"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
+#: GetIABooksActivity.py:534
 msgid "Format:"
 msgstr "Format:"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
+#: GetIABooksActivity.py:547
 msgid "Get Book"
 msgstr "Hämta bok"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
+#: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Skriv in delar av författarens eller titelns namn för att söka."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
+#: GetIABooksActivity.py:639
 msgid "Selected book"
 msgstr "Vald bok"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
+#: GetIABooksActivity.py:658
 msgid "Title:\t\t"
 msgstr "Titel:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
+#: GetIABooksActivity.py:660
 msgid "Author:\t\t"
 msgstr "Författare:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
+#: GetIABooksActivity.py:664
 msgid "Summary:\t"
 msgstr "Sammanfattning:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
+#: GetIABooksActivity.py:673
 msgid "Language:\t"
 msgstr "Språk:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
+#: GetIABooksActivity.py:674
 msgid "Publisher:\t"
 msgstr "Förlag:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
+#: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
 msgstr "Du måste ange minst 3 bokstäver."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
+#: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr "Kunde inte nå servern. Kanske är du inte ansluten till nätverket"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
+#: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
 msgstr "Det uppstod ett fel då listan hämtades."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
+#: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Ny kataloglista %s hittades"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
+#: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
 msgstr "Tyvärr kunde inga böcker hittas."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
+#: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
 msgstr "Tyvärr hittade vi endast engelska böcker."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Error"
-msgstr "Fel"
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Connection timed out for "
-msgstr "Anslutningen gjorde timeout "
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
+#: GetIABooksActivity.py:980
 #, python-format
 msgid ""
-"Error: Could not download %s. The path in the catalog seems to be incorrect"
-msgstr "Fel: Kunder inte hämts %s. Sökvägen i katalogen verkar vara felaktig"
+"Error: Could not download %s. The path in the catalog seems to be incorrect."
+msgstr ""
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
+#: GetIABooksActivity.py:986
+#, python-format
+msgid "Error: Could not download %s. The other end sent an empty file."
+msgstr ""
+
+#: GetIABooksActivity.py:992
+#, python-format
+msgid ""
+"Error: Could not download %s. The other end sent text/html instead of a book."
+msgstr ""
+
+#: GetIABooksActivity.py:1054
 msgid "Download completed"
 msgstr "Hämtning slutförd"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
+#: GetIABooksActivity.py:1066
+#, python-format
+msgid "Open with %s"
+msgstr ""
+
+#: GetIABooksActivity.py:1070
 msgid "Show in Journal"
 msgstr "Visa i dagbok"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
+#: GetIABooksActivity.py:1075
 msgid "Ok"
 msgstr "Ok"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
+#: listview.py:35
 msgid "Title"
 msgstr "Titel"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
+#: listview.py:37
 msgid "Author"
 msgstr "Författare"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
+#: listview.py:39
 msgid "Publisher"
 msgstr "Förlag"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
+#: listview.py:41
 msgid "Language"
 msgstr "Språk"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Utgivningsdatum"
+
+#~ msgid "Error"
+#~ msgstr "Fel"
+
+#~ msgid "Connection timed out for "
+#~ msgstr "Anslutningen gjorde timeout "
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s. The path in the catalog seems to be incorrect"
+#~ msgstr "Fel: Kunder inte hämts %s. Sökvägen i katalogen verkar vara felaktig"
 
 #~ msgid "Books"
 #~ msgstr "Böcker"

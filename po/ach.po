@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 14:55-0400\n"
-"PO-Revision-Date: 2017-04-25 10:08+0000\n"
+"POT-Creation-Date: 2017-07-25 11:58+1000\n"
+"PO-Revision-Date: 2018-04-03 06:41+0000\n"
 "Last-Translator: Olot <agwanta2004@yahoo.co.uk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ach\n"
@@ -16,14 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1493114888.000000\n"
+"X-POOTLE-MTIME: 1522737707.000000\n"
 
-#. TRANS: "name" option from activity.info file
+#: activity/activity.info:2
 msgid "Get Books"
 msgstr "Nwong Buke"
 
-#. TRANS: "summary" option from activity.info file
-#. TRANS: "description" option from activity.info file
+#: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
@@ -31,111 +30,122 @@ msgstr ""
 "Imito buke? Wan weng wamito! Gin atima man mio iyenyo doki inwongo buke ikan "
 "apapat. Cak kwano!"
 
-#: GetIABooksActivity.py:257 GetIABooksActivity.py:497
-#: GetIABooksActivity.py:501 GetIABooksActivity.py:613
+#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
 msgid "Catalogs"
 msgstr "Lic me buke"
 
-#: GetIABooksActivity.py:271
+#: GetIABooksActivity.py:259
 msgid "Any language"
 msgstr "Leboro keken"
 
-#: GetIABooksActivity.py:318 GetIABooksActivity.py:815
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
 msgstr "The kayele yeyenyo, kong ikuri..."
 
-#: GetIABooksActivity.py:358
+#: GetIABooksActivity.py:348
 msgid "My books"
 msgstr "Buke na"
 
-#: GetIABooksActivity.py:372
+#: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Dwone"
 
-#: GetIABooksActivity.py:553
+#: GetIABooksActivity.py:534
 msgid "Format:"
 msgstr "Kite me cano:"
 
-#: GetIABooksActivity.py:566
+#: GetIABooksActivity.py:547
 msgid "Get Book"
 msgstr "Nwong Buk"
 
-#: GetIABooksActivity.py:593
+#: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
 msgstr "Co lok ikom ngat muco buk onyo nying buk wek icak yeyenyo."
 
-#: GetIABooksActivity.py:638
+#: GetIABooksActivity.py:639
 msgid "Selected book"
 msgstr "Buke ame otyeko yero"
 
-#: GetIABooksActivity.py:657
+#: GetIABooksActivity.py:658
 msgid "Title:\t\t"
 msgstr "Nying buk:\t\t"
 
-#: GetIABooksActivity.py:659
+#: GetIABooksActivity.py:660
 msgid "Author:\t\t"
 msgstr "Laco buk:\t\t"
 
-#: GetIABooksActivity.py:663
+#: GetIABooksActivity.py:664
 msgid "Summary:\t"
 msgstr "Lok me tyeko:\t"
 
-#: GetIABooksActivity.py:672
+#: GetIABooksActivity.py:673
 msgid "Language:\t"
 msgstr "Leb:\t"
 
-#: GetIABooksActivity.py:673
+#: GetIABooksActivity.py:674
 msgid "Publisher:\t"
 msgstr "Luyik buk:\t"
 
-#: GetIABooksActivity.py:799
+#: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
 msgstr "Myero yin ico nukuta maromo adek."
 
-#: GetIABooksActivity.py:827
+#: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr "Pe onwongo romo tunu kapoko lok. Karokene yin pe itye ikubere kede net"
 
-#: GetIABooksActivity.py:831
+#: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
-msgstr "Bal onwongo otime ikwanyo lic i Net"
+msgstr "Bal onwongo otime ikwanyo lic i Net."
 
-#: GetIABooksActivity.py:833
+#: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Lic anyen me buke %s obin onwongo"
 
-#: GetIABooksActivity.py:837
+#: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
-msgstr "Gum arac, buke moro pe gitwero nwongo"
+msgstr "Gum arac, buke moro pe gitwero nwongo."
 
-#: GetIABooksActivity.py:851
+#: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
-msgstr "Gum marac, wanwongo buke me leb Munu keken"
+msgstr "Gum marac, wanwongo buke me leb Munu keken."
 
-#: GetIABooksActivity.py:968
-msgid "Error"
-msgstr "Bal"
-
-#: GetIABooksActivity.py:968
-msgid "Connection timed out for "
-msgstr "Kubere cawa mere otum pi"
-
-#: GetIABooksActivity.py:1013
+#: GetIABooksActivity.py:980
 #, python-format
-msgid "Error: Could not download %s. "
-msgstr "Bal. Onwongo pe waromo kwanyo %s"
+msgid ""
+"Error: Could not download %s. The path in the catalog seems to be incorrect."
+msgstr ""
+"Bal: Pe onwongo romo kwanyo inet %s. Yo ame tye ikatalog iloki pe tye aber."
 
-#: GetIABooksActivity.py:1071
+#: GetIABooksActivity.py:986
+#, python-format
+msgid "Error: Could not download %s. The other end sent an empty file."
+msgstr "Bal: Pe onwongo romo kwanyo inet %s. Tutung ca ocwalo pail ayie nono."
+
+#: GetIABooksActivity.py:992
+#, python-format
+msgid ""
+"Error: Could not download %s. The other end sent text/html instead of a book."
+msgstr ""
+"Bal: Pe onwongo romo kwanyo inet %s. Tutung ca ocwalo coc/html akaka buk."
+
+#: GetIABooksActivity.py:1054
 msgid "Download completed"
 msgstr "Kwanyo otum maber"
 
-#: GetIABooksActivity.py:1079
+#: GetIABooksActivity.py:1066
+#, python-format
+msgid "Open with %s"
+msgstr "Yabi kede %s"
+
+#: GetIABooksActivity.py:1070
 msgid "Show in Journal"
 msgstr "Nyut iyi Janol"
 
-#: GetIABooksActivity.py:1082
+#: GetIABooksActivity.py:1075
 msgid "Ok"
 msgstr "Ok"
 
@@ -157,4 +167,14 @@ msgstr "Leb"
 
 #: listview.py:43
 msgid "Publish Date"
-msgstr "Nino dwe me Yiko "
+msgstr "Nino dwe me Yiko"
+
+#~ msgid "Error"
+#~ msgstr "Bal"
+
+#~ msgid "Connection timed out for "
+#~ msgstr "Kubere cawa mere otum pi"
+
+#, python-format
+#~ msgid "Error: Could not download %s. "
+#~ msgstr "Bal. Onwongo pe waromo kwanyo %s"

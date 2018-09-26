@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-23 15:18+0000\n"
-"PO-Revision-Date: 2017-02-09 14:13+0000\n"
-"Last-Translator: MartínOesterreich <martin.otte80@gmail.com>\n"
+"POT-Creation-Date: 2017-07-25 11:58+1000\n"
+"PO-Revision-Date: 2017-11-06 04:45+0000\n"
+"Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: gug\n"
 "MIME-Version: 1.0\n"
@@ -16,11 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1486649595.000000\n"
+"X-POOTLE-MTIME: 1509943558.000000\n"
 
+#: activity/activity.info:2
 msgid "Get Books"
 msgstr "Hupyty Kuatiahai"
 
+#: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
@@ -28,135 +30,151 @@ msgstr ""
 "Reikotevẽ kuatiahai? Enteroveva roikotevẽ! Ko tembiapo nde moneĩ eheka ha "
 "ehupyty hag̃ua kuatiahai heta tendagui. Eñepyrũ emoñe'ẽ!"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
+#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
 msgid "Catalogs"
 msgstr "Embohysýi"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
+#: GetIABooksActivity.py:259
 msgid "Any language"
 msgstr "Oimeraẽ ñe'ẽ"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
 msgstr "Ojeheka hina, ikatupa reha'ãrõ..."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
+#: GetIABooksActivity.py:348
 msgid "My books"
 msgstr "Che kuatiahaikuéra"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
+#: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Tuichakue"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
+#: GetIABooksActivity.py:534
 msgid "Format:"
-msgstr "Omoha'anga."
+msgstr "Omoha'anga:"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
+#: GetIABooksActivity.py:547
 msgid "Get Book"
 msgstr "Jehupyty kuatiahai"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
+#: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Emoingue ñe'ẽjepuru omoñe'ẽva ojapóvape ha téra oñepyrũ hag̃ua ojeheka."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
+#: GetIABooksActivity.py:639
 msgid "Selected book"
 msgstr "Kuatiahai poravopyre"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
+#: GetIABooksActivity.py:658
 msgid "Title:\t\t"
 msgstr "Téra:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
+#: GetIABooksActivity.py:660
 msgid "Author:\t\t"
 msgstr "Ojapovaekue:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
+#: GetIABooksActivity.py:664
 msgid "Summary:\t"
 msgstr "Sumario:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
+#: GetIABooksActivity.py:673
 msgid "Language:\t"
 msgstr "Ñe'ẽ:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
+#: GetIABooksActivity.py:674
 msgid "Publisher:\t"
 msgstr "Ekambiaha:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
+#: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
 msgstr "Remoĩngue vaera mbohapy ñe'endejepe."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
+#: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
-msgstr "Nahániri pe jepoko ndive jejaporã. Núne ani ko mbojoapypapyre joapy. "
+msgstr "Nahániri pe jepoko ndive jejaporã. Núne ani ko mbojoapypapyre joapy"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
+#: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
-msgstr "Oĩ peteí jejavy mboguejype arandu"
+msgstr "Oĩ peteí jejavy mboguejype arandu."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
+#: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
-msgstr "Pyahu arandu téra ryru %s juhupapyre."
+msgstr "Pyahu arandu téra ryru %s juhupapyre"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
+#: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
-msgstr "ichupe ñandu, nahániri ndaipu'akai hese ajuhu  kuatia ñe'ê."
+msgstr "Ichupe ñandu, nahániri ndaipu'akai hese ajuhu kuatia ñe'ê."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
+#: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
-msgstr "Roñandu, ñonte pu'aka juhu kuatiahai ingles pe. "
+msgstr "Roñandu, ñonte pu'aka juhu kuatiahai ingles pe."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Error"
-msgstr "Jejavy."
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Connection timed out for "
-msgstr "Omokañy joapy guarâ"
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
+#: GetIABooksActivity.py:980
 #, python-format
 msgid ""
-"Error: Could not download %s. The path in the catalog seems to be incorrect"
-msgstr "Jejavy: ndaikatui amboguejy %s. Pe tape tysÿi ikatu naiporái."
+"Error: Could not download %s. The path in the catalog seems to be incorrect."
+msgstr ""
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
+#: GetIABooksActivity.py:986
+#, python-format
+msgid "Error: Could not download %s. The other end sent an empty file."
+msgstr ""
+
+#: GetIABooksActivity.py:992
+#, python-format
+msgid ""
+"Error: Could not download %s. The other end sent text/html instead of a book."
+msgstr ""
+
+#: GetIABooksActivity.py:1054
 msgid "Download completed"
-msgstr "Omboguejy ojapopa."
+msgstr "Omboguejy ojapopa"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
+#: GetIABooksActivity.py:1066
+#, python-format
+msgid "Open with %s"
+msgstr ""
+
+#: GetIABooksActivity.py:1070
 msgid "Show in Journal"
-msgstr "Hechauka kuatiahaipyre."
+msgstr "Hechauka kuatiahaipyre"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
+#: GetIABooksActivity.py:1075
 msgid "Ok"
 msgstr "Neĩ"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
+#: listview.py:35
 msgid "Title"
-msgstr "Kuatia techaukaha."
+msgstr "Kuatia techaukaha"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
+#: listview.py:37
 msgid "Author"
 msgstr "Ojapovaekue"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
+#: listview.py:39
 msgid "Publisher"
 msgstr "Ekambiahag̃ua"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
+#: listview.py:41
 msgid "Language"
 msgstr "Ñe'ẽ"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Ary ojehechaukaha"
+
+#~ msgid "Error"
+#~ msgstr "Jejavy."
+
+#~ msgid "Connection timed out for "
+#~ msgstr "Omokañy joapy guarâ"
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s. The path in the catalog seems to be incorrect"
+#~ msgstr "Jejavy: ndaikatui amboguejy %s. Pe tape tysÿi ikatu naiporái."
