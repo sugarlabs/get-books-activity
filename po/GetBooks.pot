@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-25 11:58+1000\n"
+"POT-Creation-Date: 2018-09-26 19:14+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,120 +27,120 @@ msgid ""
 "many different sources. Start reading!"
 msgstr ""
 
-#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
-#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
+#: GetIABooksActivity.py:247 GetIABooksActivity.py:480
+#: GetIABooksActivity.py:484 GetIABooksActivity.py:619
 msgid "Catalogs"
 msgstr ""
 
-#: GetIABooksActivity.py:259
+#: GetIABooksActivity.py:261
 msgid "Any language"
 msgstr ""
 
-#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
+#: GetIABooksActivity.py:310 GetIABooksActivity.py:822
 msgid "Performing lookup, please wait..."
 msgstr ""
 
-#: GetIABooksActivity.py:348
+#: GetIABooksActivity.py:350
 msgid "My books"
 msgstr ""
 
-#: GetIABooksActivity.py:362
+#: GetIABooksActivity.py:364
 #, python-format
 msgid "%.2f GB Volume"
 msgstr ""
 
-#: GetIABooksActivity.py:534
+#: GetIABooksActivity.py:537
 msgid "Format:"
 msgstr ""
 
-#: GetIABooksActivity.py:547
+#: GetIABooksActivity.py:550
 msgid "Get Book"
 msgstr ""
 
-#: GetIABooksActivity.py:587
+#: GetIABooksActivity.py:590
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 
-#: GetIABooksActivity.py:639
+#: GetIABooksActivity.py:642
 msgid "Selected book"
 msgstr ""
 
-#: GetIABooksActivity.py:658
+#: GetIABooksActivity.py:661
 msgid "Title:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:660
+#: GetIABooksActivity.py:663
 msgid "Author:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:664
+#: GetIABooksActivity.py:667
 msgid "Summary:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:673
+#: GetIABooksActivity.py:676
 msgid "Language:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:674
+#: GetIABooksActivity.py:677
 msgid "Publisher:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:804
+#: GetIABooksActivity.py:807
 msgid "You must enter at least 3 letters."
 msgstr ""
 
-#: GetIABooksActivity.py:832
+#: GetIABooksActivity.py:835
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
 
-#: GetIABooksActivity.py:836
+#: GetIABooksActivity.py:839
 msgid "There was an error downloading the list."
 msgstr ""
 
-#: GetIABooksActivity.py:838
+#: GetIABooksActivity.py:841
 #, python-format
 msgid "New catalog list %s was found"
 msgstr ""
 
-#: GetIABooksActivity.py:842
+#: GetIABooksActivity.py:845
 msgid "Sorry, no books could be found."
 msgstr ""
 
-#: GetIABooksActivity.py:856
+#: GetIABooksActivity.py:859
 msgid "Sorry, we only found english books."
 msgstr ""
 
-#: GetIABooksActivity.py:980
+#: GetIABooksActivity.py:983
 #, python-format
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
 msgstr ""
 
-#: GetIABooksActivity.py:986
+#: GetIABooksActivity.py:989
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
 msgstr ""
 
-#: GetIABooksActivity.py:992
+#: GetIABooksActivity.py:995
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
 
-#: GetIABooksActivity.py:1054
+#: GetIABooksActivity.py:1057
 msgid "Download completed"
 msgstr ""
 
-#: GetIABooksActivity.py:1066
+#: GetIABooksActivity.py:1069
 #, python-format
 msgid "Open with %s"
 msgstr ""
 
-#: GetIABooksActivity.py:1070
+#: GetIABooksActivity.py:1073
 msgid "Show in Journal"
 msgstr ""
 
-#: GetIABooksActivity.py:1075
+#: GetIABooksActivity.py:1078
 msgid "Ok"
 msgstr ""
 
