@@ -16,6 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import Gtk
 
@@ -128,7 +129,7 @@ class Book(object):
         types = self.get_types()
         if content_type in types:
             url = types[content_type]
-            GObject.idle_add(download_cb, url)
+            GLib.idle_add(download_cb, url)
 
     def get_publisher(self):
         try:
@@ -409,7 +410,7 @@ class InternetArchiveBook(Book):
                 return
 
             url = os.path.join(url_base, chosen)
-            GObject.idle_add(download_cb, url)
+            GLib.idle_add(download_cb, url)
 
         downloader.connect('updated', updated)
 
