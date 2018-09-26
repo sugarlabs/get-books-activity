@@ -22,6 +22,7 @@ import logging
 from pprint import pformat
 
 import gi
+gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import GLib
@@ -137,7 +138,7 @@ class GetIABooksActivity(activity.Activity):
     def _inhibit_suspend(self):
         if self.using_powerd:
             fd = open(POWERD_INHIBIT_DIR + "/%u" % os.getpid(), 'w')
-            logging.error("inhibit_suspend file is %s", (POWERD_INHIBIT_DIR \
+            logging.debug("inhibit_suspend file is %s", (POWERD_INHIBIT_DIR \
                     + "/%u" % os.getpid()))
             fd.close()
             return True
@@ -148,14 +149,14 @@ class GetIABooksActivity(activity.Activity):
         if self.using_powerd:
             if os.path.exists(POWERD_INHIBIT_DIR + "/%u" % os.getpid()):
                 os.unlink(POWERD_INHIBIT_DIR + "/%u" % os.getpid())
-            logging.error("allow_suspend unlinking %s", (POWERD_INHIBIT_DIR \
+            logging.debug("allow_suspend unlinking %s", (POWERD_INHIBIT_DIR \
                     + "/%u" % os.getpid()))
             return True
 
         return False
 
     def _read_configuration(self, file_name='get-books.cfg'):
-        logging.error('Reading configuration from file %s', file_name)
+        logging.debug('Reading configuration from file %s', file_name)
         config = ConfigParser.ConfigParser()
         config.readfp(open(file_name))
         if config.has_option('GetBooks', 'show_images'):
@@ -190,15 +191,15 @@ class GetIABooksActivity(activity.Activity):
 
                 _SOURCES_CONFIG[section] = repo_config
 
-        logging.error('_SOURCES %s', pformat(_SOURCES))
-        logging.error('_SOURCES_CONFIG %s', pformat(_SOURCES_CONFIG))
+        logging.debug('_SOURCES %s', pformat(_SOURCES))
+        logging.debug('_SOURCES_CONFIG %s', pformat(_SOURCES_CONFIG))
 
         for section in config.sections():
             if section.startswith('Catalogs'):
                 catalog_source = section.split('_')[1]
                 if not catalog_source in _SOURCES_CONFIG:
-                    logging.error('There are not a source for the catalog ' +
-                            'section  %s', section)
+                    logging.error(
+                        'No source for the catalog section %s', section)
                     break
                 source_config = _SOURCES_CONFIG[catalog_source]
                 opds_cover = source_config['opds_cover']
@@ -216,8 +217,8 @@ class GetIABooksActivity(activity.Activity):
 
         self.filter_catalogs_by_source()
 
-        logging.error('languages %s', pformat(self.languages))
-        logging.error('catalogs %s', pformat(self.catalogs))
+        logging.debug('languages %s', pformat(self.languages))
+        logging.debug('catalogs %s', pformat(self.catalogs))
 
     def _add_search_controls(self, toolbar):
         book_search_item = Gtk.ToolItem()
@@ -294,7 +295,7 @@ class GetIABooksActivity(activity.Activity):
         self.listview.handler_block(self.selection_cb_id)
         self.listview.clear()
         self.listview.handler_unblock(self.selection_cb_id)
-        logging.error('SOURCE %s', catalog_config['source'])
+        logging.debug('SOURCE %s', catalog_config['source'])
         self._books_toolbar.search_entry.props.text = ''
         self.source = catalog_config['source']
         position = _SOURCES_CONFIG[self.source]['position']
@@ -962,7 +963,7 @@ class GetIABooksActivity(activity.Activity):
                                                   self.get_path())
 
     def download_book(self,  url):
-        logging.error('DOWNLOAD BOOK %s', url)
+        logging.debug('DOWNLOAD BOOK %s', url)
         self._inhibit_suspend()
         self.listview.props.sensitive = False
         self._books_toolbar.search_entry.set_sensitive(False)
@@ -1153,8 +1154,8 @@ class GetIABooksActivity(activity.Activity):
             ds_objects, num_objects = datastore.find(
                     {'mime_type': '%s' % mime})
 
-        logging.error('Local search %d books found %s format', num_objects,
-                    mime)
+        logging.debug(
+            'Local search %d books found %s format', num_objects, mime)
         for i in range(0, num_objects):
             entry = {}
             entry['title'] = ds_objects[i].metadata['title']
