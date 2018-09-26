@@ -24,11 +24,12 @@ from pprint import pformat
 import gi
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk
+from gi.repository import GLib
+from gi.repository import GObject
 from gi.repository import Gdk
 from gi.repository import GdkPixbuf
-from gi.repository import GObject
 from gi.repository import Pango
+from gi.repository import Gtk
 
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.widgets import StopButton
@@ -729,7 +730,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.add_default_image()
         self.__image_downloader = None
-        GObject.timeout_add(500, self.progress_hide)
+        GLib.timeout_add(500, self.progress_hide)
         self._allow_suspend()
 
     def __image_progress_cb(self, downloader, progress):
@@ -973,7 +974,7 @@ class GetIABooksActivity(activity.Activity):
         self._books_toolbar.search_entry.set_sensitive(True)
         self.listview.props.sensitive = True
         self._allow_suspend()
-        GObject.timeout_add(500, self.progress_hide)
+        GLib.timeout_add(500, self.progress_hide)
         self.enable_button(True)
         self.__book_downloader = None
 
