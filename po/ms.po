@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-23 15:18+0000\n"
+"POT-Creation-Date: 2017-07-25 11:58+1000\n"
 "PO-Revision-Date: 2016-05-20 00:00+0000\n"
 "Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,9 +46,11 @@ msgstr ""
 "X-Generator: Pootle 2.5.1.1\n"
 "X-POOTLE-MTIME: 1463702412.000000\n"
 
+#: activity/activity.info:2
 msgid "Get Books"
 msgstr "Dapatkan Buku"
 
+#: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
@@ -56,140 +58,156 @@ msgstr ""
 "Perlukan buku? KIta semua perlukan! Aktiviti ini membiarkan anda untuk "
 "mencari dan mendapatkan buku daripada pelbagai sumber. Mulakan pembacaan!"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:257
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:497
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:501
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:613
+#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
 msgid "Catalogs"
 msgstr "Katalog-katalog"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:271
+#: GetIABooksActivity.py:259
 msgid "Any language"
 msgstr "Sebarang bahasa"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:318
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:815
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
 msgstr "Menjalankan pencarian, sila tunggu..."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:358
+#: GetIABooksActivity.py:348
 msgid "My books"
 msgstr "Buku-buku saya"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:372
+#: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
 msgstr "%.2f GB Jilid"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:553
+#: GetIABooksActivity.py:534
 msgid "Format:"
 msgstr "Format:"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:566
+#: GetIABooksActivity.py:547
 msgid "Get Book"
 msgstr "Dapatkan Buku"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:593
+#: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 "Sila masukkan perkataan dari Pengarang atau Tajuk untuk memulakan pencarian."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:638
+#: GetIABooksActivity.py:639
 msgid "Selected book"
 msgstr "Buku yang dipilih"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:657
+#: GetIABooksActivity.py:658
 msgid "Title:\t\t"
 msgstr "Tajuk:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:659
+#: GetIABooksActivity.py:660
 msgid "Author:\t\t"
 msgstr "Pengarang:\t\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:663
+#: GetIABooksActivity.py:664
 msgid "Summary:\t"
 msgstr "Ringkasan:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:672
+#: GetIABooksActivity.py:673
 msgid "Language:\t"
 msgstr "Bahasa:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:673
+#: GetIABooksActivity.py:674
 msgid "Publisher:\t"
 msgstr "Penerbit:\t"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:799
+#: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
 msgstr "Anda mesti memasukkan sekurang-kurangnya 3 huruf."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:827
+#: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr "Server tidak dapat dicapai. Mungkin anda tidak dihubungkan ke rangkaian"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:831
+#: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
 msgstr "Terdapat kesalahan ketika memuat turun senarai."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:833
+#: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
 msgstr "Senarai katalog baru %s telah dijumpai"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:837
+#: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
 msgstr "Maaf, tiada buku yang dapat dijumpai."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:851
+#: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
 msgstr "Maaf, kami hanya menjumpai buku-buku bahasa inggeris."
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Error"
-msgstr "Kesilapan"
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:968
-msgid "Connection timed out for "
-msgstr "Masa sambungan tamat bagi "
-
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1013
+#: GetIABooksActivity.py:980
 #, python-format
 msgid ""
-"Error: Could not download %s. The path in the catalog seems to be incorrect"
+"Error: Could not download %s. The path in the catalog seems to be incorrect."
 msgstr ""
-"Kesilapan: Tidak dapat memuat turn %s. Nampaknya jalan di dalam katalog "
-"tidak betul"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1071
+#: GetIABooksActivity.py:986
+#, python-format
+msgid "Error: Could not download %s. The other end sent an empty file."
+msgstr ""
+
+#: GetIABooksActivity.py:992
+#, python-format
+msgid ""
+"Error: Could not download %s. The other end sent text/html instead of a book."
+msgstr ""
+
+#: GetIABooksActivity.py:1054
 msgid "Download completed"
 msgstr "Muat turun telah lengkap"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1079
+#: GetIABooksActivity.py:1066
+#, python-format
+msgid "Open with %s"
+msgstr ""
+
+#: GetIABooksActivity.py:1070
 msgid "Show in Journal"
 msgstr "Paparkan dalam jurnal"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/GetIABooksActivity.py:1082
+#: GetIABooksActivity.py:1075
 msgid "Ok"
 msgstr "Baiklah"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:35
+#: listview.py:35
 msgid "Title"
 msgstr "Tajuk"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:37
+#: listview.py:37
 msgid "Author"
 msgstr "Pengarang"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:39
+#: listview.py:39
 msgid "Publisher"
 msgstr "Penerbit"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:41
+#: listview.py:41
 msgid "Language"
 msgstr "Bahasa"
 
-#: /var/www/pootle/sugarlabs/clones/GetBooks/listview.py:43
+#: listview.py:43
 msgid "Publish Date"
 msgstr "Tarikh Penerbitan"
+
+#~ msgid "Error"
+#~ msgstr "Kesilapan"
+
+#~ msgid "Connection timed out for "
+#~ msgstr "Masa sambungan tamat bagi "
+
+#, python-format
+#~ msgid ""
+#~ "Error: Could not download %s. The path in the catalog seems to be incorrect"
+#~ msgstr ""
+#~ "Kesilapan: Tidak dapat memuat turn %s. Nampaknya jalan di dalam katalog "
+#~ "tidak betul"
 
 #~ msgid "Books"
 #~ msgstr "Buku"
