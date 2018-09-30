@@ -392,7 +392,6 @@ class InternetArchiveBook(Book):
                 'grayscale luratech pdf': u'application/pdf-bw',
                 'image container pdf': u'application/pdf',
                 'djvu': u'image/x.djvu',
-                'epub': u'application/epub+zip',
             }
 
             chosen = None
@@ -492,8 +491,6 @@ class InternetArchiveDownloadThread(threading.Thread):
                 entry['links']['application/pdf-bw'] = 'yes'
             if entry['format'].find('PDF') > -1:
                 entry['links']['application/pdf'] = 'yes'
-            if entry['format'].find('EPUB') > -1:
-                entry['links']['application/epub+zip'] = 'yes'
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 

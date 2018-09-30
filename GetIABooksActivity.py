@@ -66,8 +66,7 @@ import opds
 import languagenames
 import devicemanager
 
-_MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw',
-                'EPUB': u'application/epub+zip', 'DJVU': u'image/x.djvu'}
+_MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw'}
 _SOURCES = {}
 _SOURCES_CONFIG = {}
 
