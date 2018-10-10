@@ -187,6 +187,12 @@ class GetIABooksActivity(activity.Activity):
                 else:
                     repo_config['blacklist'] = []
 
+                if config.has_option(section, 'ignore_mimetypes'):
+                    repo_config['ignore_mimetypes'] = \
+                        config.get(section, 'ignore_mimetypes').split(',')
+                else:
+                    repo_config['ignore_mimetypes'] = []
+
                 _SOURCES_CONFIG[section] = repo_config
 
         logging.error('_SOURCES %s', pformat(_SOURCES))
@@ -209,9 +215,12 @@ class GetIABooksActivity(activity.Activity):
                     catalog_config['name'] = catalog
                     catalog_config['summary_field'] = \
                         source_config['summary_field']
+                    catalog_config['ignore_mimetypes'] = \
+                        source_config['ignore_mimetypes']
                     self.catalogs_configuration[catalog] = catalog_config
 
         self.source = _SOURCES_CONFIG.keys()[0]
+        self.ignore_mimetypes = _SOURCES_CONFIG[self.source]['ignore_mimetypes']
 
         self.filter_catalogs_by_source()
 
@@ -296,6 +305,7 @@ class GetIABooksActivity(activity.Activity):
         logging.error('SOURCE %s', catalog_config['source'])
         self._books_toolbar.search_entry.props.text = ''
         self.source = catalog_config['source']
+        self.ignore_mimetypes = catalog_config['ignore_mimetypes']
         position = _SOURCES_CONFIG[self.source]['position']
         self._books_toolbar.source_combo.set_active(position)
 
@@ -317,7 +327,8 @@ class GetIABooksActivity(activity.Activity):
         self.format_combo.handler_block(self.__format_changed_cb_id)
         self.format_combo.remove_all()
         for key in _MIMETYPES.keys():
-            if _MIMETYPES[key] in links.keys():
+            if _MIMETYPES[key] in links.keys() and \
+                    not _MIMETYPES[key] in self.ignore_mimetypes:
                 self.format_combo.append_item(_MIMETYPES[key], key)
         self.format_combo.set_active(0)
         self.format_combo.handler_unblock(self.__format_changed_cb_id)
@@ -876,6 +887,8 @@ class GetIABooksActivity(activity.Activity):
             catalog_config['name'] = catalog_item.get_title()
             catalog_config['summary_field'] = \
                 catalog_item._configuration['summary_field']
+            catalog_config['ignore_mimetypes'] = \
+                catalog_item._configuration['ignore_mimetypes']
             if catalog_item.get_title() in source_config['blacklist']:
                 logging.debug('Catalog "%s" is in blacklist',
                     catalog_item.get_title())
