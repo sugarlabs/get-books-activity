@@ -468,7 +468,8 @@ class GetIABooksActivity(activity.Activity):
         self.catalog_listview.rules_hint = True
         self._catalog_changed_id = self.catalog_listview.connect(
                 'row-activated', self.move_down_catalog)
-        self.catalog_listview.set_activate_on_single_click(True)
+        if hasattr(self.catalog_listview, 'set_activate_on_single_click'):
+            self.catalog_listview.set_activate_on_single_click(True)
         self.catalog_listview.set_enable_search(False)
 
         self.treemodel = Gtk.ListStore(str)
