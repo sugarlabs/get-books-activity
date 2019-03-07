@@ -1,3 +1,11 @@
+18.2
+
+* Fix for repeatedly widening canvas (Aniket Mathur),
+
+18.1
+
+* Fix for Fedora 18 (James Cameron),
+
 18
 
 * New translations (Chris Leonard et al),
