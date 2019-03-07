@@ -2,145 +2,149 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 13:06+1100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2017-07-25 11:58+1000\n"
+"PO-Revision-Date: 2017-11-06 04:21+0000\n"
+"Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ibo\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1509942076.000000\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
-msgstr ""
+msgstr "Nweta Akwụkwọ"
 
 #: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Ichoro akwụkwọ? Onye obula choro ya. ọrụ ga enyere gi aka ichota ma "
+"weghachite akwukwo site na ebe di iche iche. bido guwa"
 
-#: GetIABooksActivity.py:247 GetIABooksActivity.py:481
-#: GetIABooksActivity.py:485 GetIABooksActivity.py:620
+#: GetIABooksActivity.py:245 GetIABooksActivity.py:477
+#: GetIABooksActivity.py:481 GetIABooksActivity.py:616
 msgid "Catalogs"
-msgstr ""
+msgstr "Katalọgụ"
 
-#: GetIABooksActivity.py:261
+#: GetIABooksActivity.py:259
 msgid "Any language"
-msgstr ""
+msgstr "Asusu obula"
 
-#: GetIABooksActivity.py:310 GetIABooksActivity.py:823
+#: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "Ana eme ihe nledo, biko chere..."
 
-#: GetIABooksActivity.py:350
+#: GetIABooksActivity.py:348
 msgid "My books"
-msgstr ""
+msgstr "Akwụkwọm"
 
-#: GetIABooksActivity.py:364
+#: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
 msgstr ""
 
-#: GetIABooksActivity.py:538
+#: GetIABooksActivity.py:534
 msgid "Format:"
 msgstr ""
 
-#: GetIABooksActivity.py:551
+#: GetIABooksActivity.py:547
+#, fuzzy
 msgid "Get Book"
-msgstr ""
+msgstr "Nweta Akwụkwọ"
 
-#: GetIABooksActivity.py:591
+#: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
 msgstr ""
 
-#: GetIABooksActivity.py:643
+#: GetIABooksActivity.py:639
 msgid "Selected book"
 msgstr ""
 
-#: GetIABooksActivity.py:662
+#: GetIABooksActivity.py:658
 msgid "Title:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:664
+#: GetIABooksActivity.py:660
 msgid "Author:\t\t"
 msgstr ""
 
-#: GetIABooksActivity.py:668
+#: GetIABooksActivity.py:664
 msgid "Summary:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:677
+#: GetIABooksActivity.py:673
 msgid "Language:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:678
+#: GetIABooksActivity.py:674
 msgid "Publisher:\t"
 msgstr ""
 
-#: GetIABooksActivity.py:808
+#: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
 msgstr ""
 
-#: GetIABooksActivity.py:836
+#: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
 
-#: GetIABooksActivity.py:840
+#: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
 msgstr ""
 
-#: GetIABooksActivity.py:842
+#: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
 msgstr ""
 
-#: GetIABooksActivity.py:846
+#: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
 msgstr ""
 
-#: GetIABooksActivity.py:860
+#: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
 msgstr ""
 
-#: GetIABooksActivity.py:984
+#: GetIABooksActivity.py:980
 #, python-format
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
 msgstr ""
 
-#: GetIABooksActivity.py:990
+#: GetIABooksActivity.py:986
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
 msgstr ""
 
-#: GetIABooksActivity.py:996
+#: GetIABooksActivity.py:992
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
 
-#: GetIABooksActivity.py:1058
+#: GetIABooksActivity.py:1054
 msgid "Download completed"
 msgstr ""
 
-#: GetIABooksActivity.py:1070
+#: GetIABooksActivity.py:1066
 #, python-format
 msgid "Open with %s"
 msgstr ""
 
-#: GetIABooksActivity.py:1074
+#: GetIABooksActivity.py:1070
 msgid "Show in Journal"
 msgstr ""
 
-#: GetIABooksActivity.py:1079
+#: GetIABooksActivity.py:1075
 msgid "Ok"
 msgstr ""
 
