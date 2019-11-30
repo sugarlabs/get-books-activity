@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-25 11:58+1000\n"
-"PO-Revision-Date: 2018-03-13 18:51+0000\n"
-"Last-Translator: bharat <bharat.786rawat@gmail.com>\n"
+"PO-Revision-Date: 2019-04-05 00:09+0000\n"
+"Last-Translator: roohan <rizvi.beta@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1520967109.000000\n"
+"X-POOTLE-MTIME: 1554422958.000000\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
@@ -143,21 +143,23 @@ msgid "Sorry, we only found english books."
 msgstr "क्षमा करें, हमें केवल अंग्रेज़ी किताबें मिलीं"
 
 #: GetIABooksActivity.py:980
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
-msgstr ""
+msgstr "त्रुटि:% s डाउनलोड नहीं कर सका। कैटलॉग में पथ गलत प्रतीत होता है।"
 
 #: GetIABooksActivity.py:986
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
-msgstr ""
+msgstr "त्रुटि:% s डाउनलोड नहीं कर सका। दूसरे छोर ने एक खाली फाइल भेजी।"
 
 #: GetIABooksActivity.py:992
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
+"त्रुटि:% s डाउनलोड नहीं कर सका। दूसरे छोर ने एक पुस्तक के बजाय पाठ / html "
+"भेजा।"
 
 #: GetIABooksActivity.py:1054
 msgid "Download completed"
@@ -166,7 +168,7 @@ msgstr "डाउनलोड सम्पन्न हुआ"
 #: GetIABooksActivity.py:1066
 #, python-format
 msgid "Open with %s"
-msgstr ""
+msgstr "% S के साथ खोलें"
 
 #: GetIABooksActivity.py:1070
 msgid "Show in Journal"

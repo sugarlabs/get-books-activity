@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-25 11:58+1000\n"
-"PO-Revision-Date: 2017-04-23 21:26+0000\n"
-"Last-Translator: yurchor <yurchor@ukr.net>\n"
+"PO-Revision-Date: 2019-11-16 10:58+0000\n"
+"Last-Translator: lxlalexlxl <pilipchukap@rambler.ru>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1492982763.000000\n"
+"X-POOTLE-MTIME: 1573901892.000000\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
@@ -141,17 +141,21 @@ msgstr "Вибачте, знайдено лише книги англійськ�
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
 msgstr ""
+"Помилка: Не вдалось завантажити %s. Шлях у каталозі виглядає неправильним."
 
 #: GetIABooksActivity.py:986
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
 msgstr ""
+"Помилка: Не вдалось завантажити %s. З іншого боку надіслано порожній файл."
 
 #: GetIABooksActivity.py:992
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
+"Помилка: Не вдалось завантажити %s. З іншого боку надіслано текст/HTML, а не "
+"книгу. "
 
 #: GetIABooksActivity.py:1054
 msgid "Download completed"
@@ -160,7 +164,7 @@ msgstr "Отримання завершено"
 #: GetIABooksActivity.py:1066
 #, python-format
 msgid "Open with %s"
-msgstr ""
+msgstr "Відкрити за допомогою %s"
 
 #: GetIABooksActivity.py:1070
 msgid "Show in Journal"
