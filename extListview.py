@@ -500,7 +500,7 @@ class ExtListView(Gtk.TreeView):
 
     def shuffle(self):
         """ Shuffle the content of the list """
-        order = range(len(self.store))
+        order = list(range(len(self.store)))
         random.shuffle(order)
         self.store.reorder(order)
 

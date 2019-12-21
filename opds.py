@@ -25,7 +25,7 @@ from sugar3 import network
 import logging
 import threading
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 import csv
 
@@ -33,10 +33,10 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
+_REL_OPDS_ACQUISTION = 'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
-_REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
-_REL_OPDS_NEW = u'http://opds-spec.org/sort/new'
+_REL_OPDS_POPULAR = 'http://opds-spec.org/sort/popular'
+_REL_OPDS_NEW = 'http://opds-spec.org/sort/new'
 _REL_ALTERNATE = 'alternate'
 _REL_CRAWLABLE = 'http://opds-spec.org/crawlable'
 
@@ -275,7 +275,7 @@ class QueryResult(GObject.GObject):
         if not 'links' in self._feedobj['feed']:
             return False
         for link in self._feedobj['feed']['links']:
-            if link['rel'] == u'next':
+            if link['rel'] == 'next':
                 self._next_uri = link['href']
                 return True
 
@@ -389,11 +389,11 @@ class InternetArchiveBook(Book):
             os.remove(path)
 
             table = {
-                'text pdf': u'application/pdf',
-                'grayscale luratech pdf': u'application/pdf-bw',
-                'image container pdf': u'application/pdf',
-                'djvu': u'image/x.djvu',
-                'epub': u'application/epub+zip',
+                'text pdf': 'application/pdf',
+                'grayscale luratech pdf': 'application/pdf-bw',
+                'image container pdf': 'application/pdf',
+                'djvu': 'image/x.djvu',
+                'epub': 'application/epub+zip',
             }
 
             chosen = None
@@ -430,10 +430,10 @@ class InternetArchiveDownloadThread(threading.Thread):
         self._download_content_length = 0
         self._download_content_type = None
 
-        FL = urllib.quote('fl[]')
-        SORT = urllib.quote('sort[]')
+        FL = urllib.parse.quote('fl[]')
+        SORT = urllib.parse.quote('sort[]')
         self._url = 'http://archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(title:(' + query.lower() + ') OR ' + \
+            urllib.parse.quote('(title:(' + query.lower() + ') OR ' + \
             'creator:(' + query.lower() + ')) AND format:(DJVU)')
         self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
@@ -465,7 +465,7 @@ class InternetArchiveDownloadThread(threading.Thread):
             return
 
         reader = csv.reader(open(path,  'rb'))
-        reader.next()  # skip the first header row.
+        next(reader)  # skip the first header row.
         for row in reader:
             if len(row) < 7:
                 return
