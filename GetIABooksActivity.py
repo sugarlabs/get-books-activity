@@ -292,7 +292,7 @@ class GetIABooksActivity(activity.Activity):
         palette.popup(immediate=True, state=palette.SECONDARY)
 
     def __switch_catalog_cb(self, catalog_name):
-        catalog_config = self.catalogs[catalog_name.decode('utf-8')]
+        catalog_config = self.catalogs[catalog_name]
         self.__activate_catalog_cb(None, catalog_config)
 
     def __activate_catalog_cb(self, menu, catalog_config):
