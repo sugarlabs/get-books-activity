@@ -2,7 +2,7 @@
 name = Get Books
 bundle_id = org.laptop.sugar.GetBooksActivity
 icon = get-ia-books
-exec = sugar-activity333 GetIABooksActivity.GetIABooksActivity
+exec = sugar-activity3 GetIABooksActivity.GetIABooksActivity
 activity_version = 19
 license = GPLv2+
 summary = Need books? We all do! This activity lets you search and retrieve books from many different sources. Start reading!
