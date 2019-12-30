@@ -35,173 +35,169 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-25 11:58+1000\n"
-"PO-Revision-Date: 2012-05-22 02:35+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2019-12-13 00:29+0000\n"
+"Last-Translator: andika <andika@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1576196973.000000\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
-msgstr ""
+msgstr "Ambil Buku"
 
 #: activity/activity.info:3
 msgid ""
 "Need books? We all do! This activity lets you search and retrieve books from "
 "many different sources. Start reading!"
 msgstr ""
+"Perlu buku? Kita semua mau! Aktivitas ini memungkinkan Anda mencari dan "
+"mengambil buku dari banyak sumber yang berbeda. Mulailah membaca!"
 
 #: GetIABooksActivity.py:245 GetIABooksActivity.py:477
 #: GetIABooksActivity.py:481 GetIABooksActivity.py:616
-#, fuzzy
 msgid "Catalogs"
 msgstr "Katalog"
 
 #: GetIABooksActivity.py:259
 msgid "Any language"
-msgstr ""
+msgstr "Sebarang bahasa"
 
 #: GetIABooksActivity.py:308 GetIABooksActivity.py:819
 msgid "Performing lookup, please wait..."
-msgstr ""
+msgstr "Mencari, harap tunggu..."
 
 #: GetIABooksActivity.py:348
 msgid "My books"
-msgstr ""
+msgstr "Bukuku"
 
 #: GetIABooksActivity.py:362
 #, python-format
 msgid "%.2f GB Volume"
-msgstr ""
+msgstr "Volume %.2f GB"
 
 #: GetIABooksActivity.py:534
-#, fuzzy
 msgid "Format:"
 msgstr "Format:"
 
 #: GetIABooksActivity.py:547
 msgid "Get Book"
-msgstr ""
+msgstr "Ambil Buku"
 
 #: GetIABooksActivity.py:587
 msgid "Enter words from the Author or Title to begin search."
-msgstr ""
+msgstr "Masukkan kata-kata pada Pengarang atau Judul untuk memulai pencarian."
 
 #: GetIABooksActivity.py:639
 msgid "Selected book"
-msgstr ""
+msgstr "Buku yang dipilih"
 
 #: GetIABooksActivity.py:658
-#, fuzzy
 msgid "Title:\t\t"
 msgstr "Judul:\t\t"
 
 #: GetIABooksActivity.py:660
-#, fuzzy
 msgid "Author:\t\t"
 msgstr "Penulis:\t\t"
 
 #: GetIABooksActivity.py:664
-#, fuzzy
 msgid "Summary:\t"
 msgstr "Ringkasan:\t"
 
 #: GetIABooksActivity.py:673
-#, fuzzy
 msgid "Language:\t"
 msgstr "Bahasa:\t"
 
 #: GetIABooksActivity.py:674
-#, fuzzy
 msgid "Publisher:\t"
 msgstr "Penerbit:\t"
 
 #: GetIABooksActivity.py:804
 msgid "You must enter at least 3 letters."
-msgstr ""
+msgstr "Anda mesti memasukkan paling tidak 3 huruf."
 
 #: GetIABooksActivity.py:832
 msgid "Could not reach the server. Maybe you are not connected to the network"
 msgstr ""
+"Tidak dapat menghubungi server. Mungkin Anda tidak terhubung ke jaringan"
 
 #: GetIABooksActivity.py:836
 msgid "There was an error downloading the list."
-msgstr ""
+msgstr "Ada kesalahan saat mengunduh daftar."
 
 #: GetIABooksActivity.py:838
 #, python-format
 msgid "New catalog list %s was found"
-msgstr ""
+msgstr "Daftar katalog %s baru telah ditemukan"
 
 #: GetIABooksActivity.py:842
 msgid "Sorry, no books could be found."
-msgstr ""
+msgstr "Maaf, tidak ada buku yang dapat ditemukan."
 
 #: GetIABooksActivity.py:856
 msgid "Sorry, we only found english books."
-msgstr ""
+msgstr "Maaf, kami hanya menemukan buku-buku berbahasa Inggris."
 
 #: GetIABooksActivity.py:980
 #, python-format
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
 msgstr ""
+"Kesalahan: Tidak dapat mengunduh %s. Path dalam katalog tampaknya salah."
 
 #: GetIABooksActivity.py:986
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
-msgstr ""
+msgstr "Kesalahan: Tidak dapat mengunduh %s. Ujung lain mengirim berkas kosong."
 
 #: GetIABooksActivity.py:992
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
+"Kesalahan: Tidak dapat mengunduh %s. Ujung lain mengirim text/html alih-alih "
+"sebuah buku."
 
 #: GetIABooksActivity.py:1054
 msgid "Download completed"
-msgstr ""
+msgstr "Pengunduhan komplit"
 
 #: GetIABooksActivity.py:1066
 #, python-format
 msgid "Open with %s"
-msgstr ""
+msgstr "Buka dengan %s"
 
 #: GetIABooksActivity.py:1070
 msgid "Show in Journal"
-msgstr ""
+msgstr "Tampilkan dalam Jurnal"
 
 #: GetIABooksActivity.py:1075
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: listview.py:35
-#, fuzzy
 msgid "Title"
 msgstr "Judul"
 
 #: listview.py:37
-#, fuzzy
 msgid "Author"
 msgstr "Penulis"
 
 #: listview.py:39
-#, fuzzy
 msgid "Publisher"
 msgstr "Penerbit"
 
 #: listview.py:41
-#, fuzzy
 msgid "Language"
 msgstr "Bahasa"
 
 #: listview.py:43
 msgid "Publish Date"
-msgstr ""
+msgstr "Tanggal Terbit"
 
 #, fuzzy
 #~ msgid "Error"
