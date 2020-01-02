@@ -464,7 +464,7 @@ class InternetArchiveDownloadThread(threading.Thread):
             self._get_csv_error_cb(getter, 'HTTP Error')
             return
 
-        reader = csv.reader(open(path,  'rb'))
+        reader = csv.reader(open(path,  'r'))
         next(reader)  # skip the first header row.
         for row in reader:
             if len(row) < 7:
