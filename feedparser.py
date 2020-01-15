@@ -3629,15 +3629,14 @@ def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, refer
         result['bozo'] = 0
     if not isinstance(handlers, list):
         handlers = [handlers]
-    # try:
-    f = _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers)
-    data = f.read()
-    #except Exception as e:
-    #    print(e, "GGGGGGGG")
-    #    result['bozo'] = 1
-    #    result['bozo_exception'] = e
-    #    data = None
-    #    f = None
+    try:
+        f = _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers, request_headers)
+        data = f.read()
+    except Exception as e:
+        result['bozo'] = 1
+        result['bozo_exception'] = e
+        data = None
+        f = None
 
     if hasattr(f, 'headers'):
         result['headers'] = dict(f.headers)
@@ -3694,7 +3693,9 @@ def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, refer
     http_headers = result.get('headers', {})
     result['encoding'], http_encoding, xml_encoding, sniffed_xml_encoding, acceptable_content_type = \
         _getCharacterEncoding(http_headers, data)
-    #if http_headers and (not acceptable_content_type):
+    # FIXME The Internet Archive provides an invalid XML file. THe XML encoding is not mentioned.
+    # GetBooksActivity should be ported only to ODPS and not rely on InternetArchive
+    # if http_headers and (not acceptable_content_type):
     #    if 'content-type' in http_headers or 'Content-type' in http_headers:
     #        bozo_message = '%s is not an XML media type' % http_headers.get('content-type', http_headers.get('Content-type'))
     #    else:
@@ -3805,17 +3806,17 @@ def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, refer
             # work around bug in built-in SAX parser (doesn't recognize xml: namespace)
             # PyXML doesn't have this problem, and it doesn't have _ns_stack either
             saxparser._ns_stack.append({'http://www.w3.org/XML/1998/namespace':'xml'})
-        #try:
-        saxparser.parse(source)
-        #except Exception as e:
-        ##    if _debug:
-        #        import traceback
-        #        traceback.print_stack()
-        #        traceback.print_exc()
-        #        sys.stderr.write('xml parsing failed\n')
-        #    result['bozo'] = 1
-        #    result['bozo_exception'] = feedparser.exc or e
-        #    use_strict_parser = 0
+        try:
+            saxparser.parse(source)
+        except Exception as e:
+            if _debug:
+                import traceback
+                traceback.print_stack()
+                traceback.print_exc()
+                sys.stderr.write('xml parsing failed\n')
+            result['bozo'] = 1
+            result['bozo_exception'] = feedparser.exc or e
+            use_strict_parser = 0
     if not use_strict_parser:
         feedparser = _LooseFeedParser(baseuri, baselang, 'utf-8', entities)
         feedparser.feed(data.decode('utf-8', 'replace'))
