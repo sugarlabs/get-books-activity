@@ -75,7 +75,8 @@ class DownloadThread(threading.Thread):
     def run(self):
         logging.debug('Searching URL %s headers %s' % (self._uri,
                                                        self._headers))
-        feedobj = feedparser.parse(self._uri, request_headers=self._headers)
+        print(self._uri, "SSSSSSSSSSSSS")
+        feedobj = feedparser.parse(self._uri) # , request_headers=self._headers)
         self._feedobj_cb(feedobj)
 
     def stop(self):
@@ -222,7 +223,8 @@ class QueryResult(GObject.GObject):
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-
+        print(self._uri, 'S')
+        
         uri = self._uri
         headers = {}
         if not self.is_local():
@@ -230,7 +232,6 @@ class QueryResult(GObject.GObject):
             if self._language is not None and self._language != 'all':
                 headers['Accept-Language'] = self._language
                 uri += '&lang=' + self._language
-
         d_thread = DownloadThread(uri, headers, self.__feedobj_cb)
         d_thread.daemon = True
         self.threads.append(d_thread)
@@ -238,11 +239,12 @@ class QueryResult(GObject.GObject):
 
     def __feedobj_cb(self, feedobj):
         self._feedobj = feedobj
-
+        print(self._feedobj, 'ssssssssssss')
         # Get catalog Type
         CATALOG_TYPE = 'COMMON'
         if 'links' in feedobj['feed']:
             for link in feedobj['feed']['links']:
+                print(link, 'ssssssssssss')
                 if link['rel'] == _REL_CRAWLABLE:
                     CATALOG_TYPE = 'CRAWLABLE'
                     break
@@ -448,10 +450,10 @@ class InternetArchiveDownloadThread(threading.Thread):
         getter = ReadURLDownloader(self._url)
         getter.connect("finished", self.__finished_cb)
         getter.connect("error", self.__error_cb)
-        try:
-            getter.start(self._path)
-        except:
-            pass
+        #FIXME try:
+        getter.start(self._path)
+        #except:
+        #    pass
         self._download_content_type = getter.get_content_type()
 
     def __error_cb(self, getter, err):
@@ -515,6 +517,7 @@ class InternetArchiveQueryResult(QueryResult):
 
     def __init__(self, query, path):
         GObject.GObject.__init__(self)
+        print(query, path, 'yo')
         self._next_uri = ''
         self._ready = False
         self._booklist = []

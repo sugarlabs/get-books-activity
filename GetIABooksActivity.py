@@ -823,6 +823,7 @@ class GetIABooksActivity(activity.Activity):
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
                                                         self.get_path())
+                print(self.queryresults, "HHHHHHHHHHHHH")
             elif self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
@@ -841,6 +842,7 @@ class GetIABooksActivity(activity.Activity):
            'bozo_exception' in self.queryresults._feedobj:
             # something went wrong and we have to inform about this
             bozo_exception = self.queryresults._feedobj.bozo_exception
+            print(bozo_exception, self.queryresults)
             if isinstance(bozo_exception, urllib.error.URLError):
                 if isinstance(bozo_exception.reason, socket.gaierror):
                     if bozo_exception.reason.errno == -2:
