@@ -75,7 +75,6 @@ class DownloadThread(threading.Thread):
     def run(self):
         logging.debug('Searching URL %s headers %s' % (self._uri,
                                                        self._headers))
-        print(self._uri, "SSSSSSSSSSSSS")
         feedobj = feedparser.parse(self._uri) # , request_headers=self._headers)
         self._feedobj_cb(feedobj)
 
@@ -223,7 +222,6 @@ class QueryResult(GObject.GObject):
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-        print(self._uri, 'S')
         
         uri = self._uri
         headers = {}
@@ -239,12 +237,10 @@ class QueryResult(GObject.GObject):
 
     def __feedobj_cb(self, feedobj):
         self._feedobj = feedobj
-        print(self._feedobj, 'ssssssssssss')
         # Get catalog Type
         CATALOG_TYPE = 'COMMON'
         if 'links' in feedobj['feed']:
             for link in feedobj['feed']['links']:
-                print(link, 'ssssssssssss')
                 if link['rel'] == _REL_CRAWLABLE:
                     CATALOG_TYPE = 'CRAWLABLE'
                     break
@@ -517,7 +513,6 @@ class InternetArchiveQueryResult(QueryResult):
 
     def __init__(self, query, path):
         GObject.GObject.__init__(self)
-        print(query, path, 'yo')
         self._next_uri = ''
         self._ready = False
         self._booklist = []
