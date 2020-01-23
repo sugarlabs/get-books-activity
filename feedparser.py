@@ -3694,7 +3694,6 @@ def parse(url_file_stream_or_string, etag=None, modified=None, agent=None, refer
     result['encoding'], http_encoding, xml_encoding, sniffed_xml_encoding, acceptable_content_type = \
         _getCharacterEncoding(http_headers, data)
     result['bozo'] = 0
-    result['bozo_exception'] = ''
     # FIXME The Internet Archive provides an invalid XML file. THe XML encoding is not mentioned.
     # GetBooksActivity should be ported only to ODPS and not rely on InternetArchive
     # if http_headers and (not acceptable_content_type):
