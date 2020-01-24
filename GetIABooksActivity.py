@@ -830,10 +830,6 @@ class GetIABooksActivity(activity.Activity):
             else:
                 self.queryresults = opds.LocalVolumeQueryResult(self.source,
                         search_text, query_language)
-            if self.source == 'Internet Archive':
-                self.show_message(_('Performing lookup, please wait...'))
-                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
-                self.queryresults.connect('updated', self.__query_updated_cb)
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
