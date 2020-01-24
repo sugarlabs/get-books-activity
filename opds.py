@@ -446,10 +446,10 @@ class InternetArchiveDownloadThread(threading.Thread):
         getter = ReadURLDownloader(self._url)
         getter.connect("finished", self.__finished_cb)
         getter.connect("error", self.__error_cb)
-        #FIXME try:
-        getter.start(self._path)
-        #except:
-        #    pass
+        try:
+            getter.start(self._path)
+        except Exception as e:
+            logging.warning('Error {} has occurred'.format(e))
         self._download_content_type = getter.get_content_type()
 
     def __error_cb(self, getter, err):
@@ -463,10 +463,11 @@ class InternetArchiveDownloadThread(threading.Thread):
             return
 
         reader = csv.reader(open(path,  'r'))
-        next(reader)  # skip the first header row.
+        next(reader)
+        next(reader) # skip the first two header rows.
         for row in reader:
             if len(row) < 7:
-                return
+                break
             entry = {}
             entry['author'] = row[0]
             entry['description'] = row[1]
