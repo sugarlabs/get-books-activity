@@ -821,7 +821,7 @@ class GetIABooksActivity(activity.Activity):
             if self.source == 'Internet Archive':
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
-                                                        self.get_path())
+                                                        self.get_path(), self)
             elif self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
@@ -833,6 +833,10 @@ class GetIABooksActivity(activity.Activity):
             self.show_message(_('Performing lookup, please wait...'))
             self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
             self.queryresults.connect('updated', self.__query_updated_cb)
+
+    def show_alert_cb(self, message):
+        self.show_message(message)
+        self.get_window().set_cursor(None)
 
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)

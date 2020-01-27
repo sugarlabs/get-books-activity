@@ -19,7 +19,7 @@
 from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import Gtk
-
+from gettext import gettext as _
 from sugar3 import network
 
 import logging
@@ -380,7 +380,7 @@ class InternetArchiveBook(Book):
             if path is None:
                 logging.error('internet archive file list get fail')
                 # FIXME: report to user a failure to download
-                return
+                return 1
 
             from xml.etree.ElementTree import XML
             xml = XML(open(path, 'r').read())
@@ -405,7 +405,7 @@ class InternetArchiveBook(Book):
             if chosen is None:
                 logging.error('internet archive file list omits content type')
                 # FIXME: report to user a failure to find matching content
-                return
+                return 1
 
             url = os.path.join(url_base, chosen)
             GLib.idle_add(download_cb, url)
@@ -418,8 +418,9 @@ class InternetArchiveBook(Book):
 
 class InternetArchiveDownloadThread(threading.Thread):
 
-    def __init__(self, query, path, updated_cb, append_cb, ready_cb):
+    def __init__(self, query, path, updated_cb, append_cb, ready_cb, parent=None):
         threading.Thread.__init__(self)
+        self.parent = parent
         self._path = path
         self._updated_cb = updated_cb
         self._append_cb = append_cb
@@ -496,8 +497,10 @@ class InternetArchiveDownloadThread(threading.Thread):
                 entry['links']['application/epub+zip'] = 'yes'
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
-
-            self._append_cb(InternetArchiveBook(None, entry, ''))
+            if InternetArchiveBook(None, entry, ''):
+                self._append_cb(InternetArchiveBook(None, entry, ''))
+            else:
+                self.parent.show_alert_cb(_('No Books found'))
 
         os.remove(path)
         self._updated_cb()
@@ -512,7 +515,7 @@ class InternetArchiveQueryResult(QueryResult):
     # Search in internet archive does not use OPDS
     # because the server implementation is not working very well
 
-    def __init__(self, query, path):
+    def __init__(self, query, path, parent=None):
         GObject.GObject.__init__(self)
         self._next_uri = ''
         self._ready = False
@@ -523,7 +526,8 @@ class InternetArchiveQueryResult(QueryResult):
         d_thread = InternetArchiveDownloadThread(query, path,
                                                  self.__updated_cb,
                                                  self.__append_cb,
-                                                 self.__ready_cb)
+                                                 self.__ready_cb,
+                                                 parent)
         d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()
