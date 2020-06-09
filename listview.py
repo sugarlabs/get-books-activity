@@ -30,7 +30,7 @@ class ListView(ExtListView):
     __txtRdr.props.wrap_width = 500
     __txtRdr.props.width = 500
     (ROW_TITLE, ROW_AUTHOR, ROW_PUBLISHER,
-    ROW_LANGUAGE, ROW_PUB_DATE, ROW_BOOK) = range(6)
+    ROW_LANGUAGE, ROW_PUB_DATE, ROW_BOOK) = list(range(6))
 
     columns = ((_('Title'), [(__txtRdr, GObject.TYPE_STRING)],
                     (ROW_TITLE,), False, True),
