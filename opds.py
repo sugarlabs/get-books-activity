@@ -19,13 +19,13 @@
 from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import Gtk
-
+from gettext import gettext as _
 from sugar3 import network
 
 import logging
 import threading
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 import csv
 
@@ -33,10 +33,10 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_REL_OPDS_ACQUISTION = u'http://opds-spec.org/acquisition'
+_REL_OPDS_ACQUISTION = 'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
-_REL_OPDS_POPULAR = u'http://opds-spec.org/sort/popular'
-_REL_OPDS_NEW = u'http://opds-spec.org/sort/new'
+_REL_OPDS_POPULAR = 'http://opds-spec.org/sort/popular'
+_REL_OPDS_NEW = 'http://opds-spec.org/sort/new'
 _REL_ALTERNATE = 'alternate'
 _REL_CRAWLABLE = 'http://opds-spec.org/crawlable'
 
@@ -75,7 +75,7 @@ class DownloadThread(threading.Thread):
     def run(self):
         logging.debug('Searching URL %s headers %s' % (self._uri,
                                                        self._headers))
-        feedobj = feedparser.parse(self._uri, request_headers=self._headers)
+        feedobj = feedparser.parse(self._uri) # , request_headers=self._headers)
         self._feedobj_cb(feedobj)
 
     def stop(self):
@@ -222,7 +222,7 @@ class QueryResult(GObject.GObject):
         self._booklist = []
         self._cataloglist = []
         self.threads = []
-
+        
         uri = self._uri
         headers = {}
         if not self.is_local():
@@ -230,7 +230,6 @@ class QueryResult(GObject.GObject):
             if self._language is not None and self._language != 'all':
                 headers['Accept-Language'] = self._language
                 uri += '&lang=' + self._language
-
         d_thread = DownloadThread(uri, headers, self.__feedobj_cb)
         d_thread.daemon = True
         self.threads.append(d_thread)
@@ -238,7 +237,6 @@ class QueryResult(GObject.GObject):
 
     def __feedobj_cb(self, feedobj):
         self._feedobj = feedobj
-
         # Get catalog Type
         CATALOG_TYPE = 'COMMON'
         if 'links' in feedobj['feed']:
@@ -256,7 +254,7 @@ class QueryResult(GObject.GObject):
                     return 'BOOK'
 
         for entry in feedobj['entries']:
-            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
+            if entry_type(entry) == 'BOOK' and CATALOG_TYPE != 'CRAWLABLE':
                 self._booklist.append(Book(self._configuration, entry))
             elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
                 self._cataloglist.append(Book(self._configuration, entry))
@@ -275,7 +273,7 @@ class QueryResult(GObject.GObject):
         if not 'links' in self._feedobj['feed']:
             return False
         for link in self._feedobj['feed']['links']:
-            if link['rel'] == u'next':
+            if link['rel'] == 'next':
                 self._next_uri = link['href']
                 return True
 
@@ -342,7 +340,7 @@ class LocalVolumeQueryResult(QueryResult):
 
     def get_book_list(self):
         ret = []
-        if self._query is None or self._query is '':
+        if self._query is None or self._query == '':
             for entry in self._feedobj['entries']:
                 ret.append(Book(entry, basepath=os.path.dirname(self._uri)))
         else:
@@ -382,18 +380,18 @@ class InternetArchiveBook(Book):
             if path is None:
                 logging.error('internet archive file list get fail')
                 # FIXME: report to user a failure to download
-                return
+                return 1
 
             from xml.etree.ElementTree import XML
             xml = XML(open(path, 'r').read())
             os.remove(path)
 
             table = {
-                'text pdf': u'application/pdf',
-                'grayscale luratech pdf': u'application/pdf-bw',
-                'image container pdf': u'application/pdf',
-                'djvu': u'image/x.djvu',
-                'epub': u'application/epub+zip',
+                'text pdf': 'application/pdf',
+                'grayscale luratech pdf': 'application/pdf-bw',
+                'image container pdf': 'application/pdf',
+                'djvu': 'image/x.djvu',
+                'epub': 'application/epub+zip',
             }
 
             chosen = None
@@ -407,7 +405,7 @@ class InternetArchiveBook(Book):
             if chosen is None:
                 logging.error('internet archive file list omits content type')
                 # FIXME: report to user a failure to find matching content
-                return
+                return 1
 
             url = os.path.join(url_base, chosen)
             GLib.idle_add(download_cb, url)
@@ -420,8 +418,9 @@ class InternetArchiveBook(Book):
 
 class InternetArchiveDownloadThread(threading.Thread):
 
-    def __init__(self, query, path, updated_cb, append_cb, ready_cb):
+    def __init__(self, query, path, updated_cb, append_cb, ready_cb, parent=None):
         threading.Thread.__init__(self)
+        self.parent = parent
         self._path = path
         self._updated_cb = updated_cb
         self._append_cb = append_cb
@@ -430,10 +429,10 @@ class InternetArchiveDownloadThread(threading.Thread):
         self._download_content_length = 0
         self._download_content_type = None
 
-        FL = urllib.quote('fl[]')
-        SORT = urllib.quote('sort[]')
+        FL = urllib.parse.quote('fl[]')
+        SORT = urllib.parse.quote('sort[]')
         self._url = 'http://archive.org/advancedsearch.php?q=' +  \
-            urllib.quote('(title:(' + query.lower() + ') OR ' + \
+            urllib.parse.quote('(title:(' + query.lower() + ') OR ' + \
             'creator:(' + query.lower() + ')) AND format:(DJVU)')
         self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
@@ -450,8 +449,8 @@ class InternetArchiveDownloadThread(threading.Thread):
         getter.connect("error", self.__error_cb)
         try:
             getter.start(self._path)
-        except:
-            pass
+        except Exception as e:
+            logging.warning('Error {} has occurred'.format(e))
         self._download_content_type = getter.get_content_type()
 
     def __error_cb(self, getter, err):
@@ -464,11 +463,12 @@ class InternetArchiveDownloadThread(threading.Thread):
             self._get_csv_error_cb(getter, 'HTTP Error')
             return
 
-        reader = csv.reader(open(path,  'rb'))
-        reader.next()  # skip the first header row.
+        reader = csv.reader(open(path,  'r'))
+        next(reader)
+        next(reader) # skip the first two header rows.
         for row in reader:
             if len(row) < 7:
-                return
+                break
             entry = {}
             entry['author'] = row[0]
             entry['description'] = row[1]
@@ -497,8 +497,10 @@ class InternetArchiveDownloadThread(threading.Thread):
                 entry['links']['application/epub+zip'] = 'yes'
             entry['cover_image'] = 'http://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
-
-            self._append_cb(InternetArchiveBook(None, entry, ''))
+            if InternetArchiveBook(None, entry, ''):
+                self._append_cb(InternetArchiveBook(None, entry, ''))
+            else:
+                self.parent.show_alert_cb(_('No Books found'))
 
         os.remove(path)
         self._updated_cb()
@@ -513,7 +515,7 @@ class InternetArchiveQueryResult(QueryResult):
     # Search in internet archive does not use OPDS
     # because the server implementation is not working very well
 
-    def __init__(self, query, path):
+    def __init__(self, query, path, parent=None):
         GObject.GObject.__init__(self)
         self._next_uri = ''
         self._ready = False
@@ -524,7 +526,8 @@ class InternetArchiveQueryResult(QueryResult):
         d_thread = InternetArchiveDownloadThread(query, path,
                                                  self.__updated_cb,
                                                  self.__append_cb,
-                                                 self.__ready_cb)
+                                                 self.__ready_cb,
+                                                 parent)
         d_thread.daemon = True
         self.threads.append(d_thread)
         d_thread.start()

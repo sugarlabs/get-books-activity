@@ -57,9 +57,9 @@ except ImportError:
     _HAS_BUNDLE_LAUNCHER = False
 
 import dbus
-import ConfigParser
+import configparser
 import base64
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import socket
 
 
@@ -68,8 +68,8 @@ import opds
 import languagenames
 import devicemanager
 
-_MIMETYPES = {'PDF': u'application/pdf', 'PDF BW': u'application/pdf-bw',
-                'EPUB': u'application/epub+zip', 'DJVU': u'image/x.djvu'}
+_MIMETYPES = {'PDF': 'application/pdf', 'PDF BW': 'application/pdf-bw',
+                'EPUB': 'application/epub+zip', 'DJVU': 'image/x.djvu'}
 _SOURCES = {}
 _SOURCES_CONFIG = {}
 
@@ -157,7 +157,7 @@ class GetIABooksActivity(activity.Activity):
 
     def _read_configuration(self, file_name='get-books.cfg'):
         logging.debug('Reading configuration from file %s', file_name)
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.readfp(open(file_name))
         if config.has_option('GetBooks', 'show_images'):
             self.show_images = config.getboolean('GetBooks', 'show_images')
@@ -221,7 +221,7 @@ class GetIABooksActivity(activity.Activity):
                         source_config['ignore_mimetypes']
                     self.catalogs_configuration[catalog] = catalog_config
 
-        self.source = _SOURCES_CONFIG.keys()[0]
+        self.source = list(_SOURCES_CONFIG.keys())[0]
         self.ignore_mimetypes = _SOURCES_CONFIG[self.source]['ignore_mimetypes']
 
         self.filter_catalogs_by_source()
@@ -268,7 +268,7 @@ class GetIABooksActivity(activity.Activity):
             toolbar.language_combo.props.sensitive = True
             combotool = ToolComboBox(toolbar.language_combo)
             toolbar.language_combo.append_item('all', _('Any language'))
-            for key in self.languages.keys():
+            for key in list(self.languages.keys()):
                 toolbar.language_combo.append_item(key, self.languages[key])
             toolbar.language_combo.set_active(0)
             toolbar.config_toolbarbutton.props.page.insert(combotool, -1)
@@ -292,7 +292,7 @@ class GetIABooksActivity(activity.Activity):
         palette.popup(immediate=True, state=palette.SECONDARY)
 
     def __switch_catalog_cb(self, catalog_name):
-        catalog_config = self.catalogs[catalog_name.decode('utf-8')]
+        catalog_config = self.catalogs[catalog_name]
         self.__activate_catalog_cb(None, catalog_config)
 
     def __activate_catalog_cb(self, menu, catalog_config):
@@ -328,8 +328,8 @@ class GetIABooksActivity(activity.Activity):
     def update_format_combo(self, links):
         self.format_combo.handler_block(self.__format_changed_cb_id)
         self.format_combo.remove_all()
-        for key in _MIMETYPES.keys():
-            if _MIMETYPES[key] in links.keys() and \
+        for key in list(_MIMETYPES.keys()):
+            if _MIMETYPES[key] in list(links.keys()) and \
                     not _MIMETYPES[key] in self.ignore_mimetypes:
                 self.format_combo.append_item(_MIMETYPES[key], key)
         self.format_combo.set_active(0)
@@ -349,7 +349,7 @@ class GetIABooksActivity(activity.Activity):
         toolbar.source_combo.remove_all()
 
         position = 0
-        for key in _SOURCES.keys():
+        for key in list(_SOURCES.keys()):
             toolbar.source_combo.append_item(_SOURCES[key], key,
                 icon_name='internet-icon')
             _SOURCES_CONFIG[key]['position'] = position
@@ -419,7 +419,7 @@ class GetIABooksActivity(activity.Activity):
             if len(self.catalogs) > 0:
                 self.path_iter = {}
                 self.categories = []
-                for key in self.catalogs.keys():
+                for key in list(self.catalogs.keys()):
                     self.categories.append({'text': key, 'dentro': []})
                 self.treemodel.clear()
                 for p in self.categories:
@@ -548,7 +548,7 @@ class GetIABooksActivity(activity.Activity):
         hbox_format = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         format_label = Gtk.Label(label=_('Format:'))
         self.format_combo = ComboBox()
-        for key in _MIMETYPES.keys():
+        for key in list(_MIMETYPES.keys()):
             self.format_combo.append_item(_MIMETYPES[key], key)
         self.format_combo.set_active(0)
         self.format_combo.props.sensitive = False
@@ -630,7 +630,7 @@ class GetIABooksActivity(activity.Activity):
             self.catalog_history = []
             self.catalog_history.append({'title': _('Catalogs'),
                 'catalogs': self.catalogs})
-            for key in self.catalogs.keys():
+            for key in list(self.catalogs.keys()):
                 self.categories.append({'text': key, 'dentro': []})
             self.treemodel.clear()
 
@@ -675,7 +675,7 @@ class GetIABooksActivity(activity.Activity):
         book_data += _('Author:\t\t') + self.selected_author + '\n'
         self.selected_publisher = self.selected_book.get_publisher()
         self.selected_summary = self.selected_book.get_summary()
-        if (self.selected_summary is not 'Unknown'):
+        if (self.selected_summary != 'Unknown'):
             book_data += _('Summary:\t') + self.selected_summary + '\n'
         self.selected_language_code = self.selected_book.get_language()
         if self.selected_language_code != '':
@@ -706,7 +706,7 @@ class GetIABooksActivity(activity.Activity):
                 url_image = self.selected_book.get_image_url()
                 self.add_default_image()
                 if url_image:
-                    self.download_image(url_image.values()[0])
+                    self.download_image(list(url_image.values())[0])
 
     def get_pixbuf_from_buffer(self, image_buffer):
         """Buffer To Pixbuf"""
@@ -795,7 +795,6 @@ class GetIABooksActivity(activity.Activity):
     def find_books(self, search_text=''):
         self._inhibit_suspend()
         self.source = self._books_toolbar.source_combo.props.value
-
         query_language = self.get_query_language()
 
         self.enable_button(False)
@@ -822,7 +821,7 @@ class GetIABooksActivity(activity.Activity):
             if self.source == 'Internet Archive':
                 self.queryresults = \
                         opds.InternetArchiveQueryResult(search_text,
-                                                        self.get_path())
+                                                        self.get_path(), self)
             elif self.source in _SOURCES_CONFIG:
                 repo_configuration = _SOURCES_CONFIG[self.source]
                 self.queryresults = opds.RemoteQueryResult(repo_configuration,
@@ -835,13 +834,17 @@ class GetIABooksActivity(activity.Activity):
             self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
             self.queryresults.connect('updated', self.__query_updated_cb)
 
+    def show_alert_cb(self, message):
+        self.show_message(message)
+        self.get_window().set_cursor(None)
+
     def __query_updated_cb(self, query, midway):
         self.listview.populate(self.queryresults)
         if hasattr(self.queryresults, '_feedobj') and \
            'bozo_exception' in self.queryresults._feedobj:
             # something went wrong and we have to inform about this
             bozo_exception = self.queryresults._feedobj.bozo_exception
-            if isinstance(bozo_exception, urllib2.URLError):
+            if isinstance(bozo_exception, urllib.error.URLError):
                 if isinstance(bozo_exception.reason, socket.gaierror):
                     if bozo_exception.reason.errno == -2:
                         self.show_message(_('Could not reach the server. '
@@ -849,6 +852,7 @@ class GetIABooksActivity(activity.Activity):
                         self.window.set_cursor(None)
                         return
             self.show_message(_('There was an error downloading the list.'))
+            logging.error(bozo_exception)
         elif (len(self.queryresults.get_catalog_list()) > 0):
             self.show_message(_('New catalog list %s was found') \
                 % self.queryresults._configuration["name"])
@@ -879,7 +883,7 @@ class GetIABooksActivity(activity.Activity):
             catalog_config = {}
             download_link = ''
             download_links = catalog_item.get_types()
-            for link in download_links.keys():
+            for link in list(download_links.keys()):
                 download_link = download_links[link]
                 break
             catalog_config['query_uri'] = download_link
@@ -904,7 +908,7 @@ class GetIABooksActivity(activity.Activity):
             self.catalog_history[len_cat - 1]['catalogs'] = self.catalogs
             self.path_iter = {}
             self.categories = []
-            for key in self.catalogs.keys():
+            for key in list(self.catalogs.keys()):
                 self.categories.append({'text': key, 'dentro': []})
             self.treemodel.clear()
             for p in self.categories:
@@ -1154,7 +1158,7 @@ class GetIABooksActivity(activity.Activity):
 
     def get_entrys_info(self, query):
         books = []
-        for key in _MIMETYPES.keys():
+        for key in list(_MIMETYPES.keys()):
             books.extend(self.get_entry_info_format(query, _MIMETYPES[key]))
         return books
 
