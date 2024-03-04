@@ -373,7 +373,7 @@ class InternetArchiveBook(Book):
         {identifier} directory and choose a file matching the
         requested content type.
         """
-        url_base = 'http://archive.org/download/%s' % self._entry['identifier']
+        url_base = 'https://archive.org/download/%s' % self._entry['identifier']
         url = os.path.join(url_base, '%s_files.xml' % self._entry['identifier'])
 
         downloader = FileDownloader(url, path)
@@ -432,19 +432,18 @@ class InternetArchiveDownloadThread(threading.Thread):
 
         FL = urllib.parse.quote('fl[]')
         SORT = urllib.parse.quote('sort[]')
-        self._url = 'http://archive.org/advancedsearch.php?q=' +  \
+        self._url = 'https://archive.org/advancedsearch.php?q=' +  \
             urllib.parse.quote('(title:(' + query.lower() + ') OR ' + \
-            'creator:(' + query.lower() + ')) AND format:(DJVU)')
+            'creator:(' + query.lower() + ')) AND mediatype:(texts)')
         self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
         self._url += '&' + FL + '=publisher&' + FL + '=title&' + \
             FL + '=volume'
         self._url += '&' + SORT + '=title&' + SORT + '&' + \
-            SORT + '=&rows=500&save=yes&fmt=csv&xmlsearch=Search'
+            SORT + '=&rows=500&save=yes&fmt=csv'
         self.stopthread = threading.Event()
 
     def run(self):
-        logging.debug('Searching URL %s', self._url)
         getter = ReadURLDownloader(self._url)
         getter.connect("finished", self.__finished_cb)
         getter.connect("error", self.__error_cb)
@@ -467,38 +466,40 @@ class InternetArchiveDownloadThread(threading.Thread):
         reader = csv.reader(open(path,  'rt'))
         next(reader)  # skip the first header row.
         for row in reader:
-            if len(row) < 7:
-                return
-            entry = {}
-            entry['author'] = row[0]
-            entry['description'] = row[1]
-            entry['format'] = row[2]
-            entry['identifier'] = row[3]
-            entry['dcterms_language'] = row[4]
-            entry['dcterms_publisher'] = row[5]
-            entry['title'] = row[6]
-            volume = row[7]
-            if volume is not None and len(volume) > 0:
-                entry['title'] = row[6] + 'Volume ' + volume
+            if len(row) >= 7:
+                entry = {}
+                entry['author'] = row[0]
+                entry['description'] = row[1]
+                entry['format'] = row[2]
+                entry['identifier'] = row[3]
+                entry['dcterms_language'] = row[4]
+                entry['dcterms_publisher'] = row[5]
+                entry['title'] = row[6]
+                if len(row) < 8:
+                    volume = ''
+                else:
+                    volume = row[7]
+                if volume is not None and len(volume) > 0:
+                    entry['title'] = row[6] + 'Volume ' + volume
 
-            entry['links'] = {}
-            url_base = 'http://archive.org/download/' + \
+                entry['links'] = {}
+                url_base = 'https://archive.org/download/' + \
                         row[3] + '/' + row[3]
 
-            formats = entry['format'].split(',')
-            if 'DjVu' in formats:
-                entry['links']['image/x.djvu'] = 'yes'
-            if entry['format'].find('Grayscale LuraTech PDF') > -1:
-                # Fake mime type
-                entry['links']['application/pdf-bw'] = 'yes'
-            if entry['format'].find('PDF') > -1:
-                entry['links']['application/pdf'] = 'yes'
-            if entry['format'].find('EPUB') > -1:
-                entry['links']['application/epub+zip'] = 'yes'
-            entry['cover_image'] = 'http://archive.org/download/' + \
+                formats = entry['format'].split(',')
+                if 'DjVu' in formats:
+                    entry['links']['image/x.djvu'] = 'yes'
+                if entry['format'].find('Grayscale LuraTech PDF') > -1:
+                    # Fake mime type
+                    entry['links']['application/pdf-bw'] = 'yes'
+                if entry['format'].find('PDF') > -1:
+                    entry['links']['application/pdf'] = 'yes'
+                if entry['format'].find('EPUB') > -1:
+                    entry['links']['application/epub+zip'] = 'yes'
+                entry['cover_image'] = 'https://archive.org/download/' + \
                         row[3] + '/page/cover_thumb.jpg'
 
-            self._append_cb(InternetArchiveBook(None, entry, ''))
+                self._append_cb(InternetArchiveBook(None, entry, ''))
 
         os.remove(path)
         self._updated_cb()
@@ -510,7 +511,7 @@ class InternetArchiveDownloadThread(threading.Thread):
 
 class InternetArchiveQueryResult(QueryResult):
 
-    # Search in internet archive does not use OPDS
+    # Search in Internet archive does not use OPDS
     # because the server implementation is not working very well
 
     def __init__(self, query, path):
