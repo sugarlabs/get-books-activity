@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 # Copyright (C) 2009 Sayamindu Dasgupta <sayamindu@laptop.org>
 #
@@ -256,7 +256,7 @@ class QueryResult(GObject.GObject):
                     return 'BOOK'
 
         for entry in feedobj['entries']:
-            if entry_type(entry) == 'BOOK' and CATALOG_TYPE is not 'CRAWLABLE':
+            if entry_type(entry) == 'BOOK' and CATALOG_TYPE != 'CRAWLABLE':
                 self._booklist.append(Book(self._configuration, entry))
             elif entry_type(entry) == 'CATALOG' or CATALOG_TYPE == 'CRAWLABLE':
                 self._cataloglist.append(Book(self._configuration, entry))
@@ -342,7 +342,7 @@ class LocalVolumeQueryResult(QueryResult):
 
     def get_book_list(self):
         ret = []
-        if self._query is None or self._query is '':
+        if self._query is None or self._query == '':
             for entry in self._feedobj['entries']:
                 ret.append(Book(entry, basepath=os.path.dirname(self._uri)))
         else:

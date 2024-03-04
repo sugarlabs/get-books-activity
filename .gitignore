@@ -2,3 +2,5 @@ dist
 *.pyc
 locale
 MANIFEST
+/.project
+/.pydevproject

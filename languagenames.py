@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 # Copyright (C) 2009 Sayamindu Dasgupta <sayamindu@laptop.org>
 #
@@ -41,7 +41,7 @@ class LanguageNames(object):
             self._cache = {}
             _xmldoc = ElementTree.parse(_ISO_639_XML_PATH)
             _eroot = _xmldoc.getroot()
-            for child in _eroot.getchildren():
+            for child in _eroot:
                 if child.attrib is not None:
                     lang_name = child.attrib.get('name', None)
                     lang_code = child.attrib.get('iso_639_1_code', None)
