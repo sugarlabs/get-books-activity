@@ -292,7 +292,7 @@ class GetIABooksActivity(activity.Activity):
         palette.popup(immediate=True, state=palette.SECONDARY)
 
     def __switch_catalog_cb(self, catalog_name):
-        catalog_config = self.catalogs[catalog_name.decode('utf-8')]
+        catalog_config = self.catalogs[catalog_name]
         self.__activate_catalog_cb(None, catalog_config)
 
     def __activate_catalog_cb(self, menu, catalog_config):
@@ -675,7 +675,7 @@ class GetIABooksActivity(activity.Activity):
         book_data += _('Author:\t\t') + self.selected_author + '\n'
         self.selected_publisher = self.selected_book.get_publisher()
         self.selected_summary = self.selected_book.get_summary()
-        if (self.selected_summary is not 'Unknown'):
+        if (self.selected_summary != 'Unknown'):
             book_data += _('Summary:\t') + self.selected_summary + '\n'
         self.selected_language_code = self.selected_book.get_language()
         if self.selected_language_code != '':
