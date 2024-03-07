@@ -33,12 +33,12 @@ import sys
 sys.path.insert(0, './')
 import feedparser
 
-_REL_OPDS_ACQUISTION = 'https://opds-spec.org/acquisition'
+_REL_OPDS_ACQUISTION = 'http://opds-spec.org/acquisition'
 _REL_SUBSECTION = 'subsection'
-_REL_OPDS_POPULAR = 'https://opds-spec.org/sort/popular'
-_REL_OPDS_NEW = 'https://opds-spec.org/sort/new'
+_REL_OPDS_POPULAR = 'http://opds-spec.org/sort/popular'
+_REL_OPDS_NEW = 'http://opds-spec.org/sort/new'
 _REL_ALTERNATE = 'alternate'
-_REL_CRAWLABLE = 'https://opds-spec.org/crawlable'
+_REL_CRAWLABLE = 'http://opds-spec.org/crawlable'
 
 GObject.threads_init()
 
@@ -76,7 +76,6 @@ class DownloadThread(threading.Thread):
         logging.debug('Searching URL %s headers %s' % (self._uri,
                                                        self._headers))
         feedobj = feedparser.parse(self._uri, request_headers=self._headers)
-        print('feedobj ', feedobj)
         self._feedobj_cb(feedobj)
 
     def stop(self):
@@ -124,6 +123,7 @@ class Book(object):
                 ret[link['type']] = link['href']
             else:
                 pass
+        print ('ret ', ret)
         return ret
 
     def get_download_links(self, content_type, download_cb, _):

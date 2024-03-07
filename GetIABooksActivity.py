@@ -326,6 +326,7 @@ class GetIABooksActivity(activity.Activity):
         self.queryresults.connect('updated', self.__query_updated_cb)
 
     def update_format_combo(self, links):
+        print(list(links))
         self.format_combo.handler_block(self.__format_changed_cb_id)
         self.format_combo.remove_all()
         for key in list(_MIMETYPES.keys()):
@@ -656,6 +657,7 @@ class GetIABooksActivity(activity.Activity):
         else:
             self.clear_downloaded_bytes()
             if selected_book:
+                # print(selected_book.get_types())
                 self.update_format_combo(selected_book.get_types())
                 self.selected_book = selected_book
                 self._download.show()
