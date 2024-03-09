@@ -123,7 +123,6 @@ class Book(object):
                 ret[link['type']] = link['href']
             else:
                 pass
-        print ('ret ', ret)
         return ret
 
     def get_download_links(self, content_type, download_cb, _):
@@ -436,7 +435,7 @@ class InternetArchiveDownloadThread(threading.Thread):
         SORT = urllib.parse.quote('sort[]')
         self._url = 'https://archive.org/advancedsearch.php?q=' +  \
             urllib.parse.quote('(title:(' + query.lower() + ') OR ' + \
-            'creator:(' + query.lower() + ')) AND mediatype:(texts)')
+            'creator:(' + query.lower() + ')) AND mediatype:(texts) AND (rights:(Public Domain) OR year:[1800 TO 1940])')
         self._url += '&' + FL + '=creator&' + FL + '=description&' + \
             FL + '=format&' + FL + '=identifier&' + FL + '=language'
         self._url += '&' + FL + '=publisher&' + FL + '=title&' + \
