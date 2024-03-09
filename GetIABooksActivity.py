@@ -326,7 +326,6 @@ class GetIABooksActivity(activity.Activity):
         self.queryresults.connect('updated', self.__query_updated_cb)
 
     def update_format_combo(self, links):
-        print(list(links))
         self.format_combo.handler_block(self.__format_changed_cb_id)
         self.format_combo.remove_all()
         for key in list(_MIMETYPES.keys()):
@@ -1078,7 +1077,8 @@ class GetIABooksActivity(activity.Activity):
         _stop_alert.props.msg = msg
 
         if _HAS_BUNDLE_LAUNCHER:
-                bundle = get_bundle(object_id=self._object_id)
+            print('object id: ', self._object_id)
+            bundle = get_bundle(object_id=self._object_id)
 
         if bundle is not None:
             icon = Icon(file=bundle.get_icon())
