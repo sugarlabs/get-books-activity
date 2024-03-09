@@ -224,7 +224,6 @@ class QueryResult(GObject.GObject):
         self.threads = []
 
         uri = self._uri
-        print("uri ", uri)
         headers = {}
         if not self.is_local():
             uri += self._query.replace(' ', '+')
