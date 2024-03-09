@@ -1077,7 +1077,6 @@ class GetIABooksActivity(activity.Activity):
         _stop_alert.props.msg = msg
 
         if _HAS_BUNDLE_LAUNCHER:
-            print('object id: ', self._object_id)
             bundle = get_bundle(object_id=self._object_id)
 
         if bundle is not None:
