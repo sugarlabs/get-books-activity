@@ -1,3 +1,18 @@
+20
+
+Feedbooks is going out of business soon and its OPDS feed is no more. I tried
+several other OPDS feeds from this list: http://opdshome.uo1.net/ including
+the one from Project Gutenberg and found them all to be unsatisfactory for
+one reason or another. OPDS catalogs are not standardized as much as they could
+be.
+
+* Upgrade to a newer version of feedparser.py.
+* Make feedparser.py work with Python3.
+* Add sgmllib3.py which was included with feedparser.
+* Make search criteria for Internet Archive match what is in GetIABooks Activity.
+
+(James Simmons)
+
 19
 
 * New translations {ibo,hi,uk}, and remove empty PO files,
