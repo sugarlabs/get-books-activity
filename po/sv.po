@@ -35,7 +35,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-25 11:58+1000\n"
-"PO-Revision-Date: 2017-03-28 22:09+0000\n"
+"PO-Revision-Date: 2021-04-17 23:50+0000\n"
 "Last-Translator: Anders <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sv\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1490738997.000000\n"
+"X-POOTLE-MTIME: 1618703441.000000\n"
 
 #: activity/activity.info:2
 msgid "Get Books"
@@ -145,18 +145,20 @@ msgstr "Tyvärr hittade vi endast engelska böcker."
 #, python-format
 msgid ""
 "Error: Could not download %s. The path in the catalog seems to be incorrect."
-msgstr ""
+msgstr "Fel: Kunde inte hämta %s. Sökvägen i katalogen verkar vara felaktig."
 
 #: GetIABooksActivity.py:986
 #, python-format
 msgid "Error: Could not download %s. The other end sent an empty file."
-msgstr ""
+msgstr "Fel: Kunde inte hämta %s. Den andra änden skickade en tom fil."
 
 #: GetIABooksActivity.py:992
 #, python-format
 msgid ""
 "Error: Could not download %s. The other end sent text/html instead of a book."
 msgstr ""
+"Fel: Kunde inte hämta %s. Den andra änden skickade text/html istället för en "
+"bok."
 
 #: GetIABooksActivity.py:1054
 msgid "Download completed"
@@ -165,7 +167,7 @@ msgstr "Hämtning slutförd"
 #: GetIABooksActivity.py:1066
 #, python-format
 msgid "Open with %s"
-msgstr ""
+msgstr "Öppna med %s"
 
 #: GetIABooksActivity.py:1070
 msgid "Show in Journal"
