@@ -6,7 +6,11 @@ Get Books is a book browser and downloader.
 How to use?
 ===========
 
-Start, select a catalog, then browse the books.  Try a search.  Try changing between libraries; Feedbooks or Internet Archive.
+Start, select a catalog, then browse the books.  Try a search.  Currently the only library supported is
+the Internet Archive. Feedbooks is going out of business soon, and their ODPS catalog no longer works.
+
+In addition to browsing the Internet Archive catalogs, you can view the books in your Journal and add
+PDFs and EPUBs on thumb drives to that Journal.
 
 Get Books is not a part of Sugar desktop, but is often added.  Please refer to;
 
@@ -24,7 +28,7 @@ On Sugar desktop systems;
 How to integrate?
 =================
 
-Get Books depends on Python, [Sugar Toolkit for GTK+ 3](https://github.com/sugarlabs/sugar-toolkit-gtk3), and GTK+ 3.
+Get Books depends on Python 3, [Sugar Toolkit for GTK+ 3](https://github.com/sugarlabs/sugar-toolkit-gtk3), and GTK+ 3.
 
 Get Books is started by [Sugar](https://github.com/sugarlabs/sugar).
 
